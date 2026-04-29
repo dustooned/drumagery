@@ -66,7 +66,17 @@ The Vite base path is set to:
 
 This matches the GitHub Pages project path for `dustooned/drumagery`. Keep that setting in `vite.config.ts` if deploying the built `dist` output to GitHub Pages.
 
-GitHub Pages deploys from `.github/workflows/pages.yml` on pushes to `main`. The workflow builds with `npm ci` and `npm run build`, then publishes the generated `dist` folder.
+GitHub Pages is configured for the branch-based path:
+
+```text
+main / docs
+```
+
+Use this command when refreshing the committed Pages build:
+
+```powershell
+npm.cmd run build:pages
+```
 
 Preview URL:
 
