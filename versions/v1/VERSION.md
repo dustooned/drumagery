@@ -71,6 +71,16 @@ Split MIDI control learning into knob, strip, and secondary groups. The primary 
 
 Added `syncTear` as a whole-stage Pixi filter for sawtooth analog-TV tearing. The primary knob bank is now `intensity`, `bloom`, `distortion`, `syncTear`, `feedback`, `noise`, `contrast`, and `chaos`; `density` moved to secondary controls.
 
+## GitHub Pages Deployment Pass
+
+Published the current app through GitHub Pages at:
+
+```text
+https://dustooned.github.io/drumagery/
+```
+
+The working Pages source is `main / docs`. The earlier `main / root` path was incorrect for Vite because it served raw source instead of the compiled app. A custom Actions workflow was removed after failing at Pages configuration, and `npm.cmd run build:pages` now generates the committed `docs` deployment output.
+
 ## Current Validation
 
 ```powershell

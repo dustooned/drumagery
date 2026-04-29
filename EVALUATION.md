@@ -15,6 +15,7 @@ Result: pass.
 ## Confirmed Working
 
 - Vite dev server runs at `http://localhost:5173`.
+- GitHub Pages serves the deployed app at `https://dustooned.github.io/drumagery/`.
 - PixiJS stage renders.
 - Debug panel can trigger loops and bursts.
 - Keyboard fallback controls work.
@@ -255,3 +256,39 @@ Implemented:
 
 Scope note:
 - This is a lightweight CRT tear pass, not a full CRT suite yet. Scanline, roll, chromatic split, and curvature can be separate controls later if needed.
+
+## GitHub Pages Deployment Evaluation
+
+Date: 2026-04-29
+
+Local builds:
+
+```powershell
+npm.cmd run build
+npm.cmd run build:pages
+```
+
+Result: pass.
+
+Live URL check:
+
+```text
+https://dustooned.github.io/drumagery/
+```
+
+Result: HTTP 200 after GitHub Pages was set to `Deploy from a branch`, `main`, `/docs`.
+
+Issue:
+- GitHub Pages was initially disabled or pointed at `main / root`, causing the preview URL to return 404.
+- Serving `main / root` is wrong for this Vite + TypeScript project because Pages would host source files rather than the built static app.
+- A custom GitHub Actions Pages workflow failed at `Configure GitHub Pages` while the repository was not configured to use Actions as its Pages source.
+
+Resolution:
+- Switched to a branch-based Pages deployment.
+- Added `build:pages` to generate the Vite build into `docs`.
+- Committed `docs/index.html`, `docs/assets`, and `docs/.nojekyll`.
+- Removed the failing custom Pages workflow.
+
+Current deploy rule:
+- Keep `vite.config.ts` base set to `/drumagery/`.
+- For deploy updates, run `npm.cmd run build:pages`, commit the changed `docs` output, and push to `main`.

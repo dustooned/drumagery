@@ -4,6 +4,38 @@
 
 The project has moved from saved v0 into v1 MIDI calibration development. No new version snapshot has been created after v0.
 
+## GitHub Pages Deployment
+
+Live URL:
+
+```text
+https://dustooned.github.io/drumagery/
+```
+
+Deployment source:
+
+```text
+main / docs
+```
+
+Issue found:
+- `main / root` produced a 404 or broken deploy path because it serves raw Vite/TypeScript source, not the compiled app.
+- The custom GitHub Actions workflow failed at `Configure GitHub Pages` while Pages was not configured for Actions.
+
+Resolution:
+- Removed the failing Pages workflow.
+- Added `npm.cmd run build:pages`, which builds Vite output into `docs`.
+- Committed `docs/index.html`, `docs/assets`, and `docs/.nojekyll`.
+- Confirmed the live Pages URL returns HTTP 200.
+
+When updating the deployed app, run:
+
+```powershell
+npm.cmd run build:pages
+```
+
+Then commit and push the changed `docs` files.
+
 ## v0 Saved State
 
 Saved at:
