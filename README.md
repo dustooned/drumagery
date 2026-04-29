@@ -1,0 +1,135 @@
+# Drumagery
+
+A browser-based playable visual instrument built with Vite, TypeScript, and PixiJS.
+
+GitHub repository:
+
+```text
+https://github.com/dustooned/drumagery
+```
+
+## Current Status
+
+Current development track: v1 MIDI calibration
+
+Stable checkpoint: `versions/v0`
+
+The saved v0 baseline is working as a browser visual instrument with:
+- PixiJS renderer at 1280x720 internal resolution.
+- `InputRouter` as the only input path into state.
+- Keyboard, touch, debug-panel, and optional Web MIDI input.
+- Basic state engine with active loops, burst queue, and global FX.
+- Four placeholder loop visuals and four pooled burst placeholders.
+- MIDI debug monitor for raw note and CC inspection.
+
+The active v1 working tree adds a clearer MIDI calibration panel:
+- recent MIDI message history
+- mapped role labels
+- learned CC assignments
+- learned CC slots shown in performance-control order
+- `Clear MIDI Learn` for calibration resets
+- a dedicated `src/input/midiMap.ts` source of truth
+- expanded art-performance controls for shaping visuals live
+- centralized FX ranges/defaults/smoothing in `src/state/fxConfig.ts`
+- centralized visual response strength in `src/visuals/visualConfig.ts`
+
+## Run
+
+```powershell
+npm.cmd install
+npm.cmd run dev
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+Do not open `index.html` directly. This is a Vite + TypeScript app, so the browser needs Vite to compile `/src/main.ts` into runnable JavaScript. Direct `file:///` loading will not run the TypeScript entrypoint and is also the wrong environment for Web MIDI.
+
+For MIDI testing, use desktop Chrome or Edge. The Codex in-app browser may deny Web MIDI permission. iPad Safari should use touch/debug input because Web MIDI is not required for iPad compatibility.
+
+## Validate
+
+```powershell
+npm.cmd run build
+```
+
+## GitHub Pages Build Note
+
+The Vite base path is set to:
+
+```text
+/drumagery/
+```
+
+This matches the GitHub Pages project path for `dustooned/drumagery`. Keep that setting in `vite.config.ts` if deploying the built `dist` output to GitHub Pages.
+
+## Current Controls
+
+- `1-4`: toggle loop placeholders.
+- `Q/W/E/R`: trigger burst placeholders.
+- Arrow keys: hue and speed.
+- `A/S`: distortion.
+- `Z/X`: intensity.
+- Touch top band: loop toggles.
+- Touch lower stage: burst triggers by horizontal zone.
+- Debug panel: manual loop, burst, FX, reset, and MIDI connect controls.
+- MIDI calibration panel: last 10 messages and learned CC roles.
+- `Clear MIDI Learn`: resets learned CC assignments when calibration order is wrong.
+- `Kill Loops`: clears active loops and queued bursts without resetting performance controls.
+
+## MIDI Learn Layout
+
+The v1 learn order follows the physical controller layout:
+- Knobs: `intensity`, `bloom`, `distortion`, `syncTear`, `feedback`, `noise`, `contrast`, `chaos`.
+- Touch strips/sliders: `speed`, `hue`.
+- Secondary controls: `pixelate`, `density`, `scale`, `fade`, `burstPower`.
+
+Turn the eight knobs first, then the speed and hue strips, then any secondary controls you want to calibrate.
+
+## Performance Controls
+
+The active v1 control set is:
+- `intensity`: overall visual force.
+- `bloom`: brighter, thicker visual presence without adding a bloom package.
+- `distortion`: wobble/glitch amount.
+- `syncTear`: analog TV-style horizontal sawtooth tearing.
+- `feedback`: longer visual persistence and slower burst decay.
+- `noise`: procedural speckle/noise layer.
+- `density`: element count and grid density.
+- `contrast`: sharper alpha/brightness separation.
+- `chaos`: global instability multiplier for density, distortion, and noise.
+- `scale`: size and spatial reach.
+- `fade`: persistence/decay feel.
+- `hue`: color drift.
+- `speed`: animation rate.
+- `pixelate`: whole Pixi stage pixelation through a lightweight filter.
+- `burstPower`: burst size and force.
+
+MIDI learns unique CCs in the layout order above for the current session.
+
+To change min/max/default/smoothing values, edit:
+
+```text
+src/state/fxConfig.ts
+```
+
+To change how strongly each visual reacts to the `0-1` controls, edit:
+
+```text
+src/visuals/visualConfig.ts
+```
+
+Use `fxConfig.ts` for controller/control levels. Use `visualConfig.ts` for art response intensity.
+
+## Architecture Rule
+
+All inputs go through:
+
+```text
+Input source -> InputRouter -> StateEngine -> VisualEngine
+```
+
+Do not bind visuals directly to MIDI.
