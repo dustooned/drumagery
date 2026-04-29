@@ -287,6 +287,7 @@ Resolution:
 - Switched to a branch-based Pages deployment.
 - Added `build:pages` to generate the Vite build into `docs`.
 - Committed `docs/index.html`, `docs/assets`, and `docs/.nojekyll`.
+- Added `public/.nojekyll` because Vite clears `docs` before rebuilding and then copies public assets into the output folder.
 - Removed the failing custom Pages workflow.
 
 Current deploy rule:

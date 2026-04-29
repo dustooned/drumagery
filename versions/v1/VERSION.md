@@ -79,7 +79,7 @@ Published the current app through GitHub Pages at:
 https://dustooned.github.io/drumagery/
 ```
 
-The working Pages source is `main / docs`. The earlier `main / root` path was incorrect for Vite because it served raw source instead of the compiled app. A custom Actions workflow was removed after failing at Pages configuration, and `npm.cmd run build:pages` now generates the committed `docs` deployment output.
+The working Pages source is `main / docs`. The earlier `main / root` path was incorrect for Vite because it served raw source instead of the compiled app. A custom Actions workflow was removed after failing at Pages configuration, and `npm.cmd run build:pages` now generates the committed `docs` deployment output. `public/.nojekyll` is included so Vite restores `docs/.nojekyll` after each Pages build.
 
 ## Current Validation
 

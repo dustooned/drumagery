@@ -26,6 +26,7 @@ Resolution:
 - Removed the failing Pages workflow.
 - Added `npm.cmd run build:pages`, which builds Vite output into `docs`.
 - Committed `docs/index.html`, `docs/assets`, and `docs/.nojekyll`.
+- Added `public/.nojekyll` so Vite restores `docs/.nojekyll` on every Pages build.
 - Confirmed the live Pages URL returns HTTP 200.
 
 When updating the deployed app, run:
