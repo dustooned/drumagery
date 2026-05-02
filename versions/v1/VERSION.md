@@ -97,6 +97,26 @@ Values above `1` now push procedural visuals into overdrive instead of only exte
 
 Added `chromaShift` as a new global FX control and secondary MIDI/manual slot. `src/visuals/ChromaSplitFilter.ts` performs whole-stage RGB channel separation with subtle band wobble, stacked after sync tear and before pixelation.
 
+## Vertical Roll Pass
+
+Added `verticalRoll` as a new global FX control and secondary MIDI/manual slot. `src/visuals/VerticalRollFilter.ts` performs whole-stage old-TV tracking drift, vertical image slip, and bright tracking-line instability.
+
+## Phosphor Trail Pass
+
+Added `phosphorTrail` as a new global FX control and secondary MIDI/manual slot. `src/visuals/PhosphorTrailLayer.ts` provides lightweight old-screen persistence with burst ghosts, loop afterimages, and moving scanline trails without using framebuffer feedback.
+
+## Hard Sync Bands Pass
+
+Added `syncBands` as a new global FX control and secondary MIDI/manual slot. `src/visuals/HardSyncBandsFilter.ts` performs blocky horizontal band jumps, compression, and bright sync-hit flashes before chromatic split and pixelation.
+
+## Image-Sequence Infrastructure Pass
+
+Added `src/visuals/imageSequenceManifest.ts` as the source of truth for major-key image-sequence loop slots. Added `src/visuals/ImageSequenceLoopLayer.ts` for future frame-path playback, with procedural placeholders when `framePaths` are empty so the app does not require external assets yet. Major-key loop toggles still route through `InputRouter -> StateEngine -> VisualEngine`; minor-key/pad burst visuals remain procedural and pooled.
+
+## MIDI Role / Debug Spacing Pass
+
+Made the major/minor split explicit in `src/input/midiMap.ts`: major notes toggle persistent image-sequence loops and minor/pad notes trigger short-lived procedural vector bursts. Updated debug panel labels to match that split and raised the bottom spacing so `Connect MIDI` is easier to see near the footer.
+
 ## Current Validation
 
 ```powershell
@@ -105,7 +125,13 @@ npm.cmd run build
 
 Result: pass.
 
-Latest review: 2026-04-27, no new version snapshot created.
+Latest review: 2026-05-02, no new version snapshot created.
+
+Next continuation prompt:
+
+```text
+NEXT_CHAT_PROMPT.md
+```
 
 ## Run Note
 

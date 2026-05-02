@@ -189,10 +189,10 @@ export class MidiInput {
   private getMidiRole(command: number, data1: number, data2: number): string {
     if (command === 0x90 && data2 > 0) {
       const burstId = noteToBurstId(data1);
-      if (burstId !== null) return `burst ${burstId + 1}`;
+      if (burstId !== null) return `minor vector burst ${burstId + 1}`;
 
       const loopId = noteToLoopId(data1);
-      if (loopId !== null) return `loop ${loopId + 1}`;
+      if (loopId !== null) return `major sequence loop ${loopId + 1}`;
 
       return "unmapped note";
     }

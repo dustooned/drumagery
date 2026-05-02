@@ -5,9 +5,14 @@ import type { BurstEvent, GlobalFXState, InstrumentState } from "../state/types"
 import { hslToHex, lerp } from "../utils/math";
 import { BurstPool } from "./BurstPool";
 import { ChromaSplitFilter } from "./ChromaSplitFilter";
+import { HardSyncBandsFilter } from "./HardSyncBandsFilter";
+import { ImageSequenceLoopLayer } from "./ImageSequenceLoopLayer";
+import { getImageSequenceSlotForLoop } from "./imageSequenceManifest";
 import { LoopLayer } from "./LoopLayer";
+import { PhosphorTrailLayer } from "./PhosphorTrailLayer";
 import { PixelateFilter } from "./PixelateFilter";
 import { SyncTearFilter } from "./SyncTearFilter";
+import { VerticalRollFilter } from "./VerticalRollFilter";
 import { responseRange, visualConfig } from "./visualConfig";
 
 export class VisualEngine {
@@ -15,17 +20,27 @@ export class VisualEngine {
   private readonly noiseLayer = new Graphics();
   private readonly loopContainer = new Container();
   private readonly burstPool = new BurstPool();
+  private readonly phosphorTrailLayer = new PhosphorTrailLayer();
   private readonly syncTearFilter = new SyncTearFilter();
+  private readonly verticalRollFilter = new VerticalRollFilter();
+  private readonly hardSyncBandsFilter = new HardSyncBandsFilter();
   private readonly chromaSplitFilter = new ChromaSplitFilter();
   private readonly pixelateFilter = new PixelateFilter();
-  private readonly loopLayers = new Map<number, LoopLayer>();
+  private readonly loopLayers = new Map<number, LoopLayer | ImageSequenceLoopLayer>();
   private state: InstrumentState | null = null;
   private readonly smoothedFX: GlobalFXState = createDefaultGlobalFX();
 
   constructor(private readonly stage: Container) {
-    this.stage.filters = [this.syncTearFilter, this.chromaSplitFilter, this.pixelateFilter];
+    this.stage.filters = [
+      this.syncTearFilter,
+      this.verticalRollFilter,
+      this.hardSyncBandsFilter,
+      this.chromaSplitFilter,
+      this.pixelateFilter
+    ];
     this.stage.filterArea = new Rectangle(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
     this.stage.addChild(this.background);
+    this.stage.addChild(this.phosphorTrailLayer.container);
     this.stage.addChild(this.loopContainer);
     this.stage.addChild(this.burstPool.container);
     this.stage.addChild(this.noiseLayer);
@@ -44,7 +59,8 @@ export class VisualEngine {
 
     for (const loop of state.activeLoops) {
       if (!this.loopLayers.has(loop.id)) {
-        const layer = new LoopLayer(loop);
+        const imageSequenceSlot = getImageSequenceSlotForLoop(loop.id);
+        const layer = imageSequenceSlot ? new ImageSequenceLoopLayer(loop, imageSequenceSlot) : new LoopLayer(loop);
         this.loopLayers.set(loop.id, layer);
         this.loopContainer.addChild(layer.container);
       }
@@ -57,14 +73,18 @@ export class VisualEngine {
     }
 
     for (const burst of bursts) {
+      this.phosphorTrailLayer.captureBurst(burst, this.smoothedFX);
       this.burstPool.trigger(burst);
     }
 
     this.updateSmoothedFX(deltaSeconds);
     this.syncTearFilter.update(deltaSeconds, this.smoothedFX.syncTear, Math.min(3, this.smoothedFX.noise + this.smoothedFX.chaos * 0.35));
+    this.verticalRollFilter.update(deltaSeconds, this.smoothedFX.verticalRoll, this.smoothedFX.syncTear + this.smoothedFX.chaos * 0.35);
+    this.hardSyncBandsFilter.update(deltaSeconds, this.smoothedFX.syncBands, this.smoothedFX.chaos + this.smoothedFX.syncTear * 0.25);
     this.chromaSplitFilter.update(deltaSeconds, this.smoothedFX.chromaShift, this.smoothedFX.chaos + this.smoothedFX.noise * 0.25);
     this.pixelateFilter.setAmount(this.smoothedFX.pixelate);
     this.drawBackground();
+    this.phosphorTrailLayer.update(deltaSeconds, this.smoothedFX, this.state.activeLoops);
 
     for (const layer of this.loopLayers.values()) {
       layer.update(deltaSeconds, this.smoothedFX);
@@ -158,6 +178,9 @@ function getOverdrive(fx: GlobalFXState): number {
       fx.bloom - 1,
       fx.distortion - 1,
       fx.chromaShift - 1,
+      fx.verticalRoll - 1,
+      fx.phosphorTrail - 1,
+      fx.syncBands - 1,
       fx.feedback - 1,
       fx.noise - 1,
       fx.density - 1,

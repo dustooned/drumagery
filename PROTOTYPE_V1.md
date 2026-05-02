@@ -20,7 +20,7 @@ Status: implemented in the active v1 working tree.
 - Improved MIDI debug readout for calibration.
 - Recent MIDI message history.
 - Learned CC assignment display.
-- Expanded live performance controls: intensity, bloom, distortion, syncTear, feedback, noise, density, contrast, chaos, scale, fade, hue, speed, pixelate, burstPower.
+- Expanded live performance controls: intensity, bloom, distortion, syncTear, chromaShift, verticalRoll, phosphorTrail, syncBands, feedback, noise, density, contrast, chaos, scale, fade, hue, speed, pixelate, burstPower.
 - Keep keyboard and touch behavior unchanged.
 - Keep placeholder visuals until input behavior is reliable.
 
@@ -93,6 +93,43 @@ Chroma split pass completed:
 - exposed `Chroma` in secondary manual/MIDI controls
 - added `src/visuals/ChromaSplitFilter.ts` for whole-stage RGB offset
 - stacked chromatic split with sync tear and pixelate in `VisualEngine`
+
+Vertical roll pass completed:
+- added `verticalRoll` to the global FX state/config
+- exposed `V Roll` in secondary manual/MIDI controls
+- added `src/visuals/VerticalRollFilter.ts` for whole-stage tracking drift
+- stacked vertical roll between sync tear and chromatic split
+
+Phosphor trail pass completed:
+- added `phosphorTrail` to the global FX state/config
+- exposed `Phosphor` in secondary manual/MIDI controls
+- added `src/visuals/PhosphorTrailLayer.ts` for lightweight persistence
+- records burst ghosts and draws loop afterimages without framebuffer feedback
+
+Hard sync bands pass completed:
+- added `syncBands` to the global FX state/config
+- exposed `Sync Bands` in secondary manual/MIDI controls
+- added `src/visuals/HardSyncBandsFilter.ts` for blocky horizontal jump/compression glitches
+- stacked hard sync bands before chromatic split and pixelation
+
+Image-sequence infrastructure pass completed:
+- added `src/visuals/imageSequenceManifest.ts` as the source of truth for major-key sequence slots
+- added `src/visuals/ImageSequenceLoopLayer.ts` for future frame-path playback
+- major-key loop toggles now instantiate image-sequence loop layers through state
+- empty frame lists draw procedural placeholders, so no external assets are required yet
+- minor-key/pad burst visuals remain procedural/vector-based and pooled
+
+MIDI role and debug spacing pass completed:
+- `src/input/midiMap.ts` now names major sequence notes and minor vector burst notes explicitly
+- MIDI debug roles report major sequence loops separately from minor vector bursts
+- debug panel sections are labeled `Major image loops` and `Minor vector bursts`
+- debug panel bottom spacing was increased so the MIDI action buttons are easier to see
+
+Current next step:
+- add the first real major-key frame paths to the image-sequence manifest
+- tune per-slot FPS, scale, and anchor after assets exist
+- preserve iPad Safari compatibility and do not require MIDI for the fallback path
+- use `NEXT_CHAT_PROMPT.md` to continue in a fresh chat
 
 Run through Vite:
 

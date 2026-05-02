@@ -117,10 +117,11 @@ body {
   z-index: 2;
   top: max(48px, env(safe-area-inset-top));
   right: max(12px, env(safe-area-inset-right));
+  bottom: max(28px, env(safe-area-inset-bottom));
   width: min(430px, calc(100vw - 24px));
-  max-height: calc(100dvh - 24px);
+  max-height: calc(100dvh - 76px);
   overflow: auto;
-  padding: 14px;
+  padding: 14px 14px 18px;
   border: 2px outset #ffffff;
   border-radius: 0;
   background: #ece9d8;
@@ -305,8 +306,8 @@ button:active {
 
 .debug-actions {
   position: sticky;
-  bottom: -14px;
-  padding: 10px 0 0;
+  bottom: 0;
+  padding: 10px 0 8px;
   background: linear-gradient(180deg, rgba(236, 233, 216, 0), #ece9d8 24%);
 }
 
@@ -404,10 +405,10 @@ input[type="range"]::-moz-range-thumb {
     top: auto;
     left: max(8px, env(safe-area-inset-left));
     right: max(8px, env(safe-area-inset-right));
-    bottom: max(8px, env(safe-area-inset-bottom));
+    bottom: max(28px, env(safe-area-inset-bottom));
     width: auto;
-    max-height: 42dvh;
-    padding: 10px;
+    max-height: calc(42dvh - 20px);
+    padding: 10px 10px 14px;
   }
 
   .is-debug-hidden #debug-panel {

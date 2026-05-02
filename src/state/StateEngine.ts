@@ -1,6 +1,7 @@
 import { BURST_NAMES, LOOP_NAMES, MAX_ACTIVE_LOOPS } from "../constants";
 import type { InputEvent } from "../input/types";
 import { clamp01 } from "../utils/math";
+import { getImageSequenceSlotForLoop } from "../visuals/imageSequenceManifest";
 import { createDefaultGlobalFX, normalizeFXControl } from "./fxConfig";
 import type { BurstEvent, InstrumentState, LoopState, StateListener } from "./types";
 
@@ -70,10 +71,12 @@ export class StateEngine {
       return;
     }
 
+    const imageSequenceSlot = getImageSequenceSlotForLoop(loopId);
     const nextLoop: LoopState = {
       id: loopId,
-      name: LOOP_NAMES[loopId] ?? `Loop ${loopId + 1}`,
-      startedAt: performance.now()
+      name: imageSequenceSlot?.name ?? LOOP_NAMES[loopId] ?? `Loop ${loopId + 1}`,
+      startedAt: performance.now(),
+      imageSequenceSlotId: imageSequenceSlot?.id ?? null
     };
 
     if (this.state.activeLoops.length >= MAX_ACTIVE_LOOPS) {

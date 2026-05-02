@@ -115,7 +115,7 @@ export class DebugPanel {
       </section>
 
       <section class="debug-section">
-        <h2 class="debug-subtitle">Loop toggles</h2>
+        <h2 class="debug-subtitle">Major image loops</h2>
         <div class="debug-grid debug-grid-loops">
           ${LOOP_NAMES.map(
             (name, index) => `<button type="button" data-loop="${index}"><span>${index + 1}</span>${name}</button>`
@@ -124,7 +124,7 @@ export class DebugPanel {
       </section>
 
       <section class="debug-section">
-        <h2 class="debug-subtitle">Burst triggers</h2>
+        <h2 class="debug-subtitle">Minor vector bursts</h2>
         <div class="debug-grid debug-grid-bursts">
           ${BURST_NAMES.map(
             (name, index) => `<button type="button" data-burst="${index}"><span>Q${index + 1}</span>${name}</button>`
@@ -275,14 +275,16 @@ export class DebugPanel {
   private readonly handleClick = (event: MouseEvent): void => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
+    const controlTarget = target.closest<HTMLElement>("[data-loop], [data-burst], [data-reset], [data-kill-loops], [data-midi-connect], [data-midi-learn-reset]");
+    if (!controlTarget) return;
 
-    const loopId = target.dataset.loop;
+    const loopId = controlTarget.dataset.loop;
     if (loopId !== undefined) {
       this.router.dispatch({ type: "loop-toggle", source: "debug", loopId: Number(loopId), velocity: 1 });
       return;
     }
 
-    const burstId = target.dataset.burst;
+    const burstId = controlTarget.dataset.burst;
     if (burstId !== undefined) {
       this.router.dispatch({
         type: "burst",
@@ -295,22 +297,22 @@ export class DebugPanel {
       return;
     }
 
-    if (target.dataset.reset) {
+    if (controlTarget.dataset.reset) {
       this.router.dispatch({ type: "reset", source: "debug" });
       return;
     }
 
-    if (target.dataset.killLoops) {
+    if (controlTarget.dataset.killLoops) {
       this.router.dispatch({ type: "kill-loops", source: "debug" });
       return;
     }
 
-    if (target.dataset.midiConnect) {
+    if (controlTarget.dataset.midiConnect) {
       void this.onMidiConnect();
       return;
     }
 
-    if (target.dataset.midiLearnReset) {
+    if (controlTarget.dataset.midiLearnReset) {
       this.onMidiLearnReset();
     }
   };

@@ -2,7 +2,7 @@
 
 ## Current Track
 
-The project has moved from saved v0 into v1 MIDI calibration development. No new version snapshot has been created after v0.
+The project has moved from saved v0 into active v1 performance-control development. v1 now includes MIDI calibration, touch fallback, an XP-adjacent desktop/browser shell, expanded FX ranges, and named retro-TV effectors. No new source snapshot has been created after v0.
 
 ## GitHub Pages Deployment
 
@@ -77,6 +77,8 @@ Then click `Connect MIDI` in the debug panel.
 
 First v1 development goal: make MIDI mapping easy to calibrate for the Arturia MiniLab MkII.
 
+Current v1 build goal: turn the prototype into a functional interactive-concert visual instrument with raw analog visuals, readable controls/data, iPad-safe touch fallback, and image-sequence infrastructure for major-key toggles.
+
 Current v1 state:
 - `src/input/midiMap.ts` owns provisional MIDI assumptions.
 - Debug panel title is `Visual Instrument V1`.
@@ -91,6 +93,9 @@ Current v1 state:
 - Placeholder visuals respond to the expanded performance controls.
 - FX defaults, min/max ranges, slider steps, and smoothing values are centralized in `src/state/fxConfig.ts`.
 - Visual response tuning is centralized in `src/visuals/visualConfig.ts`.
+- Major-key loop sequence slots are centralized in `src/visuals/imageSequenceManifest.ts`.
+- `src/visuals/ImageSequenceLoopLayer.ts` renders image-sequence slots and safely falls back to procedural placeholders while frame lists are empty.
+- MIDI note routing is explicit: major-key notes toggle sequence loops, while minor-key/pad notes trigger pooled procedural/vector bursts.
 - `Kill Loops` clears active loops and queued bursts without resetting current performance controls.
 - Burst animation now uses input-dependent attack/decay based on hit velocity.
 - FX max input ranges are expanded to 3x the original max values. Most controls are now `0..3`; `speed` is now `0.2..6`.
@@ -98,9 +103,26 @@ Current v1 state:
 - Touch is no longer tap-only: stage dragging smoothly controls `hue`, `intensity`, movement-driven `distortion`, and two-finger `scale`.
 - The app has a retro desktop/browser-window shell around the Pixi canvas, styled in a Windows XP-adjacent direction without adding dependencies.
 - `chromaShift` adds a whole-stage RGB split/glitch color offset through `src/visuals/ChromaSplitFilter.ts`.
+- `verticalRoll` adds whole-stage old-TV tracking drift through `src/visuals/VerticalRollFilter.ts`.
+- `phosphorTrail` adds lightweight procedural persistence through `src/visuals/PhosphorTrailLayer.ts`.
+- `syncBands` adds hard blocky horizontal sync jumps through `src/visuals/HardSyncBandsFilter.ts`.
 - Build passes.
 
 Latest v1 pass:
+- Clarified the MIDI note role split in `src/input/midiMap.ts`: major sequence notes vs minor vector burst notes.
+- Updated the debug panel headings to `Major image loops` and `Minor vector bursts`.
+- Raised the debug panel bottom gap and sticky action-row padding so `Connect MIDI` is easier to see near the footer.
+- Added image-sequence infrastructure for major-key loop toggles without requiring real external assets.
+- Added `src/visuals/imageSequenceManifest.ts` as the source of truth for major-key sequence slots.
+- Added `src/visuals/ImageSequenceLoopLayer.ts`, which can animate provided frame paths later and draws a safe procedural placeholder now.
+- `StateEngine` now tags toggled major loops with their image-sequence slot ID while preserving the `InputRouter -> StateEngine -> VisualEngine` path.
+- Minor-key/pad burst visuals remain procedural and pooled in `BurstPool`.
+- Added `syncBands` as a hard sync / block jump effector.
+- Added `src/visuals/HardSyncBandsFilter.ts` and stacked it before chromatic split in `VisualEngine`.
+- Added `phosphorTrail` as a lightweight old-screen persistence layer.
+- Added `src/visuals/PhosphorTrailLayer.ts` for burst ghosts, loop afterimages, and scanline trails.
+- Added `verticalRoll` as the second named retro-TV effector after chromatic split.
+- Added `src/visuals/VerticalRollFilter.ts` and stacked it between sync tear and chromatic split in `VisualEngine`.
 - Added `chromaShift` as the first named retro-TV effector after sync tear.
 - Added `src/visuals/ChromaSplitFilter.ts` and stacked it between sync tear and pixelate in `VisualEngine`.
 - Added overdrive response shaping for the expanded `1..3` control range.
@@ -115,13 +137,20 @@ Latest v1 pass:
 - Added `syncTear` as a whole-stage Pixi filter for sawtooth analog-TV tearing.
 
 Next practical step:
+- Add real static frame paths to `src/visuals/imageSequenceManifest.ts` once the first major-key sequence assets exist, then tune per-slot FPS, scale, and anchor.
 - Tune the XP/browser-window shell after seeing it in the room: decide whether it should read more like a standalone desktop app, a fake web browser, or a projector-safe control surface.
-- Continue adding named retro-TV effectors such as vertical roll, phosphor trails, and hard sync bands.
+- Continue keeping minor-key/vector visuals in the procedural layer.
 - Use the controller as a performance surface, not a musical-note system.
 - Turn the eight knobs first, then the `speed` and `hue` strips, then any secondary controls you want to calibrate.
 - Keep notes/pads as loop and burst triggers, but focus evaluation on visual feel.
 - Test whether burst attack feels right across soft and hard pad hits.
 - Tune `src/visuals/visualConfig.ts` when the knob value is right but the art response is too weak or too strong.
+
+Paste-ready next-chat starter is stored in:
+
+```text
+NEXT_CHAT_PROMPT.md
+```
 
 Run through Vite, not by opening `index.html` directly:
 

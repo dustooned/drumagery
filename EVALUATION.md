@@ -394,3 +394,150 @@ Implemented:
 - Added `chromaShift` to secondary MIDI/manual controls without changing the primary eight-knob learn order.
 - Added `src/visuals/ChromaSplitFilter.ts`.
 - Stacked chromatic split after `SyncTearFilter` and before `PixelateFilter`.
+
+## v1 Vertical Roll Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- Existing in-app browser tab at `http://localhost:5173/drumagery/` was reloaded.
+- `input[data-fx="verticalRoll"]` is visible.
+- `input[data-fx="verticalRoll"]` reports max `3`.
+- `#stage canvas` is visible.
+
+Implemented:
+- Added `verticalRoll` to `GlobalFXState`.
+- Added `V Roll` control config in `src/state/fxConfig.ts`.
+- Added `verticalRoll` to secondary MIDI/manual controls without changing the primary eight-knob learn order.
+- Added `src/visuals/VerticalRollFilter.ts`.
+- Stacked vertical roll after `SyncTearFilter` and before `ChromaSplitFilter`.
+
+## v1 Phosphor Trail Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- Existing in-app browser tab at `http://localhost:5173/drumagery/` was reloaded.
+- `input[data-fx="phosphorTrail"]` is visible.
+- `input[data-fx="phosphorTrail"]` reports max `3`.
+- `#stage canvas` is visible.
+
+Implemented:
+- Added `phosphorTrail` to `GlobalFXState`.
+- Added `Phosphor` control config in `src/state/fxConfig.ts`.
+- Added `phosphorTrail` to secondary MIDI/manual controls without changing the primary eight-knob learn order.
+- Added `src/visuals/PhosphorTrailLayer.ts`.
+- The trail layer captures burst ghosts, draws active-loop afterimages, and paints moving scanline trails behind live visuals.
+- This is a procedural persistence approximation, not a framebuffer feedback pass.
+
+## v1 Hard Sync Bands Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- Existing in-app browser tab at `http://localhost:5173/drumagery/` was reloaded.
+- `input[data-fx="syncBands"]` is visible.
+- `input[data-fx="syncBands"]` reports max `3`.
+- `#stage canvas` is visible.
+
+Implemented:
+- Added `syncBands` to `GlobalFXState`.
+- Added `Sync Bands` control config in `src/state/fxConfig.ts`.
+- Added `syncBands` to secondary MIDI/manual controls without changing the primary eight-knob learn order.
+- Added `src/visuals/HardSyncBandsFilter.ts`.
+- Stacked hard sync bands after vertical roll and before chromatic split.
+
+## v1 Documentation / Next-Chat Handoff
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Updated:
+- `README.md`
+- `HANDOFF.md`
+- `PROTOTYPE_V1.md`
+- `versions/README.md`
+- `versions/v1/VERSION.md`
+- `NEXT_CHAT_PROMPT.md`
+
+Next recommended implementation:
+- Add image-sequence infrastructure for major-key toggles.
+- Keep minor-key/pad visuals procedural/vector-based.
+- Preserve iPad/touch fallback and the `InputRouter -> StateEngine -> VisualEngine` architecture.
+
+## v1 Image-Sequence Infrastructure Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Implemented:
+- Added `src/visuals/imageSequenceManifest.ts` as the source of truth for major-key persistent loop slots.
+- Added `src/visuals/ImageSequenceLoopLayer.ts` for future frame-path playback.
+- Empty `framePaths` are safe: the image-sequence layer draws procedural placeholders instead of requiring external assets.
+- `StateEngine` tags major loop state with the matching image-sequence slot ID while keeping inputs routed through `InputRouter`.
+- Minor-key/pad burst visuals remain procedural and pooled in `BurstPool`.
+
+Scope note:
+- This pass creates the infrastructure only. Real sequence assets, final major-key visual identity, and per-slot timing/anchor tuning are still open.
+
+## v1 MIDI Role / Debug Spacing Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- In-app browser at `http://localhost:5173/drumagery/` was reloaded.
+- Debug panel shows `Major image loops`.
+- Debug panel shows `Minor vector bursts`.
+- `Connect MIDI` is visible after the bottom-spacing adjustment.
+- No browser console errors were reported.
+
+Implemented:
+- Renamed MIDI note mapping fields so major notes explicitly map to sequence loop toggles.
+- Renamed MIDI pad/minor-note mapping fields so they explicitly map to procedural vector bursts.
+- Adjusted debug panel bottom spacing and sticky action-row padding so the MIDI action buttons are not cramped against the footer.

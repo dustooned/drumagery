@@ -1,7 +1,10 @@
+import type { ImageSequenceSlotId } from "../visuals/imageSequenceManifest";
+
 export interface LoopState {
   id: number;
   name: string;
   startedAt: number;
+  imageSequenceSlotId: ImageSequenceSlotId | null;
 }
 
 export interface BurstEvent {
@@ -19,6 +22,9 @@ export interface GlobalFXState {
   distortion: number;
   syncTear: number;
   chromaShift: number;
+  verticalRoll: number;
+  phosphorTrail: number;
+  syncBands: number;
   feedback: number;
   noise: number;
   density: number;

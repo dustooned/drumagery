@@ -4,5 +4,5 @@ export const MAX_ACTIVE_LOOPS = 4;
 export const LOOP_COUNT = 4;
 export const BURST_COUNT = 4;
 
-export const LOOP_NAMES = ["Ink", "Symbol", "Parallax", "Orbit"] as const;
+export const LOOP_NAMES = ["Major 1", "Major 2", "Major 3", "Major 4"] as const;
 export const BURST_NAMES = ["Flash", "Spark", "Shock", "Glitch"] as const;
