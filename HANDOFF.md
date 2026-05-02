@@ -2,7 +2,7 @@
 
 ## Current Track
 
-The project has moved from saved v0 into active v1 performance-control development. v1.1 is the current lightweight update inside v1: MIDI calibration, touch fallback, an XP-adjacent desktop/browser shell, expanded FX ranges, named retro-TV effectors, temporal major-key grids, and procedural minor-key/pad nodes. No new source snapshot has been created after v0.
+The project has moved from saved v0 into active v1 performance-control development. v1.1 is the current lightweight update inside v1: MIDI calibration, touch fallback, an XP-adjacent desktop/browser shell, expanded FX ranges, named retro-TV effectors, temporal white-key image grids, black-key screensaver holds, separate drum-pad bursts, and a touch-friendly Performance Edge Dock. No new source snapshot has been created after v0.
 
 ## GitHub Pages Deployment
 
@@ -95,8 +95,9 @@ Current v1.1 state:
 - Visual response tuning is centralized in `src/visuals/visualConfig.ts`.
 - Major-key loop sequence slots are centralized in `src/visuals/imageSequenceManifest.ts`.
 - `src/visuals/ImageSequenceLoopLayer.ts` renders image-sequence slots as temporal grids and safely falls back to procedural placeholders while frame lists are empty.
-- MIDI note routing is explicit: major-key notes toggle sequence loops, while minor-key/pad notes trigger pooled procedural/vector bursts and wake procedural Screensaver Nodes.
-- `src/visuals/ScreensaverNodeLayer.ts` owns the first minor-key/pad procedural node scaffold: bouncing shape and starfield.
+- MIDI note routing is explicit: white-key notes toggle sequence loops, black-key notes hold/release procedural Screensaver Nodes, and drum-pad notes trigger pooled procedural/vector bursts only.
+- `src/visuals/ScreensaverNodeLayer.ts` owns the first black-key procedural node scaffold: bouncing shape and starfield.
+- `src/ui/PerformanceEdgeDock.ts` owns the fullscreen-stage bottom-corner GRID/TV/PLAY/FX overlay and dispatches through `InputRouter`.
 - `Kill Loops` clears active loops and queued bursts without resetting current performance controls.
 - Burst animation now uses input-dependent attack/decay based on hit velocity.
 - FX max input ranges are expanded to 3x the original max values. Most controls are now `0..3`; `speed` is now `0.2..6`.
@@ -149,14 +150,14 @@ v1.1 light update:
 - Keep this as a small update within active v1, not a new major version.
 
 Next practical step:
-- Evaluate temporal grids and pad nodes in-browser before adding the next system.
+- Evaluate temporal grids, black-key screensaver holds, drum-pad bursts, and the Edge Dock in-browser before adding the next system.
 - Add real static frame paths to `src/visuals/imageSequenceManifest.ts` once the first major-key sequence assets exist, then tune per-slot FPS, scale, and anchor.
 - Tune the XP/browser-window shell after seeing it in the room: decide whether it should read more like a standalone desktop app, a fake web browser, or a projector-safe control surface.
-- Continue keeping minor-key/vector visuals in the procedural layer.
+- Continue keeping black-key screensavers and drum-pad burst visuals in the procedural layer.
 - Use the controller as a performance surface, not a musical-note system.
 - Turn the eight knobs first, then the `speed` and `hue` strips, then any secondary controls you want to calibrate.
-- Keep notes/pads as loop and burst triggers, but focus evaluation on visual feel.
-- Test whether burst attack and the persistent node layer feel right across soft and hard pad hits.
+- Keep white keys, black keys, and pads as separate performance roles, and focus evaluation on visual feel.
+- Test whether drum-pad burst attack feels right separately from black-key screensaver hold/release.
 - Tune `src/visuals/visualConfig.ts` when the knob value is right but the art response is too weak or too strong.
 
 Run through Vite, not by opening `index.html` directly:

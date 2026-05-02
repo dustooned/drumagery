@@ -14,8 +14,11 @@ interface ScreensaverRenderState {
   node: ScreensaverNodeState;
   fx: GlobalFXState;
   ageSeconds: number;
+  releaseAgeSeconds: number | null;
   time: number;
 }
+
+const RELEASE_FADE_SECONDS = 1.35;
 
 export class ScreensaverNodeLayer {
   readonly container = new Container();
@@ -42,10 +45,14 @@ export class ScreensaverNodeLayer {
 
     for (const node of this.activeNodes) {
       const ageMs = performance.now() - node.triggeredAt;
+      const releaseAgeSeconds = node.releasedAt === null ? null : (performance.now() - node.releasedAt) / 1000;
+      if (releaseAgeSeconds !== null && releaseAgeSeconds > RELEASE_FADE_SECONDS) continue;
+
       const state: ScreensaverRenderState = {
         node,
         fx,
         ageSeconds: ageMs / 1000,
+        releaseAgeSeconds,
         time: this.time
       };
       const renderer = this.renderers[node.type];
@@ -65,9 +72,10 @@ class BouncingShapeNode implements ScreensaverNode {
 
   render(graphic: Graphics, state: ScreensaverRenderState): void {
     const { node, fx, ageSeconds, time } = state;
-    const fade = getNodeFade(ageSeconds);
+    const pulse = getHoldPulse(time, state.releaseAgeSeconds);
+    const fade = getNodeFade(ageSeconds) * getReleaseFade(state.releaseAgeSeconds) * pulse.alpha;
     const overdrive = getOverdrive(fx);
-    const radius = 24 + fx.scale * 22 + node.velocity * 34 + overdrive * 34;
+    const radius = (24 + fx.scale * 22 + node.velocity * 34 + overdrive * 34) * pulse.scale;
     const speed = 0.55 + fx.speed * 0.12 + node.velocity * 0.18;
     const spanX = INTERNAL_WIDTH * (0.28 + fx.scale * 0.045);
     const spanY = INTERNAL_HEIGHT * (0.2 + fx.scale * 0.03);
@@ -111,7 +119,8 @@ class StarfieldNode implements ScreensaverNode {
 
   render(graphic: Graphics, state: ScreensaverRenderState): void {
     const { node, fx, ageSeconds, time } = state;
-    const fade = getNodeFade(ageSeconds);
+    const pulse = getHoldPulse(time, state.releaseAgeSeconds);
+    const fade = getNodeFade(ageSeconds) * getReleaseFade(state.releaseAgeSeconds) * pulse.alpha;
     const overdrive = getOverdrive(fx);
     const count = Math.round(28 + Math.min(1, fx.density / 3 + fx.chaos * 0.12) * 84 + overdrive * 52);
     const color = hslToHex(fx.hue + 0.52 + node.id * 0.07, 0.68, 0.64 + overdrive * 0.1);
@@ -125,7 +134,7 @@ class StarfieldNode implements ScreensaverNode {
       const seedC = seededRandom(node.seed + i * 43.9);
       const x = (seedA * INTERNAL_WIDTH + drift * (0.25 + seedC) + node.x * 80) % INTERNAL_WIDTH;
       const y = (seedB * INTERNAL_HEIGHT + Math.sin(time * 0.4 + seedC * 9) * fx.distortion * 6 + node.y * 40) % INTERNAL_HEIGHT;
-      const size = 1 + seedC * (2 + fx.pixelate * 2 + overdrive * 3);
+      const size = (1 + seedC * (2 + fx.pixelate * 2 + overdrive * 3)) * pulse.scale;
       graphic.drawRect(x, y, size, size);
     }
     graphic.endFill();
@@ -136,6 +145,29 @@ function getNodeFade(ageSeconds: number): number {
   const fadeIn = Math.min(1, ageSeconds / 0.8);
   const pulse = 0.42 + Math.max(0, 1 - ageSeconds / 7) * 0.58;
   return fadeIn * pulse;
+}
+
+function getReleaseFade(releaseAgeSeconds: number | null): number {
+  if (releaseAgeSeconds === null) return 1;
+
+  const t = Math.min(1, Math.max(0, releaseAgeSeconds / RELEASE_FADE_SECONDS));
+  return 1 - easeOutCubic(t);
+}
+
+function getHoldPulse(time: number, releaseAgeSeconds: number | null): { alpha: number; scale: number } {
+  if (releaseAgeSeconds !== null) {
+    return { alpha: 1, scale: 1 };
+  }
+
+  const wave = (Math.sin(time * 3.2) + 1) * 0.5;
+  return {
+    alpha: 0.72 + wave * 0.28,
+    scale: 0.96 + wave * 0.08
+  };
+}
+
+function easeOutCubic(value: number): number {
+  return 1 - Math.pow(1 - value, 3);
 }
 
 function seededRandom(value: number): number {

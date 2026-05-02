@@ -41,6 +41,16 @@ export class StateEngine {
       changed = true;
     }
 
+    if (event.type === "screensaver-start") {
+      this.startScreensaverNode(event);
+      changed = true;
+    }
+
+    if (event.type === "screensaver-release") {
+      this.releaseScreensaverNode(event.nodeId);
+      changed = true;
+    }
+
     if (event.type === "global-fx") {
       this.state.globalFX[event.control] = normalizeFXControl(event.control, event.value);
       changed = true;
@@ -49,6 +59,7 @@ export class StateEngine {
     if (event.type === "kill-loops") {
       this.state.activeLoops = [];
       this.state.burstQueue = [];
+      this.state.activeScreensaverNodes = [];
       changed = true;
     }
 
@@ -101,20 +112,21 @@ export class StateEngine {
     };
 
     this.state.burstQueue.push(burst);
-    this.activateScreensaverNode(burst);
   }
 
-  private activateScreensaverNode(burst: BurstEvent): void {
-    const nodeType = SCREENSAVER_NODE_TYPES[burst.id % SCREENSAVER_NODE_TYPES.length];
+  private startScreensaverNode(event: Extract<InputEvent, { type: "screensaver-start" }>): void {
+    const nodeType = SCREENSAVER_NODE_TYPES[event.nodeId % SCREENSAVER_NODE_TYPES.length];
+    const triggeredAt = performance.now();
     const node: ScreensaverNodeState = {
-      id: burst.id,
+      id: event.nodeId,
       type: nodeType,
-      label: `${nodeType} ${burst.id + 1}`,
-      triggeredAt: burst.createdAt,
-      velocity: burst.velocity,
-      x: burst.x,
-      y: burst.y,
-      seed: burst.id * 97.13 + burst.createdAt * 0.001
+      label: `${nodeType} ${event.nodeId + 1}`,
+      triggeredAt,
+      releasedAt: null,
+      velocity: clamp01(event.velocity),
+      x: clamp01(event.x),
+      y: clamp01(event.y),
+      seed: event.nodeId * 97.13 + triggeredAt * 0.001
     };
     const existingIndex = this.state.activeScreensaverNodes.findIndex((item) => item.id === node.id);
 
@@ -128,6 +140,13 @@ export class StateEngine {
     }
 
     this.state.activeScreensaverNodes.push(node);
+  }
+
+  private releaseScreensaverNode(nodeId: number): void {
+    const node = this.state.activeScreensaverNodes.find((item) => item.id === nodeId);
+    if (!node || node.releasedAt !== null) return;
+
+    node.releasedAt = performance.now();
   }
 
   private notify(): void {

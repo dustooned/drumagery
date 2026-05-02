@@ -18,6 +18,19 @@ export type InputEvent =
       y: number;
     }
   | {
+      type: "screensaver-start";
+      source: InputSource;
+      nodeId: number;
+      velocity: number;
+      x: number;
+      y: number;
+    }
+  | {
+      type: "screensaver-release";
+      source: InputSource;
+      nodeId: number;
+    }
+  | {
       type: "global-fx";
       source: InputSource;
       control: GlobalFXControl;

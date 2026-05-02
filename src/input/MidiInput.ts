@@ -2,7 +2,7 @@ import { BURST_COUNT, LOOP_COUNT } from "../constants";
 import { scaleNormalizedFXControl } from "../state/fxConfig";
 import { clamp01 } from "../utils/math";
 import { InputRouter } from "./InputRouter";
-import { MIDI_ZERO_DEADZONE, midiMap, noteToBurstId, noteToLoopId } from "./midiMap";
+import { MIDI_ZERO_DEADZONE, midiMap, noteToBurstId, noteToLoopId, noteToScreensaverId } from "./midiMap";
 
 type MidiMessageHandler = (event: MidiMessageEventLike) => void;
 
@@ -137,6 +137,10 @@ export class MidiInput {
       this.handleNoteOn(data1, data2);
     }
 
+    if (command === 0x80 || (command === 0x90 && data2 === 0)) {
+      this.handleNoteOff(data1);
+    }
+
     if (command === 0xb0) {
       this.handleControlChange(data1, postDeadzoneValue ?? 0);
     }
@@ -161,6 +165,26 @@ export class MidiInput {
     const loopId = noteToLoopId(note);
     if (loopId !== null && loopId >= 0 && loopId < LOOP_COUNT) {
       this.router.dispatch({ type: "loop-toggle", source: "midi", loopId, velocity });
+      return;
+    }
+
+    const screensaverId = noteToScreensaverId(note);
+    if (screensaverId !== null && screensaverId >= 0 && screensaverId < BURST_COUNT) {
+      this.router.dispatch({
+        type: "screensaver-start",
+        source: "midi",
+        nodeId: screensaverId,
+        velocity,
+        x: 0.5,
+        y: 0.5
+      });
+    }
+  }
+
+  private handleNoteOff(note: number): void {
+    const screensaverId = noteToScreensaverId(note);
+    if (screensaverId !== null && screensaverId >= 0 && screensaverId < BURST_COUNT) {
+      this.router.dispatch({ type: "screensaver-release", source: "midi", nodeId: screensaverId });
     }
   }
 
@@ -192,15 +216,20 @@ export class MidiInput {
   private getMidiRole(command: number, data1: number, data2: number): string {
     if (command === 0x90 && data2 > 0) {
       const burstId = noteToBurstId(data1);
-      if (burstId !== null) return `minor vector burst ${burstId + 1}`;
+      if (burstId !== null) return `drum pad burst ${burstId + 1}`;
 
       const loopId = noteToLoopId(data1);
-      if (loopId !== null) return `major sequence loop ${loopId + 1}`;
+      if (loopId !== null) return `white-key sequence loop ${loopId + 1}`;
+
+      const screensaverId = noteToScreensaverId(data1);
+      if (screensaverId !== null) return `black-key screensaver ${screensaverId + 1}`;
 
       return "unmapped note";
     }
 
     if (command === 0x80 || (command === 0x90 && data2 === 0)) {
+      const screensaverId = noteToScreensaverId(data1);
+      if (screensaverId !== null) return `black-key screensaver ${screensaverId + 1} release`;
       return "note off";
     }
 

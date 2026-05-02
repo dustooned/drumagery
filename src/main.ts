@@ -7,10 +7,12 @@ import { MidiInput } from "./input/MidiInput";
 import { TouchInput } from "./input/TouchInput";
 import { StateEngine } from "./state/StateEngine";
 import { DebugPanel } from "./ui/DebugPanel";
+import { PerformanceEdgeDock } from "./ui/PerformanceEdgeDock";
 import { VisualEngine } from "./visuals/VisualEngine";
 
 const stageElement = document.querySelector<HTMLDivElement>("#stage");
 const debugElement = document.querySelector<HTMLElement>("#debug-panel");
+const dockElement = document.querySelector<HTMLElement>("#performance-edge-dock");
 const appElement = document.querySelector<HTMLElement>("#app");
 const debugToggleElement = document.querySelector<HTMLButtonElement>("#debug-toggle");
 const midiConnectElement = document.querySelector<HTMLButtonElement>("#midi-connect");
@@ -23,6 +25,7 @@ const fullscreenExitElement = document.querySelector<HTMLButtonElement>("#fullsc
 if (
   !stageElement ||
   !debugElement ||
+  !dockElement ||
   !appElement ||
   !debugToggleElement ||
   !midiConnectElement ||
@@ -56,6 +59,7 @@ const keyboardInput = new KeyboardInput(inputRouter);
 const touchInput = new TouchInput(inputRouter, canvasElement);
 const midiInput = new MidiInput(inputRouter);
 const debugPanel = new DebugPanel(debugElement, inputRouter);
+const performanceEdgeDock = new PerformanceEdgeDock(dockElement, inputRouter);
 
 const resizeVisualStage = (): void => {
   const bounds = canvasElement.getBoundingClientRect();
@@ -137,6 +141,7 @@ inputRouter.subscribe((inputEvent) => {
 stateEngine.subscribe((state) => {
   visualEngine.syncState(state);
   debugPanel.render(state);
+  performanceEdgeDock.render(state);
 });
 
 app.ticker.add((deltaFrames) => {
@@ -148,4 +153,5 @@ app.ticker.add((deltaFrames) => {
 keyboardInput.start();
 touchInput.start();
 debugPanel.render(stateEngine.getState());
+performanceEdgeDock.render(stateEngine.getState());
 resizeVisualStage();

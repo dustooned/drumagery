@@ -152,13 +152,26 @@ Temporal mode expansion pass completed:
 
 Screensaver node scaffold pass completed:
 - added `activeScreensaverNodes` to the state model
-- minor-key/pad burst events still trigger `BurstPool` and now also wake procedural screensaver nodes through state
+- black-key notes now hold procedural screensaver nodes through state
 - added `src/visuals/ScreensaverNodeLayer.ts`
 - first node types are `bouncing-shape` and `starfield`
 - debug live state now lists active nodes
 
+Input-role split correction completed:
+- white-key MIDI notes toggle major image-sequence loops
+- black-key MIDI notes start screensaver holds and release into eased fade-outs on note-off
+- drum-pad MIDI notes trigger bursts only and no longer activate screensavers
+
+Performance Edge Dock pass completed:
+- added `src/ui/PerformanceEdgeDock.ts`
+- added `src/ui/performanceDockConfig.ts`
+- added a fullscreen-stage bottom-corner `GRID`, `TV`, `PLAY`, and `FX` overlay
+- the dock dispatches through `InputRouter` and does not manipulate Pixi visuals directly
+- the overlay appears only when the visual stage is fullscreen, so it does not duplicate the main debug menu
+- the overlay container uses pointer-safe behavior so the stage remains playable outside visible controls
+
 Current next step:
-- evaluate pads in-browser to confirm bursts and screensaver nodes feel good together, then implement the Performance Edge Dock UI
+- evaluate white-key loops, black-key screensaver holds, drum-pad bursts, and the Edge Dock in-browser
 - add the first real major-key frame paths to the image-sequence manifest when assets exist
 - preserve iPad Safari compatibility and do not require MIDI for the fallback path
 

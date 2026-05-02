@@ -30,9 +30,11 @@ Current v1 includes:
 - Procedural phosphor trail layer.
 - Major-key image-sequence loop slot infrastructure with procedural placeholders when frame lists are empty.
 - Temporal grid rendering for major-key loops, driven by density, speed, chaos, distortion, and per-slot temporal modes.
-- Minor-key/pad Screensaver Node scaffold with procedural bouncing-shape and starfield nodes beside the existing burst pool.
+- Black-key Screensaver Node holds with procedural bouncing-shape and starfield nodes.
+- Drum-pad bursts remain separate short-hit accents.
+- Fullscreen-stage Performance Edge Dock with GRID, TV, PLAY, and FX panels.
 
-Next likely work: evaluate temporal grids and pad nodes in-browser, then add the Performance Edge Dock UI or real frame paths while keeping minor-key/pad visuals procedural.
+Next likely work: evaluate temporal grids, black-key screensaver holds, drum-pad bursts, and the Edge Dock in-browser, then tune the dock or add real frame paths.
 
 Note: the separate root next-chat prompt artifact has been removed. Use the root docs and `versions/v1/VERSION.md` for continuation context.
 

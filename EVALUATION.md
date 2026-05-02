@@ -696,6 +696,57 @@ Implemented:
 Scope note:
 - This is a scaffold only. Burst behavior is still intact, and pads remain the trigger source for short burst hits plus node wake/pulse behavior.
 
+## v1 Input Role Split Correction
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Implemented:
+- Split provisional MIDI note roles in `src/input/midiMap.ts`.
+- White-key notes `[48, 50, 52, 53]` now toggle major image-sequence loops.
+- Black-key notes `[49, 51, 54, 56]` now start procedural Screensaver Node holds.
+- Held screensavers get a sine-like alpha/scale pulse while the note is down.
+- Black-key note-off events release screensavers into eased fade-outs.
+- Drum-pad notes `[36, 37, 38, 39]` now trigger pooled bursts only and no longer activate screensaver nodes.
+
+Scope note:
+- Exact hardware note numbers are still provisional until MiniLab calibration is confirmed in desktop Chrome or Edge.
+
+## v1 Performance Edge Dock Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Implemented:
+- Added `src/ui/PerformanceEdgeDock.ts`.
+- Added `src/ui/performanceDockConfig.ts`.
+- Added a bottom-corner touch overlay with `GRID`, `TV`, `PLAY`, and `FX` panels inside the visual stage.
+- GRID exposes density, chaos, and distortion controls.
+- TV exposes chroma, vertical roll, sync tear, sync bands, pixelate, and phosphor controls.
+- PLAY exposes loop toggles, burst triggers, Kill Loops, Reset, burst power, and fade.
+- FX exposes intensity, speed, scale, feedback, bloom, noise, and contrast.
+- Dock controls dispatch through `InputRouter` and do not manipulate Pixi visuals directly.
+- The dock appears only in stage fullscreen mode, matching the in-stage Exit control instead of duplicating the main debug menu.
+- A quick `Reset` button appears beside the dock menu after a dock action changes performance state, remains visible across submenus, then disappears after reset.
+- The dock root uses pointer-safe behavior so the stage remains playable outside visible controls.
+
+Scope note:
+- This is the first Edge Dock scaffold. Layout and category contents should be tuned after touch-device testing.
+
 ## v1.1 Light Documentation Update
 
 Date: 2026-05-02

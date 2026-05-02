@@ -135,7 +135,15 @@ Added per-slot temporal modes to `src/visuals/imageSequenceManifest.ts`. Major 1
 
 ## Screensaver Node Scaffold Pass
 
-Added `activeScreensaverNodes` to state and `src/visuals/ScreensaverNodeLayer.ts` to render procedural minor-key/pad visuals. Pad/minor burst events still trigger the existing pooled `BurstPool`, and now also wake bounded node states through `StateEngine`. The first node types are `bouncing-shape` and `starfield`; both respond to global FX and require no image assets.
+Added `activeScreensaverNodes` to state and `src/visuals/ScreensaverNodeLayer.ts` to render procedural screensaver visuals. This first scaffold was later corrected so black-key notes own screensaver holds while drum pads remain burst-only. The first node types are `bouncing-shape` and `starfield`; both respond to global FX and require no image assets.
+
+## Input Role Split Correction
+
+Separated the live MIDI performance roles. White-key MIDI notes toggle major image-sequence loops. Black-key MIDI notes start procedural Screensaver Node holds with a sine-like alpha/scale pulse, and note-off releases them into an eased fade-out. Drum-pad MIDI notes trigger pooled bursts only and no longer activate screensavers. This keeps uploaded image sequences, procedural screensavers, and burst accents as separate visual systems.
+
+## Performance Edge Dock Pass
+
+Added `src/ui/PerformanceEdgeDock.ts` and `src/ui/performanceDockConfig.ts` for a fullscreen-stage bottom-corner touch overlay with `GRID`, `TV`, `PLAY`, and `FX` panels. The dock dispatches loop toggles, bursts, kill/reset, and FX changes through `InputRouter`; it does not manipulate Pixi visuals directly. A quick `Reset` appears beside the menu after dock-driven changes and stays visible across submenus until used. The overlay root is pointer-safe so the stage remains playable outside visible dock controls.
 
 ## v1.1 Light Documentation Update
 

@@ -23,6 +23,7 @@ export interface ScreensaverNodeState {
   type: ScreensaverNodeType;
   label: string;
   triggeredAt: number;
+  releasedAt: number | null;
   velocity: number;
   x: number;
   y: number;

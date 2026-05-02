@@ -44,6 +44,18 @@ export class DebugPanel {
       return;
     }
 
+    if (event.type === "screensaver-start") {
+      this.lastInput = `${event.source}: screensaver ${event.nodeId + 1} hold`;
+      this.throttleRender = false;
+      return;
+    }
+
+    if (event.type === "screensaver-release") {
+      this.lastInput = `${event.source}: screensaver ${event.nodeId + 1} release`;
+      this.throttleRender = false;
+      return;
+    }
+
     if (event.type === "kill-loops") {
       this.lastInput = `${event.source}: kill loops`;
       this.lastBurst = "none";
@@ -96,7 +108,10 @@ export class DebugPanel {
   private renderNow(state: InstrumentState): void {
     this.currentState = state;
     const activeLoops = state.activeLoops.map((loop) => loop.name).join(", ") || "none";
-    const activeScreensavers = state.activeScreensaverNodes.map((node) => node.label).join(", ") || "none";
+    const activeScreensavers =
+      state.activeScreensaverNodes
+        .map((node) => `${node.label}${node.releasedAt === null ? " held" : " release"}`)
+        .join(", ") || "none";
     this.root.innerHTML = `
       <div class="debug-header">
         <div>
@@ -128,7 +143,7 @@ export class DebugPanel {
       </section>
 
       <section class="debug-section">
-        <h2 class="debug-subtitle">Minor vector bursts</h2>
+        <h2 class="debug-subtitle">Drum pad bursts</h2>
         <div class="debug-grid debug-grid-bursts">
           ${BURST_NAMES.map(
             (name, index) => `<button type="button" data-burst="${index}"><span>Q${index + 1}</span>${name}</button>`
