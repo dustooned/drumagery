@@ -66,6 +66,7 @@ const resizeVisualStage = (): void => {
   app.renderer.resize(width, height);
   canvasElement.style.width = "100%";
   canvasElement.style.height = "100%";
+  visualEngine.setPresentationSize(width, height);
   sceneRoot.scale.set(scale);
   sceneRoot.position.set((width - INTERNAL_WIDTH * scale) * 0.5, (height - INTERNAL_HEIGHT * scale) * 0.5);
 };

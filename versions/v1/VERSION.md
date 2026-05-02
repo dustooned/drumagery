@@ -121,6 +121,26 @@ Made the major/minor split explicit in `src/input/midiMap.ts`: major notes toggl
 
 Moved `Connect MIDI`, `Clear MIDI Learn`, `Kill Loops`, `Reset`, and `Fullscreen` into a stage action bar below the visual window. The debug panel is now a separate non-overlapping control surface on desktop-sized viewports, and the fullscreen toggle targets the visual stage. Fullscreen mode now removes the faux browser chrome so the Pixi canvas fills the viewport, with an in-stage corner `Exit` button to return to the regular interface. The renderer now resizes to the detected canvas size and cover-scales the 1280 x 720 scene to avoid black bands in fullscreen.
 
+## Phase 0 Stabilization Pass
+
+Fixed the fullscreen FX scaling regression by updating `VisualEngine` filter bounds from the actual presentation canvas size after resize/fullscreen changes. Added `MIDI_ZERO_DEADZONE = 0.02` after MIDI CC normalization while preserving raw, normalized, post-deadzone, and role data in the MIDI debug monitor.
+
+## Temporal Grid Prototype Pass
+
+Extended `src/visuals/ImageSequenceLoopLayer.ts` so major-key image-sequence loops can render as temporal grids. `density` selects 1x1, 2x2, 4x4, 6x6, or 8x8 layouts, with mobile/touch-sized screens capped at 6x6. `speed` advances frames, `chaos` offsets tile timing, and `distortion` adds tile jitter/spread. Empty frame lists remain safe and draw procedural tiled placeholders.
+
+## Temporal Mode Expansion Pass
+
+Added per-slot temporal modes to `src/visuals/imageSequenceManifest.ts`. Major 1 uses `uniform`, Major 2 uses `cascade`, Major 3 uses `wave`, and Major 4 uses deterministic `randomized`. The randomized mode uses seeded tile offsets instead of new random values each frame, so it should stay stable without flicker.
+
+## Screensaver Node Scaffold Pass
+
+Added `activeScreensaverNodes` to state and `src/visuals/ScreensaverNodeLayer.ts` to render procedural minor-key/pad visuals. Pad/minor burst events still trigger the existing pooled `BurstPool`, and now also wake bounded node states through `StateEngine`. The first node types are `bouncing-shape` and `starfield`; both respond to global FX and require no image assets.
+
+## v1.1 Light Documentation Update
+
+This is a small update inside active v1, not a new major version. The separate root `NEXT_CHAT_PROMPT.md` artifact was removed so the project docs remain the source of truth. Current continuation guidance lives in `README.md`, `HANDOFF.md`, `EVALUATION.md`, `PROTOTYPE_V1.md`, and this version note.
+
 ## Current Validation
 
 ```powershell
@@ -130,12 +150,6 @@ npm.cmd run build
 Result: pass.
 
 Latest review: 2026-05-02, no new version snapshot created.
-
-Next continuation prompt:
-
-```text
-NEXT_CHAT_PROMPT.md
-```
 
 ## Run Note
 

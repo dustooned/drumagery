@@ -16,6 +16,19 @@ export interface BurstEvent {
   y: number;
 }
 
+export type ScreensaverNodeType = "bouncing-shape" | "starfield";
+
+export interface ScreensaverNodeState {
+  id: number;
+  type: ScreensaverNodeType;
+  label: string;
+  triggeredAt: number;
+  velocity: number;
+  x: number;
+  y: number;
+  seed: number;
+}
+
 export interface GlobalFXState {
   intensity: number;
   bloom: number;
@@ -43,6 +56,7 @@ export type GlobalFXControl = keyof GlobalFXState;
 export interface InstrumentState {
   activeLoops: LoopState[];
   burstQueue: BurstEvent[];
+  activeScreensaverNodes: ScreensaverNodeState[];
   globalFX: GlobalFXState;
 }
 

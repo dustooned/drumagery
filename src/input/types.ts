@@ -51,6 +51,8 @@ export type InputEvent =
       data2: number;
       label: string;
       role: string;
+      normalizedValue?: number;
+      postDeadzoneValue?: number;
     };
 
 export type InputListener = (event: InputEvent) => void;

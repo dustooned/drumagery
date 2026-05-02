@@ -2,7 +2,7 @@
 
 ## Current Track
 
-The project has moved from saved v0 into active v1 performance-control development. v1 now includes MIDI calibration, touch fallback, an XP-adjacent desktop/browser shell, expanded FX ranges, and named retro-TV effectors. No new source snapshot has been created after v0.
+The project has moved from saved v0 into active v1 performance-control development. v1.1 is the current lightweight update inside v1: MIDI calibration, touch fallback, an XP-adjacent desktop/browser shell, expanded FX ranges, named retro-TV effectors, temporal major-key grids, and procedural minor-key/pad nodes. No new source snapshot has been created after v0.
 
 ## GitHub Pages Deployment
 
@@ -79,7 +79,7 @@ First v1 development goal: make MIDI mapping easy to calibrate for the Arturia M
 
 Current v1 build goal: turn the prototype into a functional interactive-concert visual instrument with raw analog visuals, readable controls/data, iPad-safe touch fallback, and image-sequence infrastructure for major-key toggles.
 
-Current v1 state:
+Current v1.1 state:
 - `src/input/midiMap.ts` owns provisional MIDI assumptions.
 - Debug panel title is `Visual Instrument V1`.
 - MIDI calibration panel shows recent raw messages.
@@ -94,8 +94,9 @@ Current v1 state:
 - FX defaults, min/max ranges, slider steps, and smoothing values are centralized in `src/state/fxConfig.ts`.
 - Visual response tuning is centralized in `src/visuals/visualConfig.ts`.
 - Major-key loop sequence slots are centralized in `src/visuals/imageSequenceManifest.ts`.
-- `src/visuals/ImageSequenceLoopLayer.ts` renders image-sequence slots and safely falls back to procedural placeholders while frame lists are empty.
-- MIDI note routing is explicit: major-key notes toggle sequence loops, while minor-key/pad notes trigger pooled procedural/vector bursts.
+- `src/visuals/ImageSequenceLoopLayer.ts` renders image-sequence slots as temporal grids and safely falls back to procedural placeholders while frame lists are empty.
+- MIDI note routing is explicit: major-key notes toggle sequence loops, while minor-key/pad notes trigger pooled procedural/vector bursts and wake procedural Screensaver Nodes.
+- `src/visuals/ScreensaverNodeLayer.ts` owns the first minor-key/pad procedural node scaffold: bouncing shape and starfield.
 - `Kill Loops` clears active loops and queued bursts without resetting current performance controls.
 - Burst animation now uses input-dependent attack/decay based on hit velocity.
 - FX max input ranges are expanded to 3x the original max values. Most controls are now `0..3`; `speed` is now `0.2..6`.
@@ -143,21 +144,20 @@ Latest v1 pass:
 - Split MIDI control calibration into knob, strip, and secondary groups in `src/input/midiMap.ts`.
 - Added `syncTear` as a whole-stage Pixi filter for sawtooth analog-TV tearing.
 
+v1.1 light update:
+- Removed the separate root next-chat prompt artifact. Continuation notes now live in the project docs.
+- Keep this as a small update within active v1, not a new major version.
+
 Next practical step:
+- Evaluate temporal grids and pad nodes in-browser before adding the next system.
 - Add real static frame paths to `src/visuals/imageSequenceManifest.ts` once the first major-key sequence assets exist, then tune per-slot FPS, scale, and anchor.
 - Tune the XP/browser-window shell after seeing it in the room: decide whether it should read more like a standalone desktop app, a fake web browser, or a projector-safe control surface.
 - Continue keeping minor-key/vector visuals in the procedural layer.
 - Use the controller as a performance surface, not a musical-note system.
 - Turn the eight knobs first, then the `speed` and `hue` strips, then any secondary controls you want to calibrate.
 - Keep notes/pads as loop and burst triggers, but focus evaluation on visual feel.
-- Test whether burst attack feels right across soft and hard pad hits.
+- Test whether burst attack and the persistent node layer feel right across soft and hard pad hits.
 - Tune `src/visuals/visualConfig.ts` when the knob value is right but the art response is too weak or too strong.
-
-Paste-ready next-chat starter is stored in:
-
-```text
-NEXT_CHAT_PROMPT.md
-```
 
 Run through Vite, not by opening `index.html` directly:
 

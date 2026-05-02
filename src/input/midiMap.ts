@@ -3,6 +3,8 @@ import type { GlobalFXControl } from "../state/types";
 
 export type MidiFxControl = GlobalFXControl;
 
+export const MIDI_ZERO_DEADZONE = 0.02;
+
 export interface MidiNoteMap {
   majorSequenceFirstNote: number;
   minorVectorBurstNotes: number[];

@@ -2,7 +2,7 @@ import { BURST_COUNT, LOOP_COUNT } from "../constants";
 import { scaleNormalizedFXControl } from "../state/fxConfig";
 import { clamp01 } from "../utils/math";
 import { InputRouter } from "./InputRouter";
-import { midiMap, noteToBurstId, noteToLoopId } from "./midiMap";
+import { MIDI_ZERO_DEADZONE, midiMap, noteToBurstId, noteToLoopId } from "./midiMap";
 
 type MidiMessageHandler = (event: MidiMessageEventLike) => void;
 
@@ -116,6 +116,8 @@ export class MidiInput {
     const inputName = event.currentTarget?.name ?? "MIDI input";
     const label = describeMidi(command, data1, data2);
     const role = command === 0xb0 ? this.learnControlForCc(data1) ?? "unmapped cc" : this.getMidiRole(command, data1, data2);
+    const normalizedValue = command === 0xb0 ? clamp01(data2 / 127) : undefined;
+    const postDeadzoneValue = normalizedValue === undefined ? undefined : applyMidiDeadzone(normalizedValue);
 
     this.router.dispatch({
       type: "midi-debug",
@@ -126,7 +128,9 @@ export class MidiInput {
       data1,
       data2,
       label,
-      role
+      role,
+      normalizedValue,
+      postDeadzoneValue
     });
 
     if (command === 0x90 && data2 > 0) {
@@ -134,7 +138,7 @@ export class MidiInput {
     }
 
     if (command === 0xb0) {
-      this.handleControlChange(data1, data2);
+      this.handleControlChange(data1, postDeadzoneValue ?? 0);
     }
   };
 
@@ -160,16 +164,15 @@ export class MidiInput {
     }
   }
 
-  private handleControlChange(cc: number, rawValue: number): void {
+  private handleControlChange(cc: number, normalizedValue: number): void {
     const control = this.learnedCcControls.get(cc);
     if (!control) return;
 
-    const normalized = clamp01(rawValue / 127);
     this.router.dispatch({
       type: "global-fx",
       source: "midi",
       control,
-      value: scaleNormalizedFXControl(control, normalized)
+      value: scaleNormalizedFXControl(control, normalizedValue)
     });
   }
 
@@ -207,6 +210,10 @@ export class MidiInput {
 
     return "unmapped";
   }
+}
+
+function applyMidiDeadzone(value: number): number {
+  return value < MIDI_ZERO_DEADZONE ? 0 : value;
 }
 
 function describeMidi(command: number, data1: number, data2: number): string {

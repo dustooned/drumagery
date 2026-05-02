@@ -68,7 +68,11 @@ export class DebugPanel {
     }
 
     if (event.type === "midi-debug") {
-      this.midiRaw = `${event.inputName} ch${event.channel}: ${event.label} -> ${event.role}`;
+      const controlValues =
+        event.normalizedValue === undefined || event.postDeadzoneValue === undefined
+          ? ""
+          : ` norm ${event.normalizedValue.toFixed(3)} deadzone ${event.postDeadzoneValue.toFixed(3)}`;
+      this.midiRaw = `${event.inputName} ch${event.channel}: ${event.label}${controlValues} -> ${event.role}`;
       this.lastInput = `midi: ${event.label}`;
       this.recordMidiMessage(event);
       this.throttleRender = true;
@@ -92,6 +96,7 @@ export class DebugPanel {
   private renderNow(state: InstrumentState): void {
     this.currentState = state;
     const activeLoops = state.activeLoops.map((loop) => loop.name).join(", ") || "none";
+    const activeScreensavers = state.activeScreensaverNodes.map((node) => node.label).join(", ") || "none";
     this.root.innerHTML = `
       <div class="debug-header">
         <div>
@@ -105,6 +110,7 @@ export class DebugPanel {
         <h2 class="debug-subtitle">Live state</h2>
         <div class="debug-readout">
           <span><b>loops</b>${activeLoops}</span>
+          <span><b>nodes</b>${activeScreensavers}</span>
           <span><b>last burst</b>${this.lastBurst}</span>
           <span><b>last input</b>${this.lastInput}</span>
           <span><b>midi</b>${this.midiStatus.replace("MIDI: ", "")}</span>
@@ -214,6 +220,9 @@ export class DebugPanel {
       `cmd ${event.command}`,
       `d1 ${event.data1}`,
       `d2 ${event.data2}`,
+      ...(event.normalizedValue === undefined || event.postDeadzoneValue === undefined
+        ? []
+        : [`norm ${event.normalizedValue.toFixed(3)}`, `post ${event.postDeadzoneValue.toFixed(3)}`]),
       event.role
     ].join(" | ");
 

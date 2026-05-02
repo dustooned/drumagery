@@ -1,4 +1,5 @@
 export type ImageSequenceSlotId = "major-1" | "major-2" | "major-3" | "major-4";
+export type TemporalMode = "uniform" | "cascade" | "wave" | "randomized";
 
 export interface ImageSequenceSlot {
   id: ImageSequenceSlotId;
@@ -10,6 +11,7 @@ export interface ImageSequenceSlot {
   anchorY: number;
   baseScale: number;
   hueOffset: number;
+  temporalMode: TemporalMode;
 }
 
 export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
@@ -22,7 +24,8 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     anchorX: 0.5,
     anchorY: 0.5,
     baseScale: 1,
-    hueOffset: 0.02
+    hueOffset: 0.02,
+    temporalMode: "uniform"
   },
   {
     id: "major-2",
@@ -33,7 +36,8 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     anchorX: 0.5,
     anchorY: 0.5,
     baseScale: 0.92,
-    hueOffset: 0.18
+    hueOffset: 0.18,
+    temporalMode: "cascade"
   },
   {
     id: "major-3",
@@ -44,7 +48,8 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     anchorX: 0.5,
     anchorY: 0.5,
     baseScale: 1.08,
-    hueOffset: 0.34
+    hueOffset: 0.34,
+    temporalMode: "wave"
   },
   {
     id: "major-4",
@@ -55,7 +60,8 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     anchorX: 0.5,
     anchorY: 0.5,
     baseScale: 1,
-    hueOffset: 0.52
+    hueOffset: 0.52,
+    temporalMode: "randomized"
   }
 ];
 

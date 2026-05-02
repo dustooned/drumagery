@@ -471,7 +471,7 @@ Implemented:
 - Added `src/visuals/HardSyncBandsFilter.ts`.
 - Stacked hard sync bands after vertical roll and before chromatic split.
 
-## v1 Documentation / Next-Chat Handoff
+## v1 Documentation Handoff
 
 Date: 2026-05-02
 
@@ -489,7 +489,6 @@ Updated:
 - `PROTOTYPE_V1.md`
 - `versions/README.md`
 - `versions/v1/VERSION.md`
-- `NEXT_CHAT_PROMPT.md`
 
 Next recommended implementation:
 - Add image-sequence infrastructure for major-key toggles.
@@ -615,3 +614,104 @@ Implemented:
 - Added renderer resizing based on the actual canvas `getBoundingClientRect()` dimensions.
 - Scales the 1280 x 720 scene with cover-fit math, filling the detected canvas/hardware size instead of leaving black bands.
 - Re-runs the resize pass on browser resize and fullscreen changes.
+
+## v1 Phase 0 Stabilization Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Implemented:
+- Updated `VisualEngine` so the Pixi filter area follows the actual presentation canvas size after resize/fullscreen changes instead of staying locked to 1280x720.
+- Added `MIDI_ZERO_DEADZONE = 0.02` after MIDI CC normalization and before FX state updates.
+- MIDI debug now preserves raw CC value, normalized value, post-deadzone value, and learned role.
+
+## v1 Temporal Grid Prototype Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Implemented:
+- Extended `src/visuals/ImageSequenceLoopLayer.ts` with a first-pass temporal grid for major-key loops.
+- `density` selects 1x1, 2x2, 4x4, 6x6, or 8x8 grids, with mobile/touch-sized screens capped at 6x6.
+- `speed` advances global frames, `chaos` creates per-tile temporal offsets, and `distortion` adds simple tile jitter/spread.
+- Empty `framePaths` remain safe and render tiled procedural placeholders instead of requiring assets.
+
+Scope note:
+- This is the Phase 1 cascade-style prototype only. Uniform, wave, and deterministic randomized modes are still separate Phase 2 work.
+
+## v1 Temporal Mode Expansion Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Implemented:
+- Added per-slot temporal modes in `src/visuals/imageSequenceManifest.ts`.
+- Major 1 uses `uniform`, Major 2 uses `cascade`, Major 3 uses `wave`, and Major 4 uses deterministic `randomized`.
+- `ImageSequenceLoopLayer` now calculates tile frame offsets by mode while keeping `chaos` as the offset strength.
+- Randomized mode uses seeded tile values, not new random values each frame, so it should not flicker.
+
+Scope note:
+- Modes are assigned per major slot for this pass. A performance UI selector can be added later if live mode switching becomes useful.
+
+## v1 Screensaver Node Scaffold Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Implemented:
+- Added `activeScreensaverNodes` to instrument state.
+- Burst events now keep triggering the existing pooled `BurstPool` and also wake a bounded procedural screensaver node through `StateEngine`.
+- Added `src/visuals/ScreensaverNodeLayer.ts` with `bouncing-shape` and `starfield` node renderers.
+- Wired the node layer into `VisualEngine` without direct MIDI access or direct input-to-visual binding.
+- Added active node names to the debug live-state readout.
+
+Scope note:
+- This is a scaffold only. Burst behavior is still intact, and pads remain the trigger source for short burst hits plus node wake/pulse behavior.
+
+## v1.1 Light Documentation Update
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Updated:
+- Removed the root `NEXT_CHAT_PROMPT.md` artifact.
+- Kept the checkpoint inside active v1 as a small v1.1 documentation/update note, not a new major version.
+- Updated `README.md`, `HANDOFF.md`, `PROTOTYPE_V1.md`, `versions/README.md`, and `versions/v1/VERSION.md` so continuation context lives in the normal project docs.
+
+Scope note:
+- No new source snapshot was created. v1 remains active.

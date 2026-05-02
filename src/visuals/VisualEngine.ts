@@ -11,6 +11,7 @@ import { getImageSequenceSlotForLoop } from "./imageSequenceManifest";
 import { LoopLayer } from "./LoopLayer";
 import { PhosphorTrailLayer } from "./PhosphorTrailLayer";
 import { PixelateFilter } from "./PixelateFilter";
+import { ScreensaverNodeLayer } from "./ScreensaverNodeLayer";
 import { SyncTearFilter } from "./SyncTearFilter";
 import { VerticalRollFilter } from "./VerticalRollFilter";
 import { responseRange, visualConfig } from "./visualConfig";
@@ -21,6 +22,7 @@ export class VisualEngine {
   private readonly loopContainer = new Container();
   private readonly burstPool = new BurstPool();
   private readonly phosphorTrailLayer = new PhosphorTrailLayer();
+  private readonly screensaverNodeLayer = new ScreensaverNodeLayer();
   private readonly syncTearFilter = new SyncTearFilter();
   private readonly verticalRollFilter = new VerticalRollFilter();
   private readonly hardSyncBandsFilter = new HardSyncBandsFilter();
@@ -41,13 +43,19 @@ export class VisualEngine {
     this.stage.filterArea = new Rectangle(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
     this.stage.addChild(this.background);
     this.stage.addChild(this.phosphorTrailLayer.container);
+    this.stage.addChild(this.screensaverNodeLayer.container);
     this.stage.addChild(this.loopContainer);
     this.stage.addChild(this.burstPool.container);
     this.stage.addChild(this.noiseLayer);
   }
 
+  setPresentationSize(width: number, height: number): void {
+    this.stage.filterArea = new Rectangle(0, 0, Math.max(1, width), Math.max(1, height));
+  }
+
   syncState(state: InstrumentState): void {
     this.state = state;
+    this.screensaverNodeLayer.syncNodes(state.activeScreensaverNodes);
     const activeIds = new Set(state.activeLoops.map((loop) => loop.id));
 
     for (const [loopId, layer] of this.loopLayers) {
@@ -85,6 +93,7 @@ export class VisualEngine {
     this.pixelateFilter.setAmount(this.smoothedFX.pixelate);
     this.drawBackground();
     this.phosphorTrailLayer.update(deltaSeconds, this.smoothedFX, this.state.activeLoops);
+    this.screensaverNodeLayer.update(deltaSeconds, this.smoothedFX);
 
     for (const layer of this.loopLayers.values()) {
       layer.update(deltaSeconds, this.smoothedFX);

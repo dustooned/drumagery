@@ -38,12 +38,15 @@ The active v1 working tree adds a clearer MIDI calibration panel:
 - a lightweight phosphor trail layer for burst ghosts, loop afterimages, and scanline persistence
 - a hard sync bands filter for blocky horizontal jump/compression glitches
 - a non-overlapping stage/debug layout with the MIDI action buttons under the visual window
+- temporal grid rendering for major-key image-sequence loops, driven by density, speed, chaos, distortion, and per-slot temporal modes
+- minor-key/pad Screensaver Node scaffold with procedural bouncing-shape and starfield nodes layered beside the existing burst pool
 
 Next build direction:
-- Fill the new image-sequence manifest with real frame paths for major-key loop toggles.
+- Evaluate the current v1.1 visual layer in-browser before adding more systems.
+- Add the Performance Edge Dock UI after the temporal grids and pad nodes feel stable.
+- Fill the image-sequence manifest with real frame paths for major-key loop toggles when assets are ready.
 - Keep minor-key/pad visuals procedural and vector-driven.
 - Preserve the current `InputRouter -> StateEngine -> VisualEngine` architecture.
-- See `NEXT_CHAT_PROMPT.md` for the paste-ready continuation prompt.
 
 ## Run
 
@@ -194,7 +197,19 @@ src/visuals/imageSequenceManifest.ts
 
 Each slot owns its loop ID, display name, frame list, playback FPS, anchor, scale, and hue offset. Current slots intentionally have empty `framePaths`, so `src/visuals/ImageSequenceLoopLayer.ts` draws a procedural placeholder instead of requiring external assets. Add real static asset paths later without changing input routing.
 
+The current v1 layer can render major-key loops as temporal grids. `density` selects 1x1, 2x2, 4x4, 6x6, or 8x8 layouts, `speed` advances frames, `chaos` offsets tile timing, and `distortion` adds simple tile spread/jitter. Mobile/touch-sized screens cap the grid at 6x6. Each major slot owns a `temporalMode`: uniform, cascade, wave, or deterministic randomized.
+
 Minor-key and pad actions should stay in the procedural/vector burst path unless that direction changes explicitly.
+
+## Screensaver Nodes
+
+Minor-key/pad hits still trigger the existing pooled burst visuals. The same burst events also wake lightweight procedural Screensaver Nodes through state. The first scaffold lives in:
+
+```text
+src/visuals/ScreensaverNodeLayer.ts
+```
+
+Current node types are `bouncing-shape` and `starfield`. They use seeded procedural drawing, respond to global FX, and do not require uploaded image assets.
 
 ## Architecture Rule
 

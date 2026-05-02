@@ -134,11 +134,38 @@ Stage actions and fullscreen layout pass completed:
 - fullscreen mode includes a corner `Exit` button inside the stage
 - renderer resizing now scales the 1280 x 720 scene to cover the detected canvas size, avoiding black bands in fullscreen
 
+Phase 0 stabilization pass completed:
+- whole-stage filter area now follows the actual presentation canvas size after resize/fullscreen changes
+- MIDI CC values get a configurable near-zero deadzone after normalization
+- MIDI debug keeps raw, normalized, post-deadzone, and role data visible
+
+Temporal grid prototype pass completed:
+- major-key image-sequence loops can render as 1x1, 2x2, 4x4, 6x6, or 8x8 temporal grids
+- `density` controls grid size, `speed` controls frame progression, `chaos` controls tile frame offset, and `distortion` controls tile jitter/spread
+- mobile/touch-sized screens cap the grid at 6x6
+- empty frame lists still render safe procedural placeholders
+
+Temporal mode expansion pass completed:
+- major sequence slots now own temporal modes in `src/visuals/imageSequenceManifest.ts`
+- Major 1 is `uniform`, Major 2 is `cascade`, Major 3 is `wave`, and Major 4 is deterministic `randomized`
+- randomized mode uses seeded tile offsets rather than per-frame randomness
+
+Screensaver node scaffold pass completed:
+- added `activeScreensaverNodes` to the state model
+- minor-key/pad burst events still trigger `BurstPool` and now also wake procedural screensaver nodes through state
+- added `src/visuals/ScreensaverNodeLayer.ts`
+- first node types are `bouncing-shape` and `starfield`
+- debug live state now lists active nodes
+
 Current next step:
-- add the first real major-key frame paths to the image-sequence manifest
-- tune per-slot FPS, scale, and anchor after assets exist
+- evaluate pads in-browser to confirm bursts and screensaver nodes feel good together, then implement the Performance Edge Dock UI
+- add the first real major-key frame paths to the image-sequence manifest when assets exist
 - preserve iPad Safari compatibility and do not require MIDI for the fallback path
-- use `NEXT_CHAT_PROMPT.md` to continue in a fresh chat
+
+v1.1 documentation update:
+- this remains active v1, not a new major version
+- the separate root next-chat prompt artifact was removed
+- continuation guidance now lives in `README.md`, `HANDOFF.md`, `EVALUATION.md`, and this v1 prototype note
 
 Run through Vite:
 
