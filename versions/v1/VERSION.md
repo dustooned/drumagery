@@ -119,7 +119,7 @@ Made the major/minor split explicit in `src/input/midiMap.ts`: major notes toggl
 
 ## Stage Actions / Fullscreen Layout Pass
 
-Moved `Connect MIDI`, `Clear MIDI Learn`, `Kill Loops`, `Reset`, and `Fullscreen` into a stage action bar below the visual window. The debug panel is now a separate non-overlapping control surface on desktop-sized viewports, and the fullscreen toggle targets the visual stage.
+Moved `Connect MIDI`, `Clear MIDI Learn`, `Kill Loops`, `Reset`, and `Fullscreen` into a stage action bar below the visual window. The debug panel is now a separate non-overlapping control surface on desktop-sized viewports, and the fullscreen toggle targets the visual stage. Fullscreen mode now removes the faux browser chrome so the Pixi canvas fills the viewport, with an in-stage corner `Exit` button to return to the regular interface. The renderer now resizes to the detected canvas size and cover-scales the 1280 x 720 scene to avoid black bands in fullscreen.
 
 ## Current Validation
 

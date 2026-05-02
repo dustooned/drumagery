@@ -130,6 +130,9 @@ Stage actions and fullscreen layout pass completed:
 - kept the debug panel focused on tuning, state, and MIDI calibration readouts
 - changed the desktop layout so the 1280x720 visual window and debug menu do not overlap
 - added fullscreen toggle behavior for the visual stage
+- fullscreen mode now fills the viewport with the Pixi canvas instead of the faux browser window chrome
+- fullscreen mode includes a corner `Exit` button inside the stage
+- renderer resizing now scales the 1280 x 720 scene to cover the detected canvas size, avoiding black bands in fullscreen
 
 Current next step:
 - add the first real major-key frame paths to the image-sequence manifest

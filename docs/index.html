@@ -4,12 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Visual Instrument Prototype</title>
-    <script type="module" crossorigin src="/drumagery/assets/index-Clbj8aEw.js"></script>
-    <link rel="stylesheet" crossorigin href="/drumagery/assets/index-DAwRKERR.css">
+    <script type="module" crossorigin src="/drumagery/assets/index-B3Ccr_jE.js"></script>
+    <link rel="stylesheet" crossorigin href="/drumagery/assets/index-DwOs0zfX.css">
   </head>
   <body>
     <main id="app">
-      <div id="stage" aria-label="Visual instrument stage"></div>
+      <section id="stage-area" aria-label="Visual instrument workspace">
+        <div id="stage" aria-label="Visual instrument stage">
+          <button id="fullscreen-exit" type="button" aria-label="Exit fullscreen">Exit</button>
+        </div>
+        <div id="stage-actions" aria-label="Stage actions">
+          <button id="midi-connect" type="button">Connect MIDI</button>
+          <button id="midi-learn-reset" type="button">Clear MIDI Learn</button>
+          <button id="kill-loops" type="button">Kill Loops</button>
+          <button id="reset-state" type="button">Reset</button>
+          <button id="fullscreen-toggle" type="button" aria-pressed="false">Fullscreen</button>
+        </div>
+      </section>
+      <button id="debug-toggle" type="button" aria-controls="debug-panel" aria-expanded="true">
+        Hide controls
+      </button>
       <section id="debug-panel" aria-label="Debug controls"></section>
     </main>
   </body>

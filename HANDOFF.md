@@ -110,6 +110,9 @@ Current v1 state:
 - Build passes.
 
 Latest v1 pass:
+- Added Pixi renderer resizing and cover-fit scene scaling so the 1280 x 720 visual system fills the detected canvas/hardware size in fullscreen.
+- Updated fullscreen mode so the Pixi canvas fills the fullscreen viewport without the faux browser title/status chrome.
+- Added an in-stage corner `Exit` button for returning from fullscreen to the regular interface.
 - Moved `Connect MIDI`, `Clear MIDI Learn`, `Kill Loops`, `Reset`, and `Fullscreen` into a stage action bar below the visual window.
 - Added fullscreen toggle behavior for the visual stage.
 - Changed the app shell so the 1280x720 stage does not sit underneath the debug menu on desktop-sized viewports.

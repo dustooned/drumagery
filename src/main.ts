@@ -1,4 +1,4 @@
-import { Application } from "pixi.js";
+import { Application, Container } from "pixi.js";
 import "./style.css";
 import { INTERNAL_HEIGHT, INTERNAL_WIDTH } from "./constants";
 import { InputRouter } from "./input/InputRouter";
@@ -18,6 +18,7 @@ const midiLearnResetElement = document.querySelector<HTMLButtonElement>("#midi-l
 const killLoopsElement = document.querySelector<HTMLButtonElement>("#kill-loops");
 const resetStateElement = document.querySelector<HTMLButtonElement>("#reset-state");
 const fullscreenToggleElement = document.querySelector<HTMLButtonElement>("#fullscreen-toggle");
+const fullscreenExitElement = document.querySelector<HTMLButtonElement>("#fullscreen-exit");
 
 if (
   !stageElement ||
@@ -28,7 +29,8 @@ if (
   !midiLearnResetElement ||
   !killLoopsElement ||
   !resetStateElement ||
-  !fullscreenToggleElement
+  !fullscreenToggleElement ||
+  !fullscreenExitElement
 ) {
   throw new Error("Missing required app, stage, debug-panel, or action control element.");
 }
@@ -43,14 +45,30 @@ const app = new Application({
 });
 
 stageElement.appendChild(app.view as HTMLCanvasElement);
+const canvasElement = app.view as HTMLCanvasElement;
+const sceneRoot = new Container();
+app.stage.addChild(sceneRoot);
 
 const inputRouter = new InputRouter();
 const stateEngine = new StateEngine();
-const visualEngine = new VisualEngine(app.stage);
+const visualEngine = new VisualEngine(sceneRoot);
 const keyboardInput = new KeyboardInput(inputRouter);
-const touchInput = new TouchInput(inputRouter, app.view as HTMLCanvasElement);
+const touchInput = new TouchInput(inputRouter, canvasElement);
 const midiInput = new MidiInput(inputRouter);
 const debugPanel = new DebugPanel(debugElement, inputRouter);
+
+const resizeVisualStage = (): void => {
+  const bounds = canvasElement.getBoundingClientRect();
+  const width = Math.max(1, Math.round(bounds.width));
+  const height = Math.max(1, Math.round(bounds.height));
+  const scale = Math.max(width / INTERNAL_WIDTH, height / INTERNAL_HEIGHT);
+
+  app.renderer.resize(width, height);
+  canvasElement.style.width = "100%";
+  canvasElement.style.height = "100%";
+  sceneRoot.scale.set(scale);
+  sceneRoot.position.set((width - INTERNAL_WIDTH * scale) * 0.5, (height - INTERNAL_HEIGHT * scale) * 0.5);
+};
 
 const setDebugPanelVisible = (visible: boolean): void => {
   appElement.classList.toggle("is-debug-hidden", !visible);
@@ -85,6 +103,8 @@ const setFullscreenButtonState = (): void => {
   const isFullscreen = document.fullscreenElement === stageElement;
   fullscreenToggleElement.textContent = isFullscreen ? "Exit fullscreen" : "Fullscreen";
   fullscreenToggleElement.setAttribute("aria-pressed", String(isFullscreen));
+  fullscreenExitElement.setAttribute("aria-hidden", String(!isFullscreen));
+  window.requestAnimationFrame(resizeVisualStage);
 };
 
 fullscreenToggleElement.addEventListener("click", () => {
@@ -98,7 +118,14 @@ fullscreenToggleElement.addEventListener("click", () => {
   }
 });
 
+fullscreenExitElement.addEventListener("click", () => {
+  if (document.fullscreenElement === stageElement) {
+    void document.exitFullscreen();
+  }
+});
+
 document.addEventListener("fullscreenchange", setFullscreenButtonState);
+window.addEventListener("resize", resizeVisualStage);
 setFullscreenButtonState();
 
 inputRouter.subscribe((inputEvent) => {
@@ -120,3 +147,4 @@ app.ticker.add((deltaFrames) => {
 keyboardInput.start();
 touchInput.start();
 debugPanel.render(stateEngine.getState());
+resizeVisualStage();

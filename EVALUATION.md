@@ -566,3 +566,52 @@ Implemented:
 - Moved MIDI/action buttons out of the scrolling debug panel and below the visual window.
 - Changed the main layout so the visual stage and debug panel do not overlap on desktop-sized viewports.
 - Added a `Fullscreen` button that requests fullscreen on the visual stage and changes to `Exit fullscreen` while active.
+
+## v1 Fullscreen Canvas Fill Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- In-app browser at `http://localhost:5173/drumagery/` was loaded.
+- `#stage canvas` is visible.
+- `#fullscreen-toggle` exists in the stage action bar.
+- `#fullscreen-exit` exists inside the stage for fullscreen exit control.
+- No browser console errors were reported.
+
+Implemented:
+- Fullscreen stage mode now removes the faux window title/status chrome.
+- Fullscreen stage mode removes canvas borders and padding so the Pixi canvas fills the fullscreen viewport.
+- Added an in-stage corner `Exit` button that appears during fullscreen and calls `document.exitFullscreen()`.
+
+## v1 Fullscreen Cover Scaling Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- In-app browser at `http://localhost:5173/drumagery/` was loaded.
+- `#stage canvas` is visible.
+- `#fullscreen-toggle` exists.
+- `#fullscreen-exit` exists.
+- No browser console errors were reported.
+
+Implemented:
+- Added a Pixi scene root so the 1280 x 720 internal visual coordinate system can scale independently from the renderer size.
+- Added renderer resizing based on the actual canvas `getBoundingClientRect()` dimensions.
+- Scales the 1280 x 720 scene with cover-fit math, filling the detected canvas/hardware size instead of leaving black bands.
+- Re-runs the resize pass on browser resize and fullscreen changes.
