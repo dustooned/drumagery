@@ -2,7 +2,7 @@ import { BURST_NAMES, LOOP_NAMES } from "../constants";
 import { InputRouter } from "../input/InputRouter";
 import { midiMap } from "../input/midiMap";
 import type { InputEvent } from "../input/types";
-import { FX_CONTROLS } from "../state/fxConfig";
+import { FX_CONTROLS, getFXControlConfig } from "../state/fxConfig";
 import type { GlobalFXControl, InstrumentState } from "../state/types";
 
 export class DebugPanel {
@@ -93,17 +93,61 @@ export class DebugPanel {
 
   private renderNow(state: InstrumentState): void {
     this.currentState = state;
-    const fx = state.globalFX;
+    const activeLoops = state.activeLoops.map((loop) => loop.name).join(", ") || "none";
     this.root.innerHTML = `
-      <h1 class="debug-title">Visual Instrument V1</h1>
-      <div class="debug-readout">
-        <span>loops: ${state.activeLoops.map((loop) => loop.name).join(", ") || "none"}</span>
-        <span>last burst: ${this.lastBurst}</span>
-        <span>last input: ${this.lastInput}</span>
-        <span>${this.midiStatus}</span>
-        <span>raw: ${this.midiRaw}</span>
+      <div class="debug-header">
+        <div>
+          <h1 class="debug-title">Visual Instrument V1</h1>
+          <p class="debug-kicker">manual controls / live data / MIDI calibration</p>
+        </div>
+        <span class="debug-badge">1280 x 720</span>
       </div>
-      <div class="midi-monitor">
+
+      <section class="debug-section debug-status">
+        <h2 class="debug-subtitle">Live state</h2>
+        <div class="debug-readout">
+          <span><b>loops</b>${activeLoops}</span>
+          <span><b>last burst</b>${this.lastBurst}</span>
+          <span><b>last input</b>${this.lastInput}</span>
+          <span><b>midi</b>${this.midiStatus.replace("MIDI: ", "")}</span>
+          <span><b>raw</b>${this.midiRaw}</span>
+        </div>
+      </section>
+
+      <section class="debug-section">
+        <h2 class="debug-subtitle">Loop toggles</h2>
+        <div class="debug-grid debug-grid-loops">
+          ${LOOP_NAMES.map(
+            (name, index) => `<button type="button" data-loop="${index}"><span>${index + 1}</span>${name}</button>`
+          ).join("")}
+        </div>
+      </section>
+
+      <section class="debug-section">
+        <h2 class="debug-subtitle">Burst triggers</h2>
+        <div class="debug-grid debug-grid-bursts">
+          ${BURST_NAMES.map(
+            (name, index) => `<button type="button" data-burst="${index}"><span>Q${index + 1}</span>${name}</button>`
+          ).join("")}
+        </div>
+      </section>
+
+      <section class="debug-section">
+        <h2 class="debug-subtitle">Analog image knobs</h2>
+        ${this.renderSliderGroup(state, midiMap.controls.knobControls)}
+      </section>
+
+      <section class="debug-section">
+        <h2 class="debug-subtitle">Strips / motion</h2>
+        ${this.renderSliderGroup(state, midiMap.controls.stripControls)}
+      </section>
+
+      <section class="debug-section">
+        <h2 class="debug-subtitle">Secondary shaping</h2>
+        ${this.renderSliderGroup(state, midiMap.controls.secondaryControls)}
+      </section>
+
+      <section class="debug-section midi-monitor">
         <h2 class="debug-subtitle">MIDI calibration</h2>
         <div class="midi-table">
           ${this.renderMidiMessages()}
@@ -112,21 +156,9 @@ export class DebugPanel {
           <span>learned CC:</span>
           ${this.renderLearnedCcSlots()}
         </div>
-      </div>
-      <div class="debug-grid">
-        ${LOOP_NAMES.map(
-          (name, index) => `<button type="button" data-loop="${index}">${index + 1} ${name}</button>`
-        ).join("")}
-      </div>
-      <div class="debug-grid">
-        ${BURST_NAMES.map(
-          (name, index) => `<button type="button" data-burst="${index}">Q${index + 1} ${name}</button>`
-        ).join("")}
-      </div>
-      ${FX_CONTROLS.map((slider) =>
-        this.renderSlider(slider.control, slider.label, fx[slider.control], slider.min, slider.max, slider.step)
-      ).join("")}
-      <div class="debug-grid">
+      </section>
+
+      <div class="debug-grid debug-actions">
         <button type="button" data-midi-connect="true">Connect MIDI</button>
         <button type="button" data-midi-learn-reset="true">Clear MIDI Learn</button>
         <button type="button" data-kill-loops="true">Kill Loops</button>
@@ -146,6 +178,13 @@ export class DebugPanel {
     }, 80);
   }
 
+  private renderSliderGroup(state: InstrumentState, controls: GlobalFXControl[]): string {
+    return controls.map((control) => {
+      const config = getFXControlConfig(control);
+      return this.renderSlider(control, config.label, state.globalFX[control], config.min, config.max, config.step);
+    }).join("");
+  }
+
   private renderSlider(
     control: GlobalFXControl,
     label: string,
@@ -154,11 +193,20 @@ export class DebugPanel {
     max: number,
     step: number
   ): string {
+    const percent = ((value - min) / (max - min)) * 100;
     return `
       <label class="debug-slider">
-        <span>${label}</span>
-        <input type="range" min="${min}" max="${max}" step="${step}" value="${value}" data-fx="${control}" />
-        <span>${value.toFixed(2)}</span>
+        <span class="debug-slider-label">${label}</span>
+        <input
+          type="range"
+          min="${min}"
+          max="${max}"
+          step="${step}"
+          value="${value}"
+          data-fx="${control}"
+          style="--slider-fill: ${percent.toFixed(1)}%"
+        />
+        <span class="debug-slider-value">${value.toFixed(2)}</span>
       </label>
     `;
   }

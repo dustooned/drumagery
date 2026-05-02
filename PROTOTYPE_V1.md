@@ -71,6 +71,11 @@ Effector expansion pass completed:
 - added `pixelate` as a whole-stage Pixi filter parameter
 - kept the effect pass dependency-free and routed through `globalFX`
 
+Debug/performance UI pass completed:
+- grouped manual controls by controller role
+- added `Hide controls` / `Show controls` so the visual stage can be used without the debug panel covering touch or projector output
+- kept the debug panel mounted so MIDI data and state readouts continue updating while hidden
+
 Run through Vite:
 
 ```powershell

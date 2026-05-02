@@ -11,9 +11,11 @@ import { VisualEngine } from "./visuals/VisualEngine";
 
 const stageElement = document.querySelector<HTMLDivElement>("#stage");
 const debugElement = document.querySelector<HTMLElement>("#debug-panel");
+const appElement = document.querySelector<HTMLElement>("#app");
+const debugToggleElement = document.querySelector<HTMLButtonElement>("#debug-toggle");
 
-if (!stageElement || !debugElement) {
-  throw new Error("Missing required stage or debug-panel element.");
+if (!stageElement || !debugElement || !appElement || !debugToggleElement) {
+  throw new Error("Missing required app, stage, debug-panel, or debug-toggle element.");
 }
 
 const app = new Application({
@@ -36,6 +38,19 @@ const midiInput = new MidiInput(inputRouter);
 const debugPanel = new DebugPanel(debugElement, inputRouter, () => midiInput.start(), () =>
   midiInput.resetLearnedControls()
 );
+
+const setDebugPanelVisible = (visible: boolean): void => {
+  appElement.classList.toggle("is-debug-hidden", !visible);
+  debugToggleElement.textContent = visible ? "Hide controls" : "Show controls";
+  debugToggleElement.setAttribute("aria-expanded", String(visible));
+  debugToggleElement.setAttribute("aria-label", visible ? "Hide debug controls" : "Show debug controls");
+};
+
+setDebugPanelVisible(true);
+
+debugToggleElement.addEventListener("click", () => {
+  setDebugPanelVisible(appElement.classList.contains("is-debug-hidden"));
+});
 
 inputRouter.subscribe((inputEvent) => {
   debugPanel.recordInput(inputEvent);

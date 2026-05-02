@@ -96,6 +96,8 @@ Current v1 state:
 - Build passes.
 
 Latest v1 pass:
+- Refined the debug/performance menu into clearer live-state, loop, burst, knob, strip, secondary, and MIDI sections.
+- Added `Hide controls` / `Show controls` so touch, MIDI, and the full visual stage can coexist during performance or projector use.
 - Added a lightweight whole-stage Pixi pixelation filter controlled by `pixelate`.
 - Added procedural responses for bloom, feedback, noise, contrast, and chaos without new dependencies.
 - Split MIDI control calibration into knob, strip, and secondary groups in `src/input/midiMap.ts`.
@@ -118,6 +120,12 @@ Then open:
 
 ```text
 http://localhost:5173
+```
+
+GitHub Pages/dev-path preview may also be opened at:
+
+```text
+http://localhost:5173/drumagery/
 ```
 
 ## Constraints To Preserve

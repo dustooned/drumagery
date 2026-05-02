@@ -293,3 +293,26 @@ Resolution:
 Current deploy rule:
 - Keep `vite.config.ts` base set to `/drumagery/`.
 - For deploy updates, run `npm.cmd run build:pages`, commit the changed `docs` output, and push to `main`.
+
+## v1 Debug/Performance UI Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- Existing in-app browser tab at `http://localhost:5173/drumagery/` was reloaded.
+- `Hide controls` button was present.
+- Clicking it hid `#debug-panel`.
+- `Show controls` button restored `#debug-panel`.
+
+Implemented:
+- Added a fixed stage-level debug toggle in `index.html` and `src/main.ts`.
+- Added `.is-debug-hidden` CSS state so performance mode removes the panel from pointer interaction.
+- Left the debug panel mounted so MIDI, keyboard, touch, and state updates continue while the panel is hidden.
