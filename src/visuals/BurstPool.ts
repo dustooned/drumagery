@@ -68,15 +68,17 @@ export class BurstPool {
     const graphic = sprite.graphic;
     const x = burst.x * INTERNAL_WIDTH;
     const y = burst.y * INTERNAL_HEIGHT;
+    const overdrive = getOverdrive(fx);
     const attackProgress = Math.min(1, progress / sprite.attack);
     const envelope = easeOutCubic(attackProgress) * (1 - progress);
-    const force = responseRange(config.force, Math.min(1, fx.burstPower + fx.chaos * 0.22), 0.45, 2.15) + burst.velocity * 0.55;
+    const force = responseRange(config.force, Math.min(1, fx.burstPower / 3 + fx.chaos * 0.22), 0.45, 2.15 + overdrive * 2.4) + burst.velocity * 0.55;
     const alpha =
       envelope *
       (responseRange(config.alpha, Math.min(1, fx.intensity + fx.bloom * 0.3), 0.24, 0.82) +
         fx.burstPower * 0.18 +
-        fx.contrast * 0.08);
-    const color = hslToHex(fx.hue + burst.id * 0.11, 0.84, 0.58);
+        fx.contrast * 0.08 +
+        overdrive * 0.16);
+    const color = hslToHex(fx.hue + burst.id * 0.11 + overdrive * 0.04, 0.84, 0.58 + overdrive * 0.12);
     const radius = lerp(10 + burst.velocity * 24, (120 + burst.velocity * 165) * force, easeOutCubic(progress));
 
     graphic.clear();
@@ -89,8 +91,8 @@ export class BurstPool {
     }
 
     if (burst.id === 1) {
-      graphic.lineStyle(3 + fx.bloom * 3, color, alpha);
-      const rays = responseInt(config.detail, Math.min(1, fx.density + fx.chaos * 0.18), 6, 24);
+      graphic.lineStyle(3 + fx.bloom * 3 + overdrive * 6, color, alpha);
+      const rays = responseInt(config.detail, Math.min(1, fx.density / 3 + fx.chaos * 0.18), 6, 24 + Math.round(overdrive * 20));
       for (let i = 0; i < rays; i += 1) {
         const angle = (Math.PI * 2 * i) / rays;
         graphic.moveTo(x, y);
@@ -100,16 +102,16 @@ export class BurstPool {
     }
 
     if (burst.id === 2) {
-      graphic.lineStyle(6 + fx.bloom * 4, color, alpha);
+      graphic.lineStyle(6 + fx.bloom * 4 + overdrive * 8, color, alpha);
       graphic.drawCircle(x, y, radius);
       graphic.lineStyle(2, 0xffffff, alpha * 0.8);
       graphic.drawCircle(x, y, radius * 0.58);
       return;
     }
 
-    graphic.lineStyle(4 + fx.bloom * 3, color, alpha);
-    const slices = responseInt(config.detail, Math.min(1, fx.density + fx.noise * 0.18), 4, 18);
-    const distortion = responseRange(config.distortion, Math.min(1, fx.distortion + fx.chaos * 0.42), 0, 1);
+    graphic.lineStyle(4 + fx.bloom * 3 + overdrive * 8, color, alpha);
+    const slices = responseInt(config.detail, Math.min(1, fx.density / 3 + fx.noise * 0.18), 4, 18 + Math.round(overdrive * 20));
+    const distortion = responseRange(config.distortion, Math.min(1, fx.distortion / 3 + fx.chaos * 0.42), 0, 1 + overdrive * 3);
     for (let i = 0; i < slices; i += 1) {
       const offsetY = (i - 5) * 18;
       const wobble = Math.sin(progress * 24 + i) * (24 + distortion * 60);
@@ -123,4 +125,8 @@ export class BurstPool {
 function easeOutCubic(value: number): number {
   const t = Math.min(1, Math.max(0, value));
   return 1 - Math.pow(1 - t, 3);
+}
+
+function getOverdrive(fx: GlobalFXState): number {
+  return Math.min(1, Math.max(0, fx.intensity - 1, fx.bloom - 1, fx.burstPower - 1, fx.density - 1, fx.chaos - 1) / 2);
 }

@@ -85,6 +85,18 @@ The working Pages source is `main / docs`. The earlier `main / root` path was in
 
 Added a stage-level `Hide controls` / `Show controls` button. It hides the debug panel for performance or projector use while leaving the panel mounted so MIDI monitoring, state readouts, touch, keyboard, and debug inputs continue to work.
 
+## Expanded Range / Analog Touch Pass
+
+Raised all FX maximum input values to 3x their original maxima while preserving existing defaults. Most controls now run `0..3`; `speed` runs `0.2..6`. Stage touch input now supports continuous sliding for `hue`, `intensity`, and movement-driven `distortion`, plus two-finger spread for `scale`.
+
+## Overdrive / Retro Shell Pass
+
+Values above `1` now push procedural visuals into overdrive instead of only extending the slider range. The app shell is styled as a retro desktop/browser window around the Pixi stage, giving the prototype a computer-desktop performance interface without changing the renderer or input architecture.
+
+## Chroma Split Pass
+
+Added `chromaShift` as a new global FX control and secondary MIDI/manual slot. `src/visuals/ChromaSplitFilter.ts` performs whole-stage RGB channel separation with subtle band wobble, stacked after sync tear and before pixelation.
+
 ## Current Validation
 
 ```powershell

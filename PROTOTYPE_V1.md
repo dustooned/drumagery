@@ -76,6 +76,24 @@ Debug/performance UI pass completed:
 - added `Hide controls` / `Show controls` so the visual stage can be used without the debug panel covering touch or projector output
 - kept the debug panel mounted so MIDI data and state readouts continue updating while hidden
 
+Expanded-range and analog-touch pass completed:
+- raised every FX max input to 3x the original maximum
+- kept defaults unchanged so the startup state remains stable
+- made stage touch sliding continuously update `hue`, `intensity`, and movement-driven `distortion`
+- added two-finger spread control for `scale`
+
+Overdrive and retro shell pass completed:
+- made values above `1` visibly push procedural visuals harder
+- added overdrive scanline/noise/grid behavior in `VisualEngine`
+- added overdrive density, scale, line-weight, and burst-force shaping in loop and burst layers
+- restyled the app as a retro desktop/browser window around the Pixi canvas
+
+Chroma split pass completed:
+- added `chromaShift` to the global FX state/config
+- exposed `Chroma` in secondary manual/MIDI controls
+- added `src/visuals/ChromaSplitFilter.ts` for whole-stage RGB offset
+- stacked chromatic split with sync tear and pixelate in `VisualEngine`
+
 Run through Vite:
 
 ```powershell

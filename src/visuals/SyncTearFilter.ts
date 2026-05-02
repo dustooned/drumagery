@@ -45,11 +45,11 @@ export class SyncTearFilter extends Filter {
   }
 
   update(deltaSeconds: number, amount: number, noiseAmount: number): void {
-    const normalized = Math.min(1, Math.max(0, amount));
+    const expanded = Math.min(3, Math.max(0, amount));
     this.elapsed += deltaSeconds;
-    this.uniforms.amount = normalized;
+    this.uniforms.amount = expanded;
     this.uniforms.time = this.elapsed;
-    this.uniforms.noiseAmount = Math.min(1, Math.max(0, noiseAmount));
-    this.enabled = normalized > 0.01;
+    this.uniforms.noiseAmount = Math.min(3, Math.max(0, noiseAmount));
+    this.enabled = expanded > 0.01;
   }
 }

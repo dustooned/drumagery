@@ -30,10 +30,11 @@ export class LoopLayer {
 
   private drawInk(fx: GlobalFXState): void {
     const config = visualConfig.loops.ink;
-    const color = hslToHex(fx.hue + 0.02, 0.72, 0.52);
-    const count = responseInt(config.density, Math.min(1, fx.density + fx.chaos * 0.18), 3, 13);
-    const scale = responseRange(config.scale, fx.scale, 0.7, 1.8 + fx.feedback * 0.4);
-    const distortion = responseRange(config.distortion, Math.min(1, fx.distortion + fx.chaos * 0.35), 0, 1);
+    const overdrive = getOverdrive(fx);
+    const color = hslToHex(fx.hue + 0.02 + overdrive * 0.03, 0.72, 0.52 + overdrive * 0.1);
+    const count = responseInt(config.density, Math.min(1, fx.density / 3 + fx.chaos * 0.18), 3, 13 + Math.round(overdrive * 10));
+    const scale = responseRange(config.scale, Math.min(1, fx.scale / 3), 0.7, 1.8 + fx.feedback * 0.4 + overdrive * 1.1);
+    const distortion = responseRange(config.distortion, Math.min(1, fx.distortion / 3 + fx.chaos * 0.35), 0, 1 + overdrive * 2.2);
     for (let i = 0; i < count; i += 1) {
       const drift = Math.sin(this.time * 0.65 + i) * 46 * (1 + distortion);
       const x = INTERNAL_WIDTH * (0.12 + i * (0.76 / Math.max(1, count - 1))) + drift;
@@ -42,7 +43,8 @@ export class LoopLayer {
       const alpha =
         responseRange(config.opacity, Math.min(1, fx.intensity + fx.bloom * 0.28), 0.04, 0.18) +
         fx.fade * 0.05 +
-        fx.feedback * 0.04;
+        fx.feedback * 0.04 +
+        overdrive * 0.09;
       this.graphic.beginFill(color, alpha);
       this.graphic.drawCircle(x, y, radius);
       this.graphic.endFill();
@@ -51,10 +53,11 @@ export class LoopLayer {
 
   private drawSymbolField(fx: GlobalFXState): void {
     const config = visualConfig.loops.symbols;
-    const color = hslToHex(fx.hue + 0.18, 0.8, 0.6);
-    this.graphic.lineStyle(2 + fx.bloom * 2, color, responseRange(config.opacity, Math.min(1, fx.intensity + fx.contrast * 0.18), 0.18, 0.68));
-    const count = responseInt(config.density, Math.min(1, fx.density + fx.chaos * 0.15), 5, 24);
-    const scale = responseRange(config.scale, fx.scale, 0.65, 2);
+    const overdrive = getOverdrive(fx);
+    const color = hslToHex(fx.hue + 0.18 + overdrive * 0.04, 0.8, 0.6 + overdrive * 0.1);
+    this.graphic.lineStyle(2 + fx.bloom * 2 + overdrive * 5, color, responseRange(config.opacity, Math.min(1, fx.intensity + fx.contrast * 0.18), 0.18, 0.68 + overdrive * 0.18));
+    const count = responseInt(config.density, Math.min(1, fx.density / 3 + fx.chaos * 0.15), 5, 24 + Math.round(overdrive * 18));
+    const scale = responseRange(config.scale, Math.min(1, fx.scale / 3), 0.65, 2 + overdrive * 1.5);
     for (let i = 0; i < count; i += 1) {
       const x = ((i * 137 + this.time * 38 * (1 + fx.chaos * 0.35)) % (INTERNAL_WIDTH + 160)) - 80;
       const y = 90 + ((i * 67) % (INTERNAL_HEIGHT - 180));
@@ -69,10 +72,11 @@ export class LoopLayer {
 
   private drawParallaxBands(fx: GlobalFXState): void {
     const config = visualConfig.loops.bands;
-    const color = hslToHex(fx.hue + 0.34, 0.62, 0.52);
-    const count = responseInt(config.density, Math.min(1, fx.density + fx.noise * 0.18), 3, 15);
-    const height = responseRange(config.scale, fx.scale, 8, 34);
-    const distortion = responseRange(config.distortion, Math.min(1, fx.distortion + fx.chaos * 0.4), 0, 1);
+    const overdrive = getOverdrive(fx);
+    const color = hslToHex(fx.hue + 0.34 + overdrive * 0.05, 0.62, 0.52 + overdrive * 0.12);
+    const count = responseInt(config.density, Math.min(1, fx.density / 3 + fx.noise * 0.18), 3, 15 + Math.round(overdrive * 14));
+    const height = responseRange(config.scale, Math.min(1, fx.scale / 3), 8, 34 + overdrive * 24);
+    const distortion = responseRange(config.distortion, Math.min(1, fx.distortion / 3 + fx.chaos * 0.4), 0, 1 + overdrive * 3);
     for (let i = 0; i < count; i += 1) {
       const y = 50 + i * (INTERNAL_HEIGHT - 100) / Math.max(1, count - 1) + Math.sin(this.time * 0.8 + i) * 18 * (1 + distortion);
       this.graphic.beginFill(color, responseRange(config.opacity, Math.min(1, fx.intensity + fx.bloom * 0.2), 0.03, 0.15) + fx.fade * 0.03 + fx.feedback * 0.04);
@@ -83,11 +87,12 @@ export class LoopLayer {
 
   private drawOrbit(fx: GlobalFXState): void {
     const config = visualConfig.loops.orbit;
-    const color = hslToHex(fx.hue + 0.52, 0.76, 0.58);
-    this.graphic.lineStyle(3 + fx.bloom * 2, color, responseRange(config.opacity, Math.min(1, fx.intensity + fx.contrast * 0.2), 0.22, 0.74));
-    const count = responseInt(config.density, Math.min(1, fx.density + fx.chaos * 0.12), 2, 9);
-    const scale = responseRange(config.scale, fx.scale, 0.7, 2.1 + fx.feedback * 0.4);
-    const distortion = responseRange(config.distortion, Math.min(1, fx.distortion + fx.chaos * 0.35), 0, 1);
+    const overdrive = getOverdrive(fx);
+    const color = hslToHex(fx.hue + 0.52 + overdrive * 0.04, 0.76, 0.58 + overdrive * 0.12);
+    this.graphic.lineStyle(3 + fx.bloom * 2 + overdrive * 5, color, responseRange(config.opacity, Math.min(1, fx.intensity + fx.contrast * 0.2), 0.22, 0.74 + overdrive * 0.16));
+    const count = responseInt(config.density, Math.min(1, fx.density / 3 + fx.chaos * 0.12), 2, 9 + Math.round(overdrive * 7));
+    const scale = responseRange(config.scale, Math.min(1, fx.scale / 3), 0.7, 2.1 + fx.feedback * 0.4 + overdrive * 1.4);
+    const distortion = responseRange(config.distortion, Math.min(1, fx.distortion / 3 + fx.chaos * 0.35), 0, 1 + overdrive * 2);
     for (let i = 0; i < count; i += 1) {
       const radiusX = (90 + i * 45 + distortion * 40) * scale;
       const radiusY = (30 + i * 22) * scale;
@@ -100,4 +105,11 @@ export class LoopLayer {
       this.graphic.endFill();
     }
   }
+}
+
+function getOverdrive(fx: GlobalFXState): number {
+  return Math.min(
+    1,
+    Math.max(0, fx.intensity - 1, fx.bloom - 1, fx.distortion - 1, fx.feedback - 1, fx.density - 1, fx.chaos - 1) / 2
+  );
 }

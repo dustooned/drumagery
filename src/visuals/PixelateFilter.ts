@@ -21,9 +21,9 @@ export class PixelateFilter extends Filter {
   }
 
   setAmount(amount: number): void {
-    const normalized = Math.min(1, Math.max(0, amount));
-    const blockSize = 1 + normalized * 30;
+    const expanded = Math.min(3, Math.max(0, amount));
+    const blockSize = 1 + expanded * 30;
     this.uniforms.pixelGrid = [INTERNAL_WIDTH / blockSize, INTERNAL_HEIGHT / blockSize];
-    this.enabled = normalized > 0.01;
+    this.enabled = expanded > 0.01;
   }
 }

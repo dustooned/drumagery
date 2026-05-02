@@ -93,9 +93,20 @@ Current v1 state:
 - Visual response tuning is centralized in `src/visuals/visualConfig.ts`.
 - `Kill Loops` clears active loops and queued bursts without resetting current performance controls.
 - Burst animation now uses input-dependent attack/decay based on hit velocity.
+- FX max input ranges are expanded to 3x the original max values. Most controls are now `0..3`; `speed` is now `0.2..6`.
+- Values above `1` now create visible overdrive in the procedural visuals and whole-stage filters.
+- Touch is no longer tap-only: stage dragging smoothly controls `hue`, `intensity`, movement-driven `distortion`, and two-finger `scale`.
+- The app has a retro desktop/browser-window shell around the Pixi canvas, styled in a Windows XP-adjacent direction without adding dependencies.
+- `chromaShift` adds a whole-stage RGB split/glitch color offset through `src/visuals/ChromaSplitFilter.ts`.
 - Build passes.
 
 Latest v1 pass:
+- Added `chromaShift` as the first named retro-TV effector after sync tear.
+- Added `src/visuals/ChromaSplitFilter.ts` and stacked it between sync tear and pixelate in `VisualEngine`.
+- Added overdrive response shaping for the expanded `1..3` control range.
+- Restyled the stage and debug panel as a classic desktop/browser-window interface.
+- Expanded FX control max input values to 3x.
+- Added analog touch sliding on the stage while keeping tap zones for loops and bursts.
 - Refined the debug/performance menu into clearer live-state, loop, burst, knob, strip, secondary, and MIDI sections.
 - Added `Hide controls` / `Show controls` so touch, MIDI, and the full visual stage can coexist during performance or projector use.
 - Added a lightweight whole-stage Pixi pixelation filter controlled by `pixelate`.
@@ -104,6 +115,8 @@ Latest v1 pass:
 - Added `syncTear` as a whole-stage Pixi filter for sawtooth analog-TV tearing.
 
 Next practical step:
+- Tune the XP/browser-window shell after seeing it in the room: decide whether it should read more like a standalone desktop app, a fake web browser, or a projector-safe control surface.
+- Continue adding named retro-TV effectors such as vertical roll, phosphor trails, and hard sync bands.
 - Use the controller as a performance surface, not a musical-note system.
 - Turn the eight knobs first, then the `speed` and `hue` strips, then any secondary controls you want to calibrate.
 - Keep notes/pads as loop and burst triggers, but focus evaluation on visual feel.

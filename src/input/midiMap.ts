@@ -33,7 +33,7 @@ const knobControls: MidiFxControl[] = [
 
 const stripControls: MidiFxControl[] = ["speed", "hue"];
 
-const secondaryControls: MidiFxControl[] = ["pixelate", "density", "scale", "fade", "burstPower"];
+const secondaryControls: MidiFxControl[] = ["chromaShift", "pixelate", "density", "scale", "fade", "burstPower"];
 
 export const midiMap: MidiMap = {
   notes: {

@@ -4,6 +4,7 @@ import { createDefaultGlobalFX, FX_CONTROLS } from "../state/fxConfig";
 import type { BurstEvent, GlobalFXState, InstrumentState } from "../state/types";
 import { hslToHex, lerp } from "../utils/math";
 import { BurstPool } from "./BurstPool";
+import { ChromaSplitFilter } from "./ChromaSplitFilter";
 import { LoopLayer } from "./LoopLayer";
 import { PixelateFilter } from "./PixelateFilter";
 import { SyncTearFilter } from "./SyncTearFilter";
@@ -15,13 +16,14 @@ export class VisualEngine {
   private readonly loopContainer = new Container();
   private readonly burstPool = new BurstPool();
   private readonly syncTearFilter = new SyncTearFilter();
+  private readonly chromaSplitFilter = new ChromaSplitFilter();
   private readonly pixelateFilter = new PixelateFilter();
   private readonly loopLayers = new Map<number, LoopLayer>();
   private state: InstrumentState | null = null;
   private readonly smoothedFX: GlobalFXState = createDefaultGlobalFX();
 
   constructor(private readonly stage: Container) {
-    this.stage.filters = [this.syncTearFilter, this.pixelateFilter];
+    this.stage.filters = [this.syncTearFilter, this.chromaSplitFilter, this.pixelateFilter];
     this.stage.filterArea = new Rectangle(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
     this.stage.addChild(this.background);
     this.stage.addChild(this.loopContainer);
@@ -59,7 +61,8 @@ export class VisualEngine {
     }
 
     this.updateSmoothedFX(deltaSeconds);
-    this.syncTearFilter.update(deltaSeconds, this.smoothedFX.syncTear, Math.min(1, this.smoothedFX.noise + this.smoothedFX.chaos * 0.35));
+    this.syncTearFilter.update(deltaSeconds, this.smoothedFX.syncTear, Math.min(3, this.smoothedFX.noise + this.smoothedFX.chaos * 0.35));
+    this.chromaSplitFilter.update(deltaSeconds, this.smoothedFX.chromaShift, this.smoothedFX.chaos + this.smoothedFX.noise * 0.25);
     this.pixelateFilter.setAmount(this.smoothedFX.pixelate);
     this.drawBackground();
 
@@ -87,20 +90,22 @@ export class VisualEngine {
 
     const fx = this.smoothedFX;
     const config = visualConfig.background;
+    const overdrive = getOverdrive(fx);
     const force = Math.min(1, fx.intensity + fx.bloom * 0.35 + fx.chaos * 0.18);
-    const color = hslToHex(fx.hue + 0.64, 0.48 + fx.contrast * 0.18, responseRange(config.brightness, force, 0.06, 0.18));
-    const gridAlpha = responseRange(config.gridAlpha, force, 0.035, 0.22) + fx.fade * 0.06 + fx.contrast * 0.04;
+    const color = hslToHex(fx.hue + 0.64 + overdrive * 0.025, 0.48 + fx.contrast * 0.18, responseRange(config.brightness, force, 0.06, 0.18 + overdrive * 0.08));
+    const gridAlpha = responseRange(config.gridAlpha, force, 0.035, 0.22) + fx.fade * 0.06 + fx.contrast * 0.04 + overdrive * 0.08;
 
     this.background.clear();
     this.background.beginFill(0x050607, 1);
     this.background.drawRect(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
     this.background.endFill();
-    this.background.beginFill(color, responseRange(config.washAlpha, Math.min(1, fx.fade + fx.feedback * 0.4), 0.1, 0.46));
+    this.background.beginFill(color, responseRange(config.washAlpha, Math.min(1, fx.fade + fx.feedback * 0.4), 0.1, 0.46 + overdrive * 0.16));
     this.background.drawRect(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
     this.background.endFill();
 
-    this.background.lineStyle(1, hslToHex(fx.hue, 0.42, 0.44), gridAlpha);
-    const gridStep = responseRange(config.gridStep, 1 - fx.density, 42, 120);
+    this.background.lineStyle(1 + overdrive * 1.4, hslToHex(fx.hue, 0.42 + overdrive * 0.1, 0.44 + overdrive * 0.1), gridAlpha);
+    const densityDrive = Math.min(1, fx.density / 3 + overdrive * 0.35);
+    const gridStep = responseRange(config.gridStep, 1 - densityDrive, 24, 120);
     for (let x = 0; x <= INTERNAL_WIDTH; x += gridStep) {
       this.background.moveTo(x, 0);
       this.background.lineTo(x, INTERNAL_HEIGHT);
@@ -109,17 +114,28 @@ export class VisualEngine {
       this.background.moveTo(0, y);
       this.background.lineTo(INTERNAL_WIDTH, y);
     }
+
+    if (overdrive > 0.01) {
+      this.background.lineStyle(1, 0xffffff, 0.035 + overdrive * 0.09);
+      const scanStep = Math.max(4, 12 - overdrive * 5);
+      for (let y = 0; y <= INTERNAL_HEIGHT; y += scanStep) {
+        const wobble = Math.sin(y * 0.02 + performance.now() * 0.003) * overdrive * 12;
+        this.background.moveTo(wobble, y);
+        this.background.lineTo(INTERNAL_WIDTH + wobble, y);
+      }
+    }
   }
 
   private drawNoise(): void {
     const fx = this.smoothedFX;
     this.noiseLayer.clear();
 
-    const amount = Math.min(1, fx.noise + fx.chaos * 0.25);
+    const overdrive = getOverdrive(fx);
+    const amount = Math.min(3, fx.noise + fx.chaos * 0.25 + overdrive * 0.8);
     if (amount <= 0.01) return;
 
-    const count = Math.round(20 + amount * responseRange(visualConfig.background.gridStep, fx.density, 90, 260));
-    const alpha = 0.03 + amount * 0.16 + fx.contrast * 0.04;
+    const count = Math.round(20 + amount * responseRange(visualConfig.background.gridStep, Math.min(1, fx.density / 3), 90, 360));
+    const alpha = 0.03 + amount * 0.11 + fx.contrast * 0.04 + overdrive * 0.08;
     const size = 1 + Math.round(fx.pixelate * 5);
 
     this.noiseLayer.beginFill(0xffffff, alpha);
@@ -131,4 +147,24 @@ export class VisualEngine {
     }
     this.noiseLayer.endFill();
   }
+}
+
+function getOverdrive(fx: GlobalFXState): number {
+  return Math.min(
+    1,
+    Math.max(
+      0,
+      fx.intensity - 1,
+      fx.bloom - 1,
+      fx.distortion - 1,
+      fx.chromaShift - 1,
+      fx.feedback - 1,
+      fx.noise - 1,
+      fx.density - 1,
+      fx.contrast - 1,
+      fx.chaos - 1,
+      fx.pixelate - 1,
+      fx.burstPower - 1
+    ) / 2
+  );
 }

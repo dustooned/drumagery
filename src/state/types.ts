@@ -18,6 +18,7 @@ export interface GlobalFXState {
   bloom: number;
   distortion: number;
   syncTear: number;
+  chromaShift: number;
   feedback: number;
   noise: number;
   density: number;

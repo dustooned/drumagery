@@ -316,3 +316,81 @@ Implemented:
 - Added a fixed stage-level debug toggle in `index.html` and `src/main.ts`.
 - Added `.is-debug-hidden` CSS state so performance mode removes the panel from pointer interaction.
 - Left the debug panel mounted so MIDI, keyboard, touch, and state updates continue while the panel is hidden.
+
+## v1 Expanded Range / Analog Touch Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- Existing in-app browser tab at `http://localhost:5173/drumagery/` was reloaded.
+- `input[data-fx="intensity"]` reports max `3`.
+- `input[data-fx="speed"]` reports max `6`.
+
+Implemented:
+- Tripled all FX max input ranges in `src/state/fxConfig.ts`.
+- Updated whole-stage `pixelate` and `syncTear` filters so values above `1` are not immediately clamped away.
+- Added continuous pointer movement handling in `src/input/TouchInput.ts`.
+- One-finger stage sliding now routes smooth `hue`, `intensity`, and movement-driven `distortion` through `InputRouter`.
+- Two-finger stage spread now routes smooth `scale` through `InputRouter`.
+- Range inputs now allow horizontal touch sliding with `touch-action: pan-x`.
+
+## v1 Overdrive / Retro Shell Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- Existing in-app browser tab at `http://localhost:5173/drumagery/` was reloaded.
+- `#stage canvas` is visible.
+- `#debug-panel` is visible.
+- `Hide controls` is present.
+
+Implemented:
+- Added overdrive response shaping for FX values above `1`.
+- `VisualEngine` now uses overdrive for scanline/noise/grid/wash intensity.
+- `LoopLayer` now uses overdrive for density, scale, line weight, and distortion reach.
+- `BurstPool` now uses overdrive for burst force, line weight, detail, and alpha.
+- Restyled the page as a retro desktop/browser-window shell around the Pixi stage.
+
+Scope note:
+- This is an XP-adjacent CSS skin, not an exact operating-system clone. It keeps the app dependency-free and projector/touch compatible.
+
+## v1 Chroma Split Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- Existing in-app browser tab at `http://localhost:5173/drumagery/` was reloaded.
+- `input[data-fx="chromaShift"]` is visible.
+- `input[data-fx="chromaShift"]` reports max `3`.
+- `#stage canvas` is visible.
+
+Implemented:
+- Added `chromaShift` to `GlobalFXState`.
+- Added `Chroma` control config in `src/state/fxConfig.ts`.
+- Added `chromaShift` to secondary MIDI/manual controls without changing the primary eight-knob learn order.
+- Added `src/visuals/ChromaSplitFilter.ts`.
+- Stacked chromatic split after `SyncTearFilter` and before `PixelateFilter`.
