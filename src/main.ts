@@ -13,9 +13,24 @@ const stageElement = document.querySelector<HTMLDivElement>("#stage");
 const debugElement = document.querySelector<HTMLElement>("#debug-panel");
 const appElement = document.querySelector<HTMLElement>("#app");
 const debugToggleElement = document.querySelector<HTMLButtonElement>("#debug-toggle");
+const midiConnectElement = document.querySelector<HTMLButtonElement>("#midi-connect");
+const midiLearnResetElement = document.querySelector<HTMLButtonElement>("#midi-learn-reset");
+const killLoopsElement = document.querySelector<HTMLButtonElement>("#kill-loops");
+const resetStateElement = document.querySelector<HTMLButtonElement>("#reset-state");
+const fullscreenToggleElement = document.querySelector<HTMLButtonElement>("#fullscreen-toggle");
 
-if (!stageElement || !debugElement || !appElement || !debugToggleElement) {
-  throw new Error("Missing required app, stage, debug-panel, or debug-toggle element.");
+if (
+  !stageElement ||
+  !debugElement ||
+  !appElement ||
+  !debugToggleElement ||
+  !midiConnectElement ||
+  !midiLearnResetElement ||
+  !killLoopsElement ||
+  !resetStateElement ||
+  !fullscreenToggleElement
+) {
+  throw new Error("Missing required app, stage, debug-panel, or action control element.");
 }
 
 const app = new Application({
@@ -35,9 +50,7 @@ const visualEngine = new VisualEngine(app.stage);
 const keyboardInput = new KeyboardInput(inputRouter);
 const touchInput = new TouchInput(inputRouter, app.view as HTMLCanvasElement);
 const midiInput = new MidiInput(inputRouter);
-const debugPanel = new DebugPanel(debugElement, inputRouter, () => midiInput.start(), () =>
-  midiInput.resetLearnedControls()
-);
+const debugPanel = new DebugPanel(debugElement, inputRouter);
 
 const setDebugPanelVisible = (visible: boolean): void => {
   appElement.classList.toggle("is-debug-hidden", !visible);
@@ -51,6 +64,42 @@ setDebugPanelVisible(true);
 debugToggleElement.addEventListener("click", () => {
   setDebugPanelVisible(appElement.classList.contains("is-debug-hidden"));
 });
+
+midiConnectElement.addEventListener("click", () => {
+  void midiInput.start();
+});
+
+midiLearnResetElement.addEventListener("click", () => {
+  midiInput.resetLearnedControls();
+});
+
+killLoopsElement.addEventListener("click", () => {
+  inputRouter.dispatch({ type: "kill-loops", source: "debug" });
+});
+
+resetStateElement.addEventListener("click", () => {
+  inputRouter.dispatch({ type: "reset", source: "debug" });
+});
+
+const setFullscreenButtonState = (): void => {
+  const isFullscreen = document.fullscreenElement === stageElement;
+  fullscreenToggleElement.textContent = isFullscreen ? "Exit fullscreen" : "Fullscreen";
+  fullscreenToggleElement.setAttribute("aria-pressed", String(isFullscreen));
+};
+
+fullscreenToggleElement.addEventListener("click", () => {
+  if (document.fullscreenElement === stageElement) {
+    void document.exitFullscreen();
+    return;
+  }
+
+  if (stageElement.requestFullscreen) {
+    void stageElement.requestFullscreen();
+  }
+});
+
+document.addEventListener("fullscreenchange", setFullscreenButtonState);
+setFullscreenButtonState();
 
 inputRouter.subscribe((inputEvent) => {
   debugPanel.recordInput(inputEvent);

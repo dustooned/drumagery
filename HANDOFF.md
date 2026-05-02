@@ -102,6 +102,7 @@ Current v1 state:
 - Values above `1` now create visible overdrive in the procedural visuals and whole-stage filters.
 - Touch is no longer tap-only: stage dragging smoothly controls `hue`, `intensity`, movement-driven `distortion`, and two-finger `scale`.
 - The app has a retro desktop/browser-window shell around the Pixi canvas, styled in a Windows XP-adjacent direction without adding dependencies.
+- The stage and debug panel now use a non-overlapping layout, with MIDI/action buttons below the visual window.
 - `chromaShift` adds a whole-stage RGB split/glitch color offset through `src/visuals/ChromaSplitFilter.ts`.
 - `verticalRoll` adds whole-stage old-TV tracking drift through `src/visuals/VerticalRollFilter.ts`.
 - `phosphorTrail` adds lightweight procedural persistence through `src/visuals/PhosphorTrailLayer.ts`.
@@ -109,6 +110,9 @@ Current v1 state:
 - Build passes.
 
 Latest v1 pass:
+- Moved `Connect MIDI`, `Clear MIDI Learn`, `Kill Loops`, `Reset`, and `Fullscreen` into a stage action bar below the visual window.
+- Added fullscreen toggle behavior for the visual stage.
+- Changed the app shell so the 1280x720 stage does not sit underneath the debug menu on desktop-sized viewports.
 - Clarified the MIDI note role split in `src/input/midiMap.ts`: major sequence notes vs minor vector burst notes.
 - Updated the debug panel headings to `Major image loops` and `Minor vector bursts`.
 - Raised the debug panel bottom gap and sticky action-row padding so `Connect MIDI` is easier to see near the footer.

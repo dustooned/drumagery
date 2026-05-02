@@ -7,7 +7,16 @@
   </head>
   <body>
     <main id="app">
-      <div id="stage" aria-label="Visual instrument stage"></div>
+      <section id="stage-area" aria-label="Visual instrument workspace">
+        <div id="stage" aria-label="Visual instrument stage"></div>
+        <div id="stage-actions" aria-label="Stage actions">
+          <button id="midi-connect" type="button">Connect MIDI</button>
+          <button id="midi-learn-reset" type="button">Clear MIDI Learn</button>
+          <button id="kill-loops" type="button">Kill Loops</button>
+          <button id="reset-state" type="button">Reset</button>
+          <button id="fullscreen-toggle" type="button" aria-pressed="false">Fullscreen</button>
+        </div>
+      </section>
       <button id="debug-toggle" type="button" aria-controls="debug-panel" aria-expanded="true">
         Hide controls
       </button>

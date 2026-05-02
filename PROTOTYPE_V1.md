@@ -125,6 +125,12 @@ MIDI role and debug spacing pass completed:
 - debug panel sections are labeled `Major image loops` and `Minor vector bursts`
 - debug panel bottom spacing was increased so the MIDI action buttons are easier to see
 
+Stage actions and fullscreen layout pass completed:
+- moved `Connect MIDI`, `Clear MIDI Learn`, `Kill Loops`, `Reset`, and `Fullscreen` below the visual stage
+- kept the debug panel focused on tuning, state, and MIDI calibration readouts
+- changed the desktop layout so the 1280x720 visual window and debug menu do not overlap
+- added fullscreen toggle behavior for the visual stage
+
 Current next step:
 - add the first real major-key frame paths to the image-sequence manifest
 - tune per-slot FPS, scale, and anchor after assets exist

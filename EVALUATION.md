@@ -541,3 +541,28 @@ Implemented:
 - Renamed MIDI note mapping fields so major notes explicitly map to sequence loop toggles.
 - Renamed MIDI pad/minor-note mapping fields so they explicitly map to procedural vector bursts.
 - Adjusted debug panel bottom spacing and sticky action-row padding so the MIDI action buttons are not cramped against the footer.
+
+## v1 Stage Actions / Fullscreen Layout Pass
+
+Date: 2026-05-02
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Browser sanity check:
+- In-app browser at `http://localhost:5173/drumagery/` was loaded.
+- `#stage canvas` is visible.
+- `#stage-actions` is visible.
+- `Connect MIDI`, `Clear MIDI Learn`, `Kill Loops`, `Reset`, and `Fullscreen` are present in the stage action bar.
+- The debug panel no longer contains the MIDI action buttons.
+- No browser console errors were reported.
+
+Implemented:
+- Moved MIDI/action buttons out of the scrolling debug panel and below the visual window.
+- Changed the main layout so the visual stage and debug panel do not overlap on desktop-sized viewports.
+- Added a `Fullscreen` button that requests fullscreen on the visual stage and changes to `Exit fullscreen` while active.

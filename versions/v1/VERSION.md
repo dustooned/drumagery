@@ -117,6 +117,10 @@ Added `src/visuals/imageSequenceManifest.ts` as the source of truth for major-ke
 
 Made the major/minor split explicit in `src/input/midiMap.ts`: major notes toggle persistent image-sequence loops and minor/pad notes trigger short-lived procedural vector bursts. Updated debug panel labels to match that split and raised the bottom spacing so `Connect MIDI` is easier to see near the footer.
 
+## Stage Actions / Fullscreen Layout Pass
+
+Moved `Connect MIDI`, `Clear MIDI Learn`, `Kill Loops`, `Reset`, and `Fullscreen` into a stage action bar below the visual window. The debug panel is now a separate non-overlapping control surface on desktop-sized viewports, and the fullscreen toggle targets the visual stage.
+
 ## Current Validation
 
 ```powershell

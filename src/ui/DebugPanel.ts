@@ -18,9 +18,7 @@ export class DebugPanel {
 
   constructor(
     private readonly root: HTMLElement,
-    private readonly router: InputRouter,
-    private readonly onMidiConnect: () => void | Promise<void>,
-    private readonly onMidiLearnReset: () => void
+    private readonly router: InputRouter
   ) {
     this.root.addEventListener("click", this.handleClick);
     this.root.addEventListener("input", this.handleInput);
@@ -158,12 +156,6 @@ export class DebugPanel {
         </div>
       </section>
 
-      <div class="debug-grid debug-actions">
-        <button type="button" data-midi-connect="true">Connect MIDI</button>
-        <button type="button" data-midi-learn-reset="true">Clear MIDI Learn</button>
-        <button type="button" data-kill-loops="true">Kill Loops</button>
-        <button type="button" data-reset="true">Reset</button>
-      </div>
     `;
   }
 
@@ -275,7 +267,7 @@ export class DebugPanel {
   private readonly handleClick = (event: MouseEvent): void => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
-    const controlTarget = target.closest<HTMLElement>("[data-loop], [data-burst], [data-reset], [data-kill-loops], [data-midi-connect], [data-midi-learn-reset]");
+    const controlTarget = target.closest<HTMLElement>("[data-loop], [data-burst]");
     if (!controlTarget) return;
 
     const loopId = controlTarget.dataset.loop;
@@ -297,24 +289,6 @@ export class DebugPanel {
       return;
     }
 
-    if (controlTarget.dataset.reset) {
-      this.router.dispatch({ type: "reset", source: "debug" });
-      return;
-    }
-
-    if (controlTarget.dataset.killLoops) {
-      this.router.dispatch({ type: "kill-loops", source: "debug" });
-      return;
-    }
-
-    if (controlTarget.dataset.midiConnect) {
-      void this.onMidiConnect();
-      return;
-    }
-
-    if (controlTarget.dataset.midiLearnReset) {
-      this.onMidiLearnReset();
-    }
   };
 
   private readonly handleInput = (event: Event): void => {
