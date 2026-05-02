@@ -106,6 +106,7 @@ resetStateElement.addEventListener("click", () => {
 
 const setFullscreenButtonState = (): void => {
   const isFullscreen = document.fullscreenElement === stageElement;
+  stageElement.classList.toggle("is-stage-fullscreen", isFullscreen);
   fullscreenToggleElement.textContent = isFullscreen ? "Exit fullscreen" : "Fullscreen";
   fullscreenToggleElement.setAttribute("aria-pressed", String(isFullscreen));
   fullscreenExitElement.setAttribute("aria-hidden", String(!isFullscreen));
