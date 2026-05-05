@@ -13,6 +13,30 @@ interface DockState {
   lastCategory: DockCategory | null;
 }
 
+const LOOP_ICONS = ["🌊", "🪩", "🌱", "◇", "⚡"] as const;
+const BURST_ICONS = ["✦", "✹", "⚡", "▰"] as const;
+const FX_ICONS: Record<GlobalFXControl, string> = {
+  intensity: "☀️",
+  bloom: "✺",
+  distortion: "〰️",
+  syncTear: "▤",
+  chromaShift: "🌈",
+  verticalRoll: "↕️",
+  phosphorTrail: "◌",
+  syncBands: "▥",
+  feedback: "⟲",
+  noise: "░",
+  density: "▦",
+  contrast: "◐",
+  chaos: "✣",
+  scale: "⤢",
+  fade: "◒",
+  hue: "🎨",
+  speed: "⏩",
+  pixelate: "▣",
+  burstPower: "💥"
+};
+
 export class PerformanceEdgeDock {
   private dockState: DockState = {
     view: "closed",
@@ -37,13 +61,13 @@ export class PerformanceEdgeDock {
     this.root.className = `performance-edge-dock is-${this.dockState.view}`;
     this.root.innerHTML = `
       <div class="dock-action-row">
-        <button class="dock-reset-button" type="button" data-dock-quick-reset>Reset</button>
+        <button class="dock-reset-button" type="button" data-dock-quick-reset>↺ Reset</button>
         <button
           class="dock-menu-button"
           type="button"
           data-dock-menu
           aria-expanded="${this.dockState.view !== "closed"}"
-        >Menu</button>
+        >☰ Menu</button>
       </div>
       ${this.dockState.view === "categories" ? this.renderCategories() : ""}
       ${this.dockState.view === "panel" && category ? this.renderPanel(category) : ""}
@@ -54,7 +78,7 @@ export class PerformanceEdgeDock {
     return `
       <div class="dock-popover dock-categories">
         ${PERFORMANCE_DOCK_CATEGORIES.map(
-          (category) => `<button type="button" data-dock-category="${category.id}">${category.label}</button>`
+          (category) => `<button type="button" data-dock-category="${category.id}">${category.icon} ${category.label}</button>`
         ).join("")}
       </div>
     `;
@@ -64,8 +88,8 @@ export class PerformanceEdgeDock {
     return `
       <div class="dock-popover dock-panel">
         <div class="dock-panel-header">
-          <button type="button" data-dock-back>Back</button>
-          <span>${category.label}</span>
+          <button type="button" data-dock-back>← Back</button>
+          <span>${category.icon} ${category.label}</span>
         </div>
         ${category.id === "play" ? this.renderPlayControls() : ""}
         ${category.controls.map((control) => this.renderFxSlider(control)).join("")}
@@ -79,13 +103,13 @@ export class PerformanceEdgeDock {
       <div class="dock-play-grid">
         ${LOOP_NAMES.map(
           (name, index) =>
-            `<button type="button" data-dock-loop="${index}" aria-pressed="${activeLoops.has(index)}">${index + 1} ${name}</button>`
+            `<button type="button" data-dock-loop="${index}" aria-pressed="${activeLoops.has(index)}">${LOOP_ICONS[index]} ${index + 1} ${name}</button>`
         ).join("")}
         ${BURST_NAMES.map(
-          (name, index) => `<button type="button" data-dock-burst="${index}">Hit ${index + 1} ${name}</button>`
+          (name, index) => `<button type="button" data-dock-burst="${index}">${BURST_ICONS[index]} Hit ${index + 1} ${name}</button>`
         ).join("")}
-        <button type="button" data-dock-kill>Kill Loops</button>
-        <button type="button" data-dock-reset>Reset</button>
+        <button type="button" data-dock-kill>✕ Kill Loops</button>
+        <button type="button" data-dock-reset>↺ Reset</button>
       </div>
     `;
   }
@@ -96,7 +120,7 @@ export class PerformanceEdgeDock {
     const percent = ((value - config.min) / (config.max - config.min)) * 100;
     return `
       <label class="dock-slider">
-        <span>${config.label}</span>
+        <span>${FX_ICONS[control]} ${config.label}</span>
         <input
           type="range"
           min="${config.min}"

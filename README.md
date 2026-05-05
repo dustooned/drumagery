@@ -217,6 +217,14 @@ public/wallpapers/xp-desktop/
 
 Best master size for scaling is `2560 x 1440`. Export the active image as `wallpaper.webp` when possible, or `wallpaper.png` if the image needs lossless edges. Keep important details away from the outer 8 percent of the frame so it can crop cleanly on different screens.
 
+The current desktop background is loaded from:
+
+```text
+public/wallpapers/xp-desktop/xp-desktop.png
+```
+
+The performance dock may use emoji/icon display labels. These are visual-only labels; input routing still depends on stable `data-*` attributes and state control IDs.
+
 ## Screensaver Nodes
 
 Black-key note holds wake lightweight procedural Screensaver Nodes through state. Held nodes get a sine-like alpha/scale pulse, and releasing the note eases the node out. Drum pads do not own screensaver activation; they remain short burst hits only. The scaffold lives in:

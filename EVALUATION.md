@@ -824,3 +824,35 @@ Browser check:
 
 Remaining risk:
 - Needs target iPad Safari and projector testing for real performance feel, load time, and touch ergonomics.
+
+## v1.3 Control / Wallpaper Polish
+
+Date: 2026-05-05
+
+Build:
+
+```powershell
+npm.cmd run build
+npm.cmd run build:pages
+```
+
+Result: pass.
+
+Implemented:
+- Removed image-loop toggles from canvas touch input so touch does not accidentally change sequence loops.
+- Made canvas touch drive burst and screensaver behavior only.
+- Reworked the MIDI learn layout around the MiniLab surface: knobs 1-8 analog-TV effectors, knobs 9-16 shape sculpting, and touch sliders for `verticalRoll` and `chromaShift`.
+- Added direct handling for Arturia MiniLab MkII channel 1 pitch-bend messages (`command 224`) as `verticalRoll`.
+- Increased screensaver node brightness while retaining the 3x vector stroke pass.
+- Wired `public/wallpapers/xp-desktop/xp-desktop.png` as the XP-style app desktop background.
+- Added emoji/icon labels to the fullscreen Performance Edge Dock without changing routing IDs.
+
+Browser check:
+- Opened `http://localhost:5173/drumagery/`.
+- Verified Big grid dock shows emoji Reset/Menu/category labels.
+- Verified top-canvas touch no longer creates active image loops.
+- Console warnings/errors: 0.
+
+Remaining risk:
+- Needs real MiniLab calibration to confirm the physical knob/slider order matches the intended learned order.
+- Needs target iPad/projector testing for wallpaper readability and dock label legibility.

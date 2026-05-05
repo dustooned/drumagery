@@ -165,6 +165,11 @@ v1.3 checkpoint:
 - Kept playback at 24 frames per slot by using frames `00000` through `00023`; exported `00024` files remain unused.
 - Verified local browser playback at `http://localhost:5173/drumagery/` by triggering keys `1` through `5` with no console warnings or errors.
 - Added `public/wallpapers/xp-desktop/` as the planned drop path for an XP-style desktop wallpaper. Use a `2560 x 1440` master image.
+- Wired `public/wallpapers/xp-desktop/xp-desktop.png` as the live desktop background through a Vite base-aware CSS variable.
+- Added emoji/icon display labels to the fullscreen Performance Edge Dock. These are visual labels only; routing still depends on stable `data-*` attributes and state control IDs.
+- Removed canvas touch loop toggles; touch now drives burst/screensaver behavior only.
+- Mapped Arturia MiniLab MkII channel 1 pitch-bend messages (`command 224`) directly to `verticalRoll`.
+- Boosted screensaver brightness and kept thicker vector strokes for stronger stage presence.
 
 Next practical step:
 - Evaluate temporal grids, black-key screensaver holds, drum-pad bursts, and the Edge Dock on the target iPad/browser before adding the next system.

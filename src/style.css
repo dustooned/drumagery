@@ -37,6 +37,8 @@ body {
   overflow: auto;
   touch-action: auto;
   background:
+    linear-gradient(180deg, rgba(58, 141, 222, 0.18) 0%, rgba(31, 93, 168, 0.28) 100%),
+    var(--desktop-wallpaper-url, none) center / cover no-repeat,
     linear-gradient(180deg, #3a8dde 0%, #2f78c6 48%, #1f5da8 100%);
 }
 

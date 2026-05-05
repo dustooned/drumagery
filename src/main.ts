@@ -22,6 +22,7 @@ const resetStateElement = document.querySelector<HTMLButtonElement>("#reset-stat
 const mobileGridToggleElement = document.querySelector<HTMLButtonElement>("#mobile-grid-toggle");
 const fullscreenToggleElement = document.querySelector<HTMLButtonElement>("#fullscreen-toggle");
 const fullscreenExitElement = document.querySelector<HTMLButtonElement>("#fullscreen-exit");
+const desktopWallpaperUrl = `${import.meta.env.BASE_URL}wallpapers/xp-desktop/xp-desktop.png`;
 
 if (
   !stageElement ||
@@ -39,6 +40,8 @@ if (
 ) {
   throw new Error("Missing required app, stage, debug-panel, or action control element.");
 }
+
+document.documentElement.style.setProperty("--desktop-wallpaper-url", `url("${desktopWallpaperUrl}")`);
 
 const app = new Application({
   width: INTERNAL_WIDTH,
