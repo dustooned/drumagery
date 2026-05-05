@@ -152,18 +152,23 @@ export class DebugPanel {
       </section>
 
       <section class="debug-section">
-        <h2 class="debug-subtitle">Analog image knobs</h2>
+        <h2 class="debug-subtitle">Knobs 1-8 / analog TV</h2>
         ${this.renderSliderGroup(state, midiMap.controls.knobControls)}
       </section>
 
       <section class="debug-section">
-        <h2 class="debug-subtitle">Strips / motion</h2>
+        <h2 class="debug-subtitle">Knobs 9-16 / shape sculpt</h2>
+        ${this.renderSliderGroup(state, midiMap.controls.secondaryControls)}
+      </section>
+
+      <section class="debug-section">
+        <h2 class="debug-subtitle">Touch sliders</h2>
         ${this.renderSliderGroup(state, midiMap.controls.stripControls)}
       </section>
 
       <section class="debug-section">
-        <h2 class="debug-subtitle">Secondary shaping</h2>
-        ${this.renderSliderGroup(state, midiMap.controls.secondaryControls)}
+        <h2 class="debug-subtitle">Manual extras</h2>
+        ${this.renderSliderGroup(state, midiMap.controls.manualOnlyControls)}
       </section>
 
       <section class="debug-section midi-monitor">
@@ -255,9 +260,9 @@ export class DebugPanel {
 
   private renderLearnedCcSlots(): string {
     return [
-      this.renderLearnedCcGroup("knobs", midiMap.controls.knobControls),
-      this.renderLearnedCcGroup("strips", midiMap.controls.stripControls),
-      this.renderLearnedCcGroup("secondary", midiMap.controls.secondaryControls)
+      this.renderLearnedCcGroup("knobs 1-8 / analog TV", midiMap.controls.knobControls),
+      this.renderLearnedCcGroup("knobs 9-16 / shape", midiMap.controls.secondaryControls),
+      this.renderLearnedCcGroup("touch sliders", midiMap.controls.stripControls)
     ].join("");
   }
 

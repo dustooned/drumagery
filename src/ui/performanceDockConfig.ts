@@ -12,21 +12,21 @@ export const PERFORMANCE_DOCK_CATEGORIES: DockCategoryConfig[] = [
   {
     id: "grid",
     label: "GRID",
-    controls: ["density", "chaos", "distortion"]
+    controls: ["density", "scale", "chaos", "distortion"]
   },
   {
     id: "tv",
     label: "TV",
-    controls: ["chromaShift", "verticalRoll", "syncTear", "syncBands", "pixelate", "phosphorTrail"]
+    controls: ["chromaShift", "syncTear", "verticalRoll", "phosphorTrail", "syncBands", "pixelate"]
   },
   {
     id: "play",
     label: "PLAY",
-    controls: ["burstPower", "fade"]
+    controls: ["speed", "fade", "burstPower"]
   },
   {
     id: "fx",
     label: "FX",
-    controls: ["intensity", "speed", "scale", "feedback", "bloom", "noise", "contrast"]
+    controls: ["intensity", "hue", "feedback", "bloom", "contrast", "noise"]
   }
 ];

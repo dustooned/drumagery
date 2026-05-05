@@ -15,6 +15,7 @@ export interface MidiControlMap {
   knobControls: MidiFxControl[];
   stripControls: MidiFxControl[];
   secondaryControls: MidiFxControl[];
+  manualOnlyControls: MidiFxControl[];
   learnedControls: MidiFxControl[];
 }
 
@@ -24,28 +25,34 @@ export interface MidiMap {
 }
 
 const knobControls: MidiFxControl[] = [
-  "intensity",
-  "bloom",
-  "distortion",
+  "hue",
   "syncTear",
+  "phosphorTrail",
+  "syncBands",
+  "pixelate",
+  "distortion",
+  "bloom",
+  "intensity"
+];
+
+const stripControls: MidiFxControl[] = ["verticalRoll", "chromaShift"];
+
+const secondaryControls: MidiFxControl[] = [
+  "fade",
+  "density",
+  "scale",
+  "burstPower",
+  "speed",
+  "verticalRoll",
+  "chromaShift",
+  "syncTear"
+];
+
+const manualOnlyControls: MidiFxControl[] = [
   "feedback",
   "noise",
   "contrast",
   "chaos"
-];
-
-const stripControls: MidiFxControl[] = ["speed", "hue"];
-
-const secondaryControls: MidiFxControl[] = [
-  "chromaShift",
-  "verticalRoll",
-  "phosphorTrail",
-  "syncBands",
-  "pixelate",
-  "density",
-  "scale",
-  "fade",
-  "burstPower"
 ];
 
 export const midiMap: MidiMap = {
@@ -59,11 +66,12 @@ export const midiMap: MidiMap = {
     drumPadBurstNotes: [36, 37, 38, 39]
   },
   controls: {
-    // Learn order follows the physical controller: knobs first, then touch strips, then secondary controls.
+    // Learn order follows the physical surface: knobs 1-8, knobs 9-16, then touch sliders.
     knobControls,
     stripControls,
     secondaryControls,
-    learnedControls: [...knobControls, ...stripControls, ...secondaryControls]
+    manualOnlyControls,
+    learnedControls: [...knobControls, ...secondaryControls, ...stripControls]
   }
 };
 

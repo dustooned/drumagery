@@ -85,7 +85,7 @@ Current v1.3 state:
 - MIDI calibration panel shows recent raw messages.
 - MIDI calibration panel shows learned CC assignments.
 - Learned CC assignments now render as fixed performance-control slots, so missing or misordered knob learning is easier to spot.
-- MIDI learn layout is grouped as knobs first, then strips for `speed` and `hue`, then secondary controls.
+- MIDI learn layout is grouped as knobs 1-8 for analog-TV effectors, knobs 9-16 for shape sculpting, then touch sliders for `verticalRoll` and `chromaShift`. Arturia MiniLab MkII channel 1 pitch-bend messages (`command 224`) map directly to `verticalRoll`.
 - `Clear MIDI Learn` resets accidental CC learning during calibration.
 - Debug panel shows `last burst` instead of stale burst queue count.
 - MIDI-heavy debug rendering is throttled.
@@ -148,7 +148,7 @@ Latest event-readiness pass:
 - Restyled the stage and debug panel as a classic desktop/browser-window interface.
 - Expanded FX control max input values to 3x.
 - Added analog touch sliding on the stage while keeping tap zones for loops and bursts.
-- Refined the debug/performance menu into clearer live-state, loop, burst, knob, strip, secondary, and MIDI sections.
+- Refined the debug/performance menu into clearer live-state, loop, burst, analog-TV knob, shape-sculpt knob, touch-slider, manual-extra, and MIDI sections.
 - Added `Hide controls` / `Show controls` so touch, MIDI, and the full visual stage can coexist during performance or projector use.
 - Added a lightweight whole-stage Pixi pixelation filter controlled by `pixelate`.
 - Added procedural responses for bloom, feedback, noise, contrast, and chaos without new dependencies.
@@ -164,6 +164,7 @@ v1.3 checkpoint:
 - Built five active major-key PNG loops from `public/sequences`: Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather.
 - Kept playback at 24 frames per slot by using frames `00000` through `00023`; exported `00024` files remain unused.
 - Verified local browser playback at `http://localhost:5173/drumagery/` by triggering keys `1` through `5` with no console warnings or errors.
+- Added `public/wallpapers/xp-desktop/` as the planned drop path for an XP-style desktop wallpaper. Use a `2560 x 1440` master image.
 
 Next practical step:
 - Evaluate temporal grids, black-key screensaver holds, drum-pad bursts, and the Edge Dock on the target iPad/browser before adding the next system.
@@ -171,7 +172,7 @@ Next practical step:
 - Tune the XP/browser-window shell after seeing it in the room: decide whether it should read more like a standalone desktop app, a fake web browser, or a projector-safe control surface.
 - Continue keeping black-key screensavers and drum-pad burst visuals in the procedural layer.
 - Use the controller as a performance surface, not a musical-note system.
-- Turn the eight knobs first, then the `speed` and `hue` strips, then any secondary controls you want to calibrate.
+- Turn knobs 1-8 first, then knobs 9-16, then the `verticalRoll` and `chromaShift` touch sliders.
 - Keep white keys, black keys, and pads as separate performance roles, and focus evaluation on visual feel.
 - Test whether drum-pad burst attack feels right separately from black-key screensaver hold/release.
 - Tune `src/visuals/visualConfig.ts` when the knob value is right but the art response is too weak or too strong.

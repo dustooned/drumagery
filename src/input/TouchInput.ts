@@ -1,4 +1,4 @@
-import { BURST_COUNT, LOOP_COUNT } from "../constants";
+import { BURST_COUNT } from "../constants";
 import { InputRouter } from "./InputRouter";
 
 interface TouchPoint {
@@ -9,7 +9,6 @@ interface TouchPoint {
 }
 
 export class TouchInput {
-  private lastLoopTapAt = 0;
   private readonly activePointers = new Map<number, TouchPoint>();
 
   constructor(
@@ -32,25 +31,13 @@ export class TouchInput {
     event.preventDefault();
     this.target.setPointerCapture(event.pointerId);
     const { x, y } = this.getNormalizedPosition(event);
-    const burstId = y >= 0.28 ? Math.min(Math.floor(x * BURST_COUNT), BURST_COUNT - 1) : null;
+    const burstId = Math.min(Math.floor(x * BURST_COUNT), BURST_COUNT - 1);
     this.activePointers.set(event.pointerId, {
       x,
       y,
       burstId,
       screensaverId: burstId
     });
-
-    if (y < 0.28) {
-      const now = performance.now();
-      const loopId = Math.min(Math.floor(x * LOOP_COUNT), LOOP_COUNT - 1);
-      if (now - this.lastLoopTapAt > 180) {
-        this.router.dispatch({ type: "loop-toggle", source: "touch", loopId, velocity: 1 });
-      }
-      this.lastLoopTapAt = now;
-      return;
-    }
-
-    if (burstId === null) return;
 
     this.router.dispatch({
       type: "burst",

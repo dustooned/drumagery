@@ -60,6 +60,7 @@ Controller-layout pass completed:
 - split `src/input/midiMap.ts` controls into knob, strip, and secondary groups
 - reserved `speed` and `hue` for touch strips/sliders instead of the main knob bank
 - grouped the MIDI calibration readout to match the physical layout
+- later reorganized the physical control map so knobs 1-8 are analog-TV effectors, knobs 9-16 are shape-sculpt controls, and the touch sliders are vertical roll and chroma
 
 Sync-tear pass completed:
 - added `syncTear` as a global FX control
@@ -181,6 +182,7 @@ Performance Edge Dock pass completed:
 Current next step:
 - test `Big grid`, touch burst holds, black-key screensaver holds, drum-pad bursts, and the Edge Dock on the target iPad/browser
 - tune the five uploaded 24-frame PNG sequence loops on desktop, iPad Safari, and projector output
+- tune the revised knob 1-8 / knob 9-16 / slider layout against the physical MIDI controller
 - preserve iPad Safari compatibility and do not require MIDI for the fallback path
 
 v1.1 documentation update:

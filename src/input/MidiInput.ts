@@ -115,8 +115,13 @@ export class MidiInput {
     const channel = (statusByte & 0x0f) + 1;
     const inputName = event.currentTarget?.name ?? "MIDI input";
     const label = describeMidi(command, data1, data2);
-    const role = command === 0xb0 ? this.learnControlForCc(data1) ?? "unmapped cc" : this.getMidiRole(command, data1, data2);
-    const normalizedValue = command === 0xb0 ? clamp01(data2 / 127) : undefined;
+    const isPitchBendVerticalRoll = command === 0xe0 && channel === 1;
+    const role = command === 0xb0
+      ? this.learnControlForCc(data1) ?? "unmapped cc"
+      : isPitchBendVerticalRoll
+        ? "verticalRoll"
+        : this.getMidiRole(command, data1, data2, channel);
+    const normalizedValue = command === 0xb0 || isPitchBendVerticalRoll ? clamp01(data2 / 127) : undefined;
     const postDeadzoneValue = normalizedValue === undefined ? undefined : applyMidiDeadzone(normalizedValue);
 
     this.router.dispatch({
@@ -143,6 +148,15 @@ export class MidiInput {
 
     if (command === 0xb0) {
       this.handleControlChange(data1, postDeadzoneValue ?? 0);
+    }
+
+    if (isPitchBendVerticalRoll) {
+      this.router.dispatch({
+        type: "global-fx",
+        source: "midi",
+        control: "verticalRoll",
+        value: scaleNormalizedFXControl("verticalRoll", postDeadzoneValue ?? 0)
+      });
     }
   };
 
@@ -227,7 +241,7 @@ export class MidiInput {
     return control;
   }
 
-  private getMidiRole(command: number, data1: number, data2: number): string {
+  private getMidiRole(command: number, data1: number, data2: number, channel: number): string {
     if (command === 0x90 && data2 > 0) {
       const burstId = noteToBurstId(data1);
       if (burstId !== null) return `drum pad burst ${burstId + 1}`;
@@ -249,6 +263,10 @@ export class MidiInput {
 
     if (command === 0xb0) {
       return this.learnedCcControls.get(data1) ?? "unmapped cc";
+    }
+
+    if (command === 0xe0 && channel === 1) {
+      return "verticalRoll";
     }
 
     return "unmapped";

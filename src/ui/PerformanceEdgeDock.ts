@@ -21,7 +21,6 @@ export class PerformanceEdgeDock {
     lastCategory: null
   };
   private currentState: InstrumentState | null = null;
-  private hasUserModification = false;
 
   constructor(
     private readonly root: HTMLElement,
@@ -38,7 +37,7 @@ export class PerformanceEdgeDock {
     this.root.className = `performance-edge-dock is-${this.dockState.view}`;
     this.root.innerHTML = `
       <div class="dock-action-row">
-        ${this.hasUserModification ? `<button class="dock-reset-button" type="button" data-dock-quick-reset>Reset</button>` : ""}
+        <button class="dock-reset-button" type="button" data-dock-quick-reset>Reset</button>
         <button
           class="dock-menu-button"
           type="button"
@@ -128,7 +127,6 @@ export class PerformanceEdgeDock {
 
     if (target.closest("[data-dock-quick-reset]")) {
       this.router.dispatch({ type: "reset", source: "debug" });
-      this.hasUserModification = false;
       this.render();
       return;
     }
@@ -150,7 +148,6 @@ export class PerformanceEdgeDock {
     const loopTarget = target.closest<HTMLElement>("[data-dock-loop]");
     if (loopTarget?.dataset.dockLoop !== undefined) {
       this.router.dispatch({ type: "loop-toggle", source: "debug", loopId: Number(loopTarget.dataset.dockLoop), velocity: 1 });
-      this.markModified();
       return;
     }
 
@@ -164,19 +161,16 @@ export class PerformanceEdgeDock {
         x: 0.5,
         y: 0.5
       });
-      this.markModified();
       return;
     }
 
     if (target.closest("[data-dock-kill]")) {
       this.router.dispatch({ type: "kill-loops", source: "debug" });
-      this.markModified();
       return;
     }
 
     if (target.closest("[data-dock-reset]")) {
       this.router.dispatch({ type: "reset", source: "debug" });
-      this.hasUserModification = false;
       this.render();
     }
   };
@@ -194,7 +188,6 @@ export class PerformanceEdgeDock {
       control,
       value: Number(target.value)
     });
-    this.markModified();
   };
 
   private toggleMenu(): void {
@@ -223,10 +216,4 @@ export class PerformanceEdgeDock {
     this.render();
   }
 
-  private markModified(): void {
-    if (this.hasUserModification) return;
-
-    this.hasUserModification = true;
-    this.render();
-  }
 }

@@ -142,12 +142,13 @@ MIDI note roles:
 - Black-key notes hold procedural Screensaver Nodes, then ease out on release.
 - Drum-pad notes trigger short-lived procedural/vector bursts only.
 
-The v1 learn order follows the physical controller layout:
-- Knobs: `intensity`, `bloom`, `distortion`, `syncTear`, `feedback`, `noise`, `contrast`, `chaos`.
-- Touch strips/sliders: `speed`, `hue`.
-- Secondary controls: `chromaShift`, `verticalRoll`, `phosphorTrail`, `syncBands`, `pixelate`, `density`, `scale`, `fade`, `burstPower`.
+The v1 learn order follows the performance surface layout:
+- Knobs 1-8 / analog TV: `hue`, `syncTear`, `phosphorTrail`, `syncBands`, `pixelate`, `distortion`, `bloom`, `intensity`.
+- Knobs 9-16 / shape sculpt: `fade`, `density`, `scale`, `burstPower`, `speed`, `verticalRoll`, `chromaShift`, `syncTear`.
+- Touch strips/sliders: `verticalRoll`, `chromaShift`.
+- Manual extras: `feedback`, `noise`, `contrast`, `chaos`.
 
-Turn the eight knobs first, then the speed and hue strips, then any secondary controls you want to calibrate.
+Turn knobs 1-8 first, then knobs 9-16, then the vertical-roll and chroma touch sliders. Knob 1 and knob 9 are intentionally mapped to subtler controls so unstable hardware values are less likely to blow up the visual immediately. Arturia MiniLab MkII channel 1 pitch-bend messages (`command 224`, such as `data 0/64`) map directly to `verticalRoll`.
 
 ## Performance Controls
 
@@ -205,6 +206,16 @@ Each slot owns its loop ID, display name, frame list, playback FPS, anchor, scal
 The current v1 layer can render major-key loops as temporal grids. `density` selects 1x1, 2x2, 4x4, 6x6, or 8x8 layouts, `speed` advances frames, `chaos` offsets tile timing, and `distortion` adds simple tile spread/jitter. Mobile/touch-sized screens cap the grid at 6x6. Each major slot owns a `temporalMode`: uniform, cascade, wave, or deterministic randomized.
 
 Black-key screensavers and drum-pad bursts stay separate from the uploaded image-sequence system.
+
+## Desktop Wallpaper
+
+XP-style desktop wallpaper assets should go in:
+
+```text
+public/wallpapers/xp-desktop/
+```
+
+Best master size for scaling is `2560 x 1440`. Export the active image as `wallpaper.webp` when possible, or `wallpaper.png` if the image needs lossless edges. Keep important details away from the outer 8 percent of the frame so it can crop cleanly on different screens.
 
 ## Screensaver Nodes
 
