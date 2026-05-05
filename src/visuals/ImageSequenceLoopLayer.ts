@@ -62,7 +62,16 @@ export class ImageSequenceLoopLayer {
 
       const col = index % cols;
       const row = Math.floor(index / cols);
-      const frameIndex = getTileFrameIndex(globalFrame, index, rows, cols, totalFrames, temporalOffset, this.slot.temporalMode);
+      const frameIndex = getTileFrameIndex(
+        globalFrame,
+        index,
+        rows,
+        cols,
+        totalFrames,
+        temporalOffset,
+        this.slot.temporalMode,
+        this.slot.playbackMode
+      );
       const jitter = getTileJitter(index, this.loop.id, this.time, spread);
       const scale = this.slot.baseScale * (0.72 + fx.scale * 0.12 + Math.max(0, fx.intensity - 1) * 0.08);
       const maxWidth = tileWidth * (0.92 + fx.scale * 0.03);
@@ -106,7 +115,7 @@ export class ImageSequenceLoopLayer {
     const rows = gridSize;
     const cols = gridSize;
     const totalTiles = rows * cols;
-    const totalFrames = 48;
+    const totalFrames = this.slot.expectedFrameCount;
     const globalFrame = Math.floor(this.time * this.slot.fps);
     const temporalOffset = getTemporalOffset(fx);
     const tileWidth = INTERNAL_WIDTH / cols;
@@ -123,7 +132,16 @@ export class ImageSequenceLoopLayer {
     for (let index = 0; index < totalTiles; index += 1) {
       const col = index % cols;
       const row = Math.floor(index / cols);
-      const frameIndex = getTileFrameIndex(globalFrame, index, rows, cols, totalFrames, temporalOffset, this.slot.temporalMode);
+      const frameIndex = getTileFrameIndex(
+        globalFrame,
+        index,
+        rows,
+        cols,
+        totalFrames,
+        temporalOffset,
+        this.slot.temporalMode,
+        this.slot.playbackMode
+      );
       const framePhase = (frameIndex / totalFrames) * Math.PI * 2;
       const jitter = getTileJitter(index, this.loop.id, this.time, spread);
       const x = col * tileWidth + tileWidth * 0.5 + jitter.x;
@@ -175,10 +193,23 @@ function getTileFrameIndex(
   cols: number,
   totalFrames: number,
   temporalOffset: number,
-  mode: TemporalMode
+  mode: TemporalMode,
+  playbackMode: "loop" | "ping-pong"
 ): number {
   const offsetFrames = Math.floor(getTileOffsetRatio(tileIndex, rows, cols, mode) * temporalOffset * totalFrames);
-  return ((globalFrame - offsetFrames) % totalFrames + totalFrames) % totalFrames;
+  return getPlaybackFrame(globalFrame - offsetFrames, totalFrames, playbackMode);
+}
+
+function getPlaybackFrame(frame: number, totalFrames: number, playbackMode: "loop" | "ping-pong"): number {
+  if (totalFrames <= 1) return 0;
+
+  if (playbackMode === "ping-pong") {
+    const period = totalFrames * 2 - 2;
+    const wrapped = ((frame % period) + period) % period;
+    return wrapped < totalFrames ? wrapped : period - wrapped;
+  }
+
+  return ((frame % totalFrames) + totalFrames) % totalFrames;
 }
 
 function getTileOffsetRatio(tileIndex: number, rows: number, cols: number, mode: TemporalMode): number {

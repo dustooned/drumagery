@@ -10,7 +10,7 @@ https://github.com/dustooned/drumagery
 
 ## Current Status
 
-Current development track: v1 performance-control prototype with MIDI calibration, touch fallback, retro desktop UI, and retro-TV visual effectors.
+Current development track: v1 event-readiness prototype with MIDI calibration, simplified touch burst controls, retro desktop UI, and lightweight procedural visual effectors.
 
 Stable checkpoint: `versions/v0`
 
@@ -19,7 +19,7 @@ The saved v0 baseline is working as a browser visual instrument with:
 - `InputRouter` as the only input path into state.
 - Keyboard, touch, debug-panel, and optional Web MIDI input.
 - Basic state engine with active loops, burst queue, and global FX.
-- Four major-key image-sequence loop slots with safe procedural placeholders, plus four pooled burst placeholders.
+- Five major-key image-sequence loop slots with safe procedural placeholders, plus four pooled burst placeholders.
 - MIDI debug monitor for raw note and CC inspection.
 
 The active v1 working tree adds a clearer MIDI calibration panel:
@@ -38,14 +38,16 @@ The active v1 working tree adds a clearer MIDI calibration panel:
 - a lightweight phosphor trail layer for burst ghosts, loop afterimages, and scanline persistence
 - a hard sync bands filter for blocky horizontal jump/compression glitches
 - a non-overlapping stage/debug layout with the MIDI action buttons under the visual window
-- temporal grid rendering for major-key image-sequence loops, driven by density, speed, chaos, distortion, and per-slot temporal modes
-- black-key Screensaver Node holds with procedural bouncing-shape and starfield nodes, separate from drum-pad bursts
+- temporal grid rendering for five major-key image-sequence loops, driven by density, speed, chaos, distortion, per-slot temporal modes, and 32-frame ping-pong playback scaffolding
+- lightweight Screensaver Node holds for grid ocean, clouds, sandstorm, rain, wind, starfield, mystify, static, and pulse accents
+- a temporary `Big grid` mobile mode that enlarges the iPad performance surface while keeping `Exit` and the performance `Menu` available
+- simplified touch behavior: touch no longer steers global FX directly; touch taps/holds trigger routed burst holds and paired vector accents
 - a fullscreen-only Performance Edge Dock with GRID, TV, PLAY, and FX panels that dispatch through the existing input/state path
 
 Next build direction:
-- Evaluate the current v1.1 visual layer in-browser before adding more systems.
+- Test `Big grid` mode and burst holds on the target iPad before the event.
 - Tune the Performance Edge Dock layout after using it on the target touch device.
-- Fill the image-sequence manifest with real frame paths for major-key loop toggles when assets are ready.
+- Fill the five image-sequence manifest slots with real frame paths when assets are ready.
 - Keep black-key screensavers and drum-pad bursts procedural and vector-driven.
 - Preserve the current `InputRouter -> StateEngine -> VisualEngine` architecture.
 

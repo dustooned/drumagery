@@ -149,6 +149,16 @@ Added `src/ui/PerformanceEdgeDock.ts` and `src/ui/performanceDockConfig.ts` for 
 
 This is a small update inside active v1, not a new major version. The separate root `NEXT_CHAT_PROMPT.md` artifact was removed so the project docs remain the source of truth. Current continuation guidance lives in `README.md`, `HANDOFF.md`, `EVALUATION.md`, `PROTOTYPE_V1.md`, and this version note.
 
+## Event-Readiness Touch / Sequence Pass
+
+Added a temporary `Big grid` mode for iPad event testing. It enlarges the playable stage, hides debug/action clutter, and keeps in-stage `Exit` plus the Performance Edge Dock `Menu` available.
+
+Touch input is simplified for the event: touch no longer controls global FX directly. Touch taps/holds now route burst, burst-hold, and paired screensaver-start/release events through `InputRouter`. Keyboard and MIDI drum pads also emit burst hold/release state so the same visual path can be tested without iPad hardware.
+
+Expanded active sequence infrastructure from four major slots to five named loop slots: Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather. Each slot now has 32-frame ping-pong playback scaffolding while empty frame lists still render safe procedural placeholders.
+
+Expanded `ScreensaverNodeLayer` from two placeholder node types to lightweight vector scaffolds for grid ocean, clouds, sandstorm, rain, wind, starfield, mystify, static, and pulse. These remain procedural and avoid new dependencies, image assets, and heavy shaders.
+
 ## Current Validation
 
 ```powershell
@@ -157,7 +167,7 @@ npm.cmd run build
 
 Result: pass.
 
-Latest review: 2026-05-02, no new version snapshot created.
+Latest review: 2026-05-05, no new version snapshot created.
 
 ## Run Note
 

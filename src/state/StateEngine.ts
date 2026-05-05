@@ -3,17 +3,28 @@ import type { InputEvent } from "../input/types";
 import { clamp01 } from "../utils/math";
 import { getImageSequenceSlotForLoop } from "../visuals/imageSequenceManifest";
 import { createDefaultGlobalFX, normalizeFXControl } from "./fxConfig";
-import type { BurstEvent, InstrumentState, LoopState, ScreensaverNodeState, ScreensaverNodeType, StateListener } from "./types";
+import type { BurstEvent, BurstHoldState, InstrumentState, LoopState, ScreensaverNodeState, ScreensaverNodeType, StateListener } from "./types";
 
 const DEFAULT_STATE: InstrumentState = {
   activeLoops: [],
   burstQueue: [],
+  activeBurstHolds: [],
   activeScreensaverNodes: [],
   globalFX: createDefaultGlobalFX()
 };
 
-const SCREENSAVER_NODE_TYPES: ScreensaverNodeType[] = ["bouncing-shape", "starfield", "bouncing-shape", "starfield"];
-const MAX_ACTIVE_SCREENSAVER_NODES = 4;
+const SCREENSAVER_NODE_TYPES: ScreensaverNodeType[] = [
+  "grid-ocean",
+  "clouds",
+  "sandstorm",
+  "rain",
+  "wind",
+  "starfield",
+  "mystify",
+  "static",
+  "pulse"
+];
+const MAX_ACTIVE_SCREENSAVER_NODES = 6;
 
 export class StateEngine {
   private state: InstrumentState = cloneState(DEFAULT_STATE);
@@ -41,6 +52,16 @@ export class StateEngine {
       changed = true;
     }
 
+    if (event.type === "burst-hold-start") {
+      this.startBurstHold(event);
+      changed = true;
+    }
+
+    if (event.type === "burst-hold-release") {
+      this.releaseBurstHold(event.burstId);
+      changed = true;
+    }
+
     if (event.type === "screensaver-start") {
       this.startScreensaverNode(event);
       changed = true;
@@ -59,6 +80,7 @@ export class StateEngine {
     if (event.type === "kill-loops") {
       this.state.activeLoops = [];
       this.state.burstQueue = [];
+      this.state.activeBurstHolds = [];
       this.state.activeScreensaverNodes = [];
       changed = true;
     }
@@ -114,6 +136,33 @@ export class StateEngine {
     this.state.burstQueue.push(burst);
   }
 
+  private startBurstHold(event: Extract<InputEvent, { type: "burst-hold-start" }>): void {
+    const hold: BurstHoldState = {
+      id: event.burstId,
+      name: BURST_NAMES[event.burstId] ?? `Burst ${event.burstId + 1}`,
+      startedAt: performance.now(),
+      releasedAt: null,
+      velocity: clamp01(event.velocity),
+      x: clamp01(event.x),
+      y: clamp01(event.y)
+    };
+    const existingIndex = this.state.activeBurstHolds.findIndex((item) => item.id === hold.id);
+
+    if (existingIndex >= 0) {
+      this.state.activeBurstHolds[existingIndex] = hold;
+      return;
+    }
+
+    this.state.activeBurstHolds.push(hold);
+  }
+
+  private releaseBurstHold(burstId: number): void {
+    const hold = this.state.activeBurstHolds.find((item) => item.id === burstId);
+    if (!hold || hold.releasedAt !== null) return;
+
+    hold.releasedAt = performance.now();
+  }
+
   private startScreensaverNode(event: Extract<InputEvent, { type: "screensaver-start" }>): void {
     const nodeType = SCREENSAVER_NODE_TYPES[event.nodeId % SCREENSAVER_NODE_TYPES.length];
     const triggeredAt = performance.now();
@@ -161,6 +210,7 @@ function cloneState(state: InstrumentState): InstrumentState {
   return {
     activeLoops: state.activeLoops.map((loop) => ({ ...loop })),
     burstQueue: state.burstQueue.map((burst) => ({ ...burst })),
+    activeBurstHolds: state.activeBurstHolds.map((hold) => ({ ...hold })),
     activeScreensaverNodes: state.activeScreensaverNodes.map((node) => ({ ...node })),
     globalFX: { ...state.globalFX }
   };

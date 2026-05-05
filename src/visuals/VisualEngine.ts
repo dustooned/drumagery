@@ -56,6 +56,7 @@ export class VisualEngine {
   syncState(state: InstrumentState): void {
     this.state = state;
     this.screensaverNodeLayer.syncNodes(state.activeScreensaverNodes);
+    this.burstPool.syncHeldBursts(state.activeBurstHolds);
     const activeIds = new Set(state.activeLoops.map((loop) => loop.id));
 
     for (const [loopId, layer] of this.loopLayers) {

@@ -579,9 +579,88 @@ input[type="range"]::-moz-range-thumb {
 }
 
 #stage:fullscreen .performance-edge-dock,
-#stage.is-stage-fullscreen .performance-edge-dock {
+#stage.is-stage-fullscreen .performance-edge-dock,
+.is-mobile-grid-mode .performance-edge-dock {
   display: grid;
   z-index: 12;
+}
+
+.is-mobile-grid-mode {
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(0, 1fr);
+  padding: max(6px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom))
+    max(6px, env(safe-area-inset-left));
+  overflow: hidden;
+}
+
+.is-mobile-grid-mode #stage-area {
+  width: 100%;
+  height: 100%;
+  min-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom)));
+}
+
+.is-mobile-grid-mode #stage {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  padding: 0;
+  border: 0;
+  background: #050607;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.is-mobile-grid-mode #stage::before,
+.is-mobile-grid-mode #stage::after,
+.is-mobile-grid-mode #debug-toggle,
+.is-mobile-grid-mode #debug-panel {
+  display: none;
+}
+
+.is-mobile-grid-mode #stage canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.is-mobile-grid-mode #fullscreen-exit {
+  display: block;
+  position: absolute;
+  z-index: 14;
+  top: max(8px, env(safe-area-inset-top));
+  right: max(8px, env(safe-area-inset-right));
+  min-width: 54px;
+  min-height: 38px;
+  background: rgba(236, 233, 216, 0.92);
+}
+
+.is-mobile-grid-mode #stage-actions {
+  position: fixed;
+  z-index: 13;
+  top: max(8px, env(safe-area-inset-top));
+  left: max(8px, env(safe-area-inset-left));
+  display: flex;
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.is-mobile-grid-mode #stage-actions button {
+  display: none;
+}
+
+.is-mobile-grid-mode #mobile-grid-toggle,
+.is-mobile-grid-mode #fullscreen-toggle {
+  display: block;
+  min-width: 72px;
+  min-height: 38px;
+  background: rgba(236, 233, 216, 0.92);
 }
 
 @media (max-width: 720px), (max-height: 520px) {

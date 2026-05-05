@@ -52,7 +52,7 @@ export const midiMap: MidiMap = {
   notes: {
     // Provisional until MiniLab MkII calibration records exact raw note values.
     // White-key notes toggle persistent image-sequence loop slots.
-    majorSequenceNotes: [48, 50, 52, 53],
+    majorSequenceNotes: [48, 50, 52, 53, 55],
     // Black-key notes hold procedural screensaver layers.
     minorScreensaverNotes: [49, 51, 54, 56],
     // Drum pads trigger short-lived procedural vector bursts only.

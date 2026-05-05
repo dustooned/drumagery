@@ -19,6 +19,7 @@ const midiConnectElement = document.querySelector<HTMLButtonElement>("#midi-conn
 const midiLearnResetElement = document.querySelector<HTMLButtonElement>("#midi-learn-reset");
 const killLoopsElement = document.querySelector<HTMLButtonElement>("#kill-loops");
 const resetStateElement = document.querySelector<HTMLButtonElement>("#reset-state");
+const mobileGridToggleElement = document.querySelector<HTMLButtonElement>("#mobile-grid-toggle");
 const fullscreenToggleElement = document.querySelector<HTMLButtonElement>("#fullscreen-toggle");
 const fullscreenExitElement = document.querySelector<HTMLButtonElement>("#fullscreen-exit");
 
@@ -32,6 +33,7 @@ if (
   !midiLearnResetElement ||
   !killLoopsElement ||
   !resetStateElement ||
+  !mobileGridToggleElement ||
   !fullscreenToggleElement ||
   !fullscreenExitElement
 ) {
@@ -104,6 +106,18 @@ resetStateElement.addEventListener("click", () => {
   inputRouter.dispatch({ type: "reset", source: "debug" });
 });
 
+const setMobileGridMode = (enabled: boolean): void => {
+  appElement.classList.toggle("is-mobile-grid-mode", enabled);
+  stageElement.classList.toggle("is-stage-fullscreen", enabled);
+  mobileGridToggleElement.textContent = enabled ? "Small grid" : "Big grid";
+  mobileGridToggleElement.setAttribute("aria-pressed", String(enabled));
+  window.requestAnimationFrame(resizeVisualStage);
+};
+
+mobileGridToggleElement.addEventListener("click", () => {
+  setMobileGridMode(!appElement.classList.contains("is-mobile-grid-mode"));
+});
+
 const setFullscreenButtonState = (): void => {
   const isFullscreen = document.fullscreenElement === stageElement;
   stageElement.classList.toggle("is-stage-fullscreen", isFullscreen);
@@ -125,6 +139,11 @@ fullscreenToggleElement.addEventListener("click", () => {
 });
 
 fullscreenExitElement.addEventListener("click", () => {
+  if (appElement.classList.contains("is-mobile-grid-mode")) {
+    setMobileGridMode(false);
+    return;
+  }
+
   if (document.fullscreenElement === stageElement) {
     void document.exitFullscreen();
   }

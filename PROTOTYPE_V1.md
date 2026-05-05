@@ -21,7 +21,7 @@ Status: implemented in the active v1 working tree.
 - Recent MIDI message history.
 - Learned CC assignment display.
 - Expanded live performance controls: intensity, bloom, distortion, syncTear, chromaShift, verticalRoll, phosphorTrail, syncBands, feedback, noise, density, contrast, chaos, scale, fade, hue, speed, pixelate, burstPower.
-- Keep keyboard and touch behavior unchanged.
+- Keep all device input routed through `InputRouter`; touch can be simplified for iPad event stability when needed.
 - Keep placeholder visuals until input behavior is reliable.
 
 ## Current Review
@@ -81,6 +81,12 @@ Expanded-range and analog-touch pass completed:
 - kept defaults unchanged so the startup state remains stable
 - made stage touch sliding continuously update `hue`, `intensity`, and movement-driven `distortion`
 - added two-finger spread control for `scale`
+
+Event-readiness touch correction completed:
+- simplified touch input back to burst-pad taps/holds only for iPad reliability
+- added routed burst hold/release state for touch, keyboard, and MIDI drum pads
+- paired touch burst holds with lightweight procedural screensaver accents
+- added temporary `Big grid` mode so the stage can be enlarged on iPad without entering browser fullscreen
 
 Overdrive and retro shell pass completed:
 - made values above `1` visibly push procedural visuals harder
@@ -147,20 +153,21 @@ Temporal grid prototype pass completed:
 
 Temporal mode expansion pass completed:
 - major sequence slots now own temporal modes in `src/visuals/imageSequenceManifest.ts`
-- Major 1 is `uniform`, Major 2 is `cascade`, Major 3 is `wave`, and Major 4 is deterministic `randomized`
+- Vaporwave is `uniform`, Chrome Tide is `cascade`, Signal Garden is `wave`, Glass Desert is deterministic `randomized`, and Neon Weather is `wave`
 - randomized mode uses seeded tile offsets rather than per-frame randomness
+- all five slots now carry 32-frame ping-pong playback scaffolding
 
 Screensaver node scaffold pass completed:
 - added `activeScreensaverNodes` to the state model
 - black-key notes now hold procedural screensaver nodes through state
 - added `src/visuals/ScreensaverNodeLayer.ts`
-- first node types are `bouncing-shape` and `starfield`
+- current node types are `grid-ocean`, `clouds`, `sandstorm`, `rain`, `wind`, `starfield`, `mystify`, `static`, and `pulse`
 - debug live state now lists active nodes
 
 Input-role split correction completed:
 - white-key MIDI notes toggle major image-sequence loops
 - black-key MIDI notes start screensaver holds and release into eased fade-outs on note-off
-- drum-pad MIDI notes trigger bursts only and no longer activate screensavers
+- drum-pad MIDI notes trigger bursts and burst-hold envelopes only; black-key notes remain the dedicated MIDI screensaver holds
 
 Performance Edge Dock pass completed:
 - added `src/ui/PerformanceEdgeDock.ts`
@@ -171,7 +178,7 @@ Performance Edge Dock pass completed:
 - the overlay container uses pointer-safe behavior so the stage remains playable outside visible controls
 
 Current next step:
-- evaluate white-key loops, black-key screensaver holds, drum-pad bursts, and the Edge Dock in-browser
+- test `Big grid`, touch burst holds, black-key screensaver holds, drum-pad bursts, and the Edge Dock on the target iPad/browser
 - add the first real major-key frame paths to the image-sequence manifest when assets exist
 - preserve iPad Safari compatibility and do not require MIDI for the fallback path
 

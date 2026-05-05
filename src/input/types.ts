@@ -18,6 +18,19 @@ export type InputEvent =
       y: number;
     }
   | {
+      type: "burst-hold-start";
+      source: InputSource;
+      burstId: number;
+      velocity: number;
+      x: number;
+      y: number;
+    }
+  | {
+      type: "burst-hold-release";
+      source: InputSource;
+      burstId: number;
+    }
+  | {
       type: "screensaver-start";
       source: InputSource;
       nodeId: number;

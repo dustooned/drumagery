@@ -2,7 +2,7 @@ import { BURST_COUNT, LOOP_COUNT } from "../constants";
 import { clamp01 } from "../utils/math";
 import { InputRouter } from "./InputRouter";
 
-const LOOP_KEYS = ["Digit1", "Digit2", "Digit3", "Digit4"];
+const LOOP_KEYS = ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"];
 const BURST_KEYS = ["KeyQ", "KeyW", "KeyE", "KeyR"];
 
 export class KeyboardInput {
@@ -10,11 +10,13 @@ export class KeyboardInput {
   private speed = 1;
   private distortion = 0;
   private intensity = 0.65;
+  private readonly heldBurstKeys = new Set<string>();
 
   constructor(private readonly router: InputRouter) {}
 
   start(): void {
     window.addEventListener("keydown", this.handleKeyDown);
+    window.addEventListener("keyup", this.handleKeyUp);
   }
 
   private readonly handleKeyDown = (event: KeyboardEvent): void => {
@@ -28,8 +30,19 @@ export class KeyboardInput {
     const burstId = BURST_KEYS.indexOf(event.code);
     if (burstId >= 0 && burstId < BURST_COUNT) {
       event.preventDefault();
+      if (this.heldBurstKeys.has(event.code)) return;
+
+      this.heldBurstKeys.add(event.code);
       this.router.dispatch({
         type: "burst",
+        source: "keyboard",
+        burstId,
+        velocity: 0.85,
+        x: 0.5,
+        y: 0.5
+      });
+      this.router.dispatch({
+        type: "burst-hold-start",
         source: "keyboard",
         burstId,
         velocity: 0.85,
@@ -89,6 +102,15 @@ export class KeyboardInput {
         value: this.intensity
       });
     }
+  };
+
+  private readonly handleKeyUp = (event: KeyboardEvent): void => {
+    const burstId = BURST_KEYS.indexOf(event.code);
+    if (burstId < 0 || burstId >= BURST_COUNT || !this.heldBurstKeys.has(event.code)) return;
+
+    event.preventDefault();
+    this.heldBurstKeys.delete(event.code);
+    this.router.dispatch({ type: "burst-hold-release", source: "keyboard", burstId });
   };
 }
 

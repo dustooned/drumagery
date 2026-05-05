@@ -1,6 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 import { INTERNAL_HEIGHT, INTERNAL_WIDTH } from "../constants";
-import type { BurstEvent, GlobalFXState } from "../state/types";
+import type { BurstEvent, BurstHoldState, GlobalFXState } from "../state/types";
 import { hslToHex, lerp } from "../utils/math";
 import { responseInt, responseRange, visualConfig } from "./visualConfig";
 
@@ -17,15 +17,22 @@ const POOL_SIZE = 32;
 
 export class BurstPool {
   readonly container = new Container();
+  private readonly holdGraphic = new Graphics();
   private readonly pool: BurstSprite[] = [];
+  private activeHolds: BurstHoldState[] = [];
 
   constructor() {
+    this.container.addChild(this.holdGraphic);
     for (let i = 0; i < POOL_SIZE; i += 1) {
       const graphic = new Graphics();
       graphic.visible = false;
       this.container.addChild(graphic);
       this.pool.push({ graphic, active: false, age: 0, life: 0.52, attack: 0.16, burst: null });
     }
+  }
+
+  syncHeldBursts(holds: BurstHoldState[]): void {
+    this.activeHolds = holds.map((hold) => ({ ...hold }));
   }
 
   trigger(burst: BurstEvent): void {
@@ -40,6 +47,8 @@ export class BurstPool {
   }
 
   update(deltaSeconds: number, fx: GlobalFXState): void {
+    this.drawHeldBursts(fx);
+
     for (const sprite of this.pool) {
       if (!sprite.active || !sprite.burst) {
         continue;
@@ -57,6 +66,68 @@ export class BurstPool {
       }
 
       this.drawBurst(sprite, fx, progress);
+    }
+  }
+
+  private drawHeldBursts(fx: GlobalFXState): void {
+    const now = performance.now();
+    const releaseFadeMs = 400;
+
+    this.holdGraphic.clear();
+
+    for (const hold of this.activeHolds) {
+      const releaseAge = hold.releasedAt === null ? 0 : now - hold.releasedAt;
+      if (hold.releasedAt !== null && releaseAge > releaseFadeMs) continue;
+
+      const ageSeconds = (now - hold.startedAt) / 1000;
+      const impact = Math.max(0, 1 - ageSeconds / 0.24);
+      const holdLevel = hold.releasedAt === null ? 0.5 + impact * 0.5 : 0;
+      const releaseFade = hold.releasedAt === null ? 1 : 1 - easeOutCubic(releaseAge / releaseFadeMs);
+      const force = (0.42 + hold.velocity * 0.5 + fx.burstPower * 0.08) * releaseFade;
+      const x = hold.x * INTERNAL_WIDTH;
+      const y = hold.y * INTERNAL_HEIGHT;
+      const color = hslToHex(fx.hue + hold.id * 0.11, 0.82, 0.58);
+      const alpha = (0.2 + holdLevel * 0.22 + fx.intensity * 0.08) * force;
+      const baseRadius = 44 + holdLevel * 58 + Math.sin(ageSeconds * 8) * 4;
+
+      if (hold.id === 3) {
+        this.holdGraphic.lineStyle(5 + fx.bloom * 2, color, alpha);
+        const stretchX = 96 + holdLevel * 180;
+        const rows = 5;
+        for (let i = 0; i < rows; i += 1) {
+          const offsetY = (i - 2) * 18;
+          const wobble = Math.sin(ageSeconds * 14 + i * 1.4) * (16 + fx.distortion * 36);
+          this.holdGraphic.moveTo(x - stretchX, y + offsetY);
+          this.holdGraphic.lineTo(x + wobble, y + offsetY + 7);
+          this.holdGraphic.lineTo(x + stretchX, y + offsetY - 5);
+        }
+        continue;
+      }
+
+      if (hold.id === 1) {
+        const points = 10;
+        this.holdGraphic.lineStyle(3 + fx.bloom * 2, color, alpha);
+        for (let i = 0; i < points; i += 1) {
+          const angle = (Math.PI * 2 * i) / points + ageSeconds * 0.8;
+          const inner = baseRadius * 0.28;
+          const outer = baseRadius * (0.85 + Math.sin(ageSeconds * 5 + i) * 0.12);
+          this.holdGraphic.moveTo(x + Math.cos(angle) * inner, y + Math.sin(angle) * inner);
+          this.holdGraphic.lineTo(x + Math.cos(angle) * outer, y + Math.sin(angle) * outer);
+        }
+        continue;
+      }
+
+      if (hold.id === 2) {
+        this.holdGraphic.lineStyle(4 + fx.bloom * 2, color, alpha);
+        this.holdGraphic.drawCircle(x, y, baseRadius);
+        this.holdGraphic.lineStyle(1, 0xffffff, alpha * 0.7);
+        this.holdGraphic.drawCircle(x, y, baseRadius * 0.58);
+        continue;
+      }
+
+      this.holdGraphic.beginFill(0xffffff, alpha * 0.12);
+      this.holdGraphic.drawRect(0, 0, INTERNAL_WIDTH, INTERNAL_HEIGHT);
+      this.holdGraphic.endFill();
     }
   }
 

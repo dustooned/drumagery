@@ -2,7 +2,7 @@
 
 ## Current Track
 
-The project has moved from saved v0 into active v1 performance-control development. v1.1 is the current lightweight update inside v1: MIDI calibration, touch fallback, an XP-adjacent desktop/browser shell, expanded FX ranges, named retro-TV effectors, temporal white-key image grids, black-key screensaver holds, separate drum-pad bursts, and a touch-friendly Performance Edge Dock. No new source snapshot has been created after v0.
+The project has moved from saved v0 into active v1 performance-control development. The current v1 event-readiness pass keeps the XP-adjacent desktop/browser shell and Performance Edge Dock, simplifies iPad touch to burst-pad holds, adds a temporary `Big grid` mode, expands image-sequence slots to five 32-frame ping-pong placeholders, and broadens lightweight procedural screensaver accents. No new source snapshot has been created after v0.
 
 ## GitHub Pages Deployment
 
@@ -93,16 +93,16 @@ Current v1.1 state:
 - Placeholder visuals respond to the expanded performance controls.
 - FX defaults, min/max ranges, slider steps, and smoothing values are centralized in `src/state/fxConfig.ts`.
 - Visual response tuning is centralized in `src/visuals/visualConfig.ts`.
-- Major-key loop sequence slots are centralized in `src/visuals/imageSequenceManifest.ts`.
+- Five major-key loop sequence slots are centralized in `src/visuals/imageSequenceManifest.ts`.
 - `src/visuals/ImageSequenceLoopLayer.ts` renders image-sequence slots as temporal grids and safely falls back to procedural placeholders while frame lists are empty.
-- MIDI note routing is explicit: white-key notes toggle sequence loops, black-key notes hold/release procedural Screensaver Nodes, and drum-pad notes trigger pooled procedural/vector bursts only.
-- `src/visuals/ScreensaverNodeLayer.ts` owns the first black-key procedural node scaffold: bouncing shape and starfield.
+- MIDI note routing is explicit: white-key notes toggle sequence loops, black-key notes hold/release procedural Screensaver Nodes, and drum-pad notes trigger pooled procedural/vector bursts with hold/release state.
+- `src/visuals/ScreensaverNodeLayer.ts` owns lightweight procedural nodes for grid ocean, clouds, sandstorm, rain, wind, starfield, mystify, static, and pulse.
 - `src/ui/PerformanceEdgeDock.ts` owns the fullscreen-stage bottom-corner GRID/TV/PLAY/FX overlay and dispatches through `InputRouter`.
 - `Kill Loops` clears active loops and queued bursts without resetting current performance controls.
 - Burst animation now uses input-dependent attack/decay based on hit velocity.
 - FX max input ranges are expanded to 3x the original max values. Most controls are now `0..3`; `speed` is now `0.2..6`.
 - Values above `1` now create visible overdrive in the procedural visuals and whole-stage filters.
-- Touch is no longer tap-only: stage dragging smoothly controls `hue`, `intensity`, movement-driven `distortion`, and two-finger `scale`.
+- Touch is intentionally simplified for the event: stage taps/holds trigger burst holds and paired screensaver accents; touch no longer directly steers `hue`, `intensity`, `distortion`, or `scale`.
 - The app has a retro desktop/browser-window shell around the Pixi canvas, styled in a Windows XP-adjacent direction without adding dependencies.
 - The stage and debug panel now use a non-overlapping layout, with MIDI/action buttons below the visual window.
 - `chromaShift` adds a whole-stage RGB split/glitch color offset through `src/visuals/ChromaSplitFilter.ts`.
@@ -118,6 +118,14 @@ Latest v1 pass:
 - Moved `Connect MIDI`, `Clear MIDI Learn`, `Kill Loops`, `Reset`, and `Fullscreen` into a stage action bar below the visual window.
 - Added fullscreen toggle behavior for the visual stage.
 - Changed the app shell so the 1280x720 stage does not sit underneath the debug menu on desktop-sized viewports.
+
+Latest event-readiness pass:
+- Added `Big grid` as a temporary iPad-safe performance mode. It hides debug/action clutter, enlarges the stage, and keeps in-stage `Exit` plus the Performance Edge Dock `Menu` available.
+- Added `activeBurstHolds` to state. Touch, keyboard, and MIDI drum-pad input now route hold start/release events through `InputRouter`.
+- Updated held burst rendering so `Glitch` stretches horizontally while the other burst pads use matching impact/hold/release envelopes.
+- Expanded loop slots to five named categories: Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather.
+- Added 32-frame ping-pong playback scaffolding for image-sequence loops while keeping empty manifests asset-free and procedural.
+- Expanded procedural screensaver node scaffolds to the requested lightweight categories without adding shaders or dependencies.
 - Clarified the MIDI note role split in `src/input/midiMap.ts`: major sequence notes vs minor vector burst notes.
 - Updated the debug panel headings to `Major image loops` and `Minor vector bursts`.
 - Raised the debug panel bottom gap and sticky action-row padding so `Connect MIDI` is easier to see near the footer.

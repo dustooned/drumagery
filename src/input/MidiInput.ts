@@ -159,6 +159,14 @@ export class MidiInput {
         x: 0.5,
         y: 0.5
       });
+      this.router.dispatch({
+        type: "burst-hold-start",
+        source: "midi",
+        burstId: padIndex,
+        velocity,
+        x: 0.5,
+        y: 0.5
+      });
       return;
     }
 
@@ -182,6 +190,12 @@ export class MidiInput {
   }
 
   private handleNoteOff(note: number): void {
+    const padIndex = noteToBurstId(note);
+    if (padIndex !== null && padIndex >= 0 && padIndex < BURST_COUNT) {
+      this.router.dispatch({ type: "burst-hold-release", source: "midi", burstId: padIndex });
+      return;
+    }
+
     const screensaverId = noteToScreensaverId(note);
     if (screensaverId !== null && screensaverId >= 0 && screensaverId < BURST_COUNT) {
       this.router.dispatch({ type: "screensaver-release", source: "midi", nodeId: screensaverId });

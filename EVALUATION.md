@@ -764,5 +764,33 @@ Updated:
 - Kept the checkpoint inside active v1 as a small v1.1 documentation/update note, not a new major version.
 - Updated `README.md`, `HANDOFF.md`, `PROTOTYPE_V1.md`, `versions/README.md`, and `versions/v1/VERSION.md` so continuation context lives in the normal project docs.
 
+## v1 Event-Readiness Touch / Sequence Pass
+
+Purpose:
+- Prepare the project for near-term iPad/event testing by reducing touch-control chaos and enlarging the playable grid without depending on Web MIDI or new assets.
+
+Implemented:
+- Added a temporary `Big grid` button and mobile-stage mode.
+- `Big grid` hides debug/action clutter, enlarges the Pixi stage, and keeps in-stage `Exit` plus the Performance Edge Dock `Menu` available.
+- Removed touch-driven continuous global-FX steering from `TouchInput`.
+- Touch now routes burst taps, burst-hold start/release, and paired screensaver start/release events through `InputRouter`.
+- Added `activeBurstHolds` to state.
+- Keyboard and MIDI drum pads now also emit burst hold/release events for desktop testing.
+- Held burst rendering now has a 400ms release ease; `Glitch` stretches horizontally while held.
+- Expanded loop infrastructure to five named slots: Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather.
+- Added 32-frame ping-pong playback scaffolding for image-sequence loops while keeping empty frame lists safe.
+- Expanded procedural screensaver scaffolds to grid ocean, clouds, sandstorm, rain, wind, starfield, mystify, static, and pulse.
+
+Validation:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Remaining risk:
+- Needs real iPad Safari testing for touch ergonomics, browser fullscreen behavior, and event-room performance feel.
+
 Scope note:
 - No new source snapshot was created. v1 remains active.

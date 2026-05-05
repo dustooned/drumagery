@@ -1,12 +1,15 @@
-export type ImageSequenceSlotId = "major-1" | "major-2" | "major-3" | "major-4";
+export type ImageSequenceSlotId = "vaporwave" | "chrome-tide" | "signal-garden" | "glass-desert" | "neon-weather";
 export type TemporalMode = "uniform" | "cascade" | "wave" | "randomized";
+export type SequencePlaybackMode = "loop" | "ping-pong";
 
 export interface ImageSequenceSlot {
   id: ImageSequenceSlotId;
   loopId: number;
   name: string;
   framePaths: string[];
+  expectedFrameCount: number;
   fps: number;
+  playbackMode: SequencePlaybackMode;
   anchorX: number;
   anchorY: number;
   baseScale: number;
@@ -16,11 +19,13 @@ export interface ImageSequenceSlot {
 
 export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
   {
-    id: "major-1",
+    id: "vaporwave",
     loopId: 0,
-    name: "Major 1",
+    name: "Vaporwave",
     framePaths: [],
+    expectedFrameCount: 32,
     fps: 12,
+    playbackMode: "ping-pong",
     anchorX: 0.5,
     anchorY: 0.5,
     baseScale: 1,
@@ -28,11 +33,13 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     temporalMode: "uniform"
   },
   {
-    id: "major-2",
+    id: "chrome-tide",
     loopId: 1,
-    name: "Major 2",
+    name: "Chrome Tide",
     framePaths: [],
+    expectedFrameCount: 32,
     fps: 10,
+    playbackMode: "ping-pong",
     anchorX: 0.5,
     anchorY: 0.5,
     baseScale: 0.92,
@@ -40,11 +47,13 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     temporalMode: "cascade"
   },
   {
-    id: "major-3",
+    id: "signal-garden",
     loopId: 2,
-    name: "Major 3",
+    name: "Signal Garden",
     framePaths: [],
+    expectedFrameCount: 32,
     fps: 9,
+    playbackMode: "ping-pong",
     anchorX: 0.5,
     anchorY: 0.5,
     baseScale: 1.08,
@@ -52,16 +61,32 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     temporalMode: "wave"
   },
   {
-    id: "major-4",
+    id: "glass-desert",
     loopId: 3,
-    name: "Major 4",
+    name: "Glass Desert",
     framePaths: [],
+    expectedFrameCount: 32,
     fps: 8,
+    playbackMode: "ping-pong",
     anchorX: 0.5,
     anchorY: 0.5,
     baseScale: 1,
     hueOffset: 0.52,
     temporalMode: "randomized"
+  },
+  {
+    id: "neon-weather",
+    loopId: 4,
+    name: "Neon Weather",
+    framePaths: [],
+    expectedFrameCount: 32,
+    fps: 8,
+    playbackMode: "ping-pong",
+    anchorX: 0.5,
+    anchorY: 0.5,
+    baseScale: 0.96,
+    hueOffset: 0.68,
+    temporalMode: "wave"
   }
 ];
 
