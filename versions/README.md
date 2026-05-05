@@ -12,6 +12,23 @@ versions/v0
 
 Baseline Vite + TypeScript + PixiJS visual instrument scaffold with keyboard, touch, debug, optional MIDI input, state engine, debug monitor, and placeholder visuals.
 
+## v1.3
+
+Path:
+
+```text
+versions/v1.3
+```
+
+Uploaded PNG sequence checkpoint for the active v1 performance instrument. Five major-key image-sequence loop slots are wired to uploaded 24-frame PNG sequences, using frames `00000` through `00023` while exported `00024` files remain unused. The Pages build in `docs/` was refreshed with copied sequence assets.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.
+- Local browser check at `http://localhost:5173/drumagery/`: keys `1` through `5` active with 0 console warnings/errors.
+
+Next likely work: test and tune the five sequence loops on target iPad Safari/projector output, especially FPS, scale, anchor, load time, and touch ergonomics.
+
 ## v1
 
 Path:
@@ -20,7 +37,7 @@ Path:
 versions/v1
 ```
 
-In-progress performance-control iteration. No source snapshot yet; current source is the active v1 working tree. The current lightweight checkpoint is an event-readiness pass inside v1, not a new major version.
+In-progress performance-control iteration. The current stable note above this is `versions/v1.3`.
 
 Current v1 includes:
 - MIDI calibration UI and grouped learned CC slots.
@@ -28,14 +45,14 @@ Current v1 includes:
 - 3x FX input ranges, with touch currently simplified to burst-pad holds for event stability.
 - Whole-stage retro-TV filters: sync tear, chroma split, vertical roll, hard sync bands, and pixelate.
 - Procedural phosphor trail layer.
-- Five major-key image-sequence loop slots with procedural placeholders when frame lists are empty.
-- Temporal grid rendering for major-key loops, driven by density, speed, chaos, distortion, per-slot temporal modes, and 32-frame ping-pong scaffolding.
+- Five major-key image-sequence loop slots wired to uploaded 24 PNG frames each, with procedural placeholders still available when frame lists are empty.
+- Temporal grid rendering for major-key loops, driven by density, speed, chaos, distortion, per-slot temporal modes, PNG frame sequences, and 24-frame procedural fallback scaffolding.
 - Black-key Screensaver Node holds with lightweight procedural node categories.
 - Drum-pad bursts and burst holds remain separate performance accents.
 - Temporary `Big grid` mode for iPad event testing.
 - Fullscreen-stage Performance Edge Dock with GRID, TV, PLAY, and FX panels.
 
-Next likely work: test `Big grid`, touch burst holds, black-key screensaver holds, drum-pad bursts, and the Edge Dock on the target iPad/browser, then tune the dock or add real frame paths.
+Next likely work: test `Big grid`, touch burst holds, black-key screensaver holds, drum-pad bursts, the five uploaded loops, and the Edge Dock on the target iPad/browser.
 
 Note: the separate root next-chat prompt artifact has been removed. Use the root docs and `versions/v1/VERSION.md` for continuation context.
 

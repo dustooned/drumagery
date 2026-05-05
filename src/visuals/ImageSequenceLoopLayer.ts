@@ -31,7 +31,7 @@ export class ImageSequenceLoopLayer {
     }
 
     this.placeholder.clear();
-    this.updateFrameGrid(fx, gridSize);
+    this.updateImageGrid(fx, gridSize);
   }
 
   private createFrameSprites(): void {
@@ -40,11 +40,11 @@ export class ImageSequenceLoopLayer {
     }
   }
 
-  private updateFrameGrid(fx: GlobalFXState, gridSize: number): void {
+  private updateImageGrid(fx: GlobalFXState, gridSize: number): void {
     const rows = gridSize;
     const cols = gridSize;
     const totalTiles = rows * cols;
-    const totalFrames = this.frameTextures.length;
+    const totalFrames = Math.max(1, this.frameTextures.length);
     const globalFrame = Math.floor(this.time * this.slot.fps);
     const temporalOffset = getTemporalOffset(fx);
     const tileWidth = INTERNAL_WIDTH / cols;
@@ -76,7 +76,7 @@ export class ImageSequenceLoopLayer {
       const scale = this.slot.baseScale * (0.72 + fx.scale * 0.12 + Math.max(0, fx.intensity - 1) * 0.08);
       const maxWidth = tileWidth * (0.92 + fx.scale * 0.03);
       const maxHeight = tileHeight * (0.92 + fx.scale * 0.03);
-      const texture = this.frameTextures[frameIndex];
+      const texture = this.frameTextures[frameIndex] ?? Texture.EMPTY;
 
       sprite.texture = texture;
       sprite.anchor.set(this.slot.anchorX, this.slot.anchorY);

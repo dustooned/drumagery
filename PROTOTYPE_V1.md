@@ -155,7 +155,8 @@ Temporal mode expansion pass completed:
 - major sequence slots now own temporal modes in `src/visuals/imageSequenceManifest.ts`
 - Vaporwave is `uniform`, Chrome Tide is `cascade`, Signal Garden is `wave`, Glass Desert is deterministic `randomized`, and Neon Weather is `wave`
 - randomized mode uses seeded tile offsets rather than per-frame randomness
-- all five slots now carry 32-frame ping-pong playback scaffolding
+- all five slots now carry 24-frame ping-pong playback scaffolding
+- all five slots are ready for 24 PNG frames in `public/sequences/<slot-name>/`
 
 Screensaver node scaffold pass completed:
 - added `activeScreensaverNodes` to the state model
@@ -179,13 +180,19 @@ Performance Edge Dock pass completed:
 
 Current next step:
 - test `Big grid`, touch burst holds, black-key screensaver holds, drum-pad bursts, and the Edge Dock on the target iPad/browser
-- add the first real major-key frame paths to the image-sequence manifest when assets exist
+- tune the five uploaded 24-frame PNG sequence loops on desktop, iPad Safari, and projector output
 - preserve iPad Safari compatibility and do not require MIDI for the fallback path
 
 v1.1 documentation update:
 - this remains active v1, not a new major version
 - the separate root next-chat prompt artifact was removed
 - continuation guidance now lives in `README.md`, `HANDOFF.md`, `EVALUATION.md`, and this v1 prototype note
+
+v1.3 uploaded PNG sequence checkpoint:
+- five major-key loop slots now point at uploaded PNG sequences
+- playback uses frames `00000` through `00023` for each slot
+- exported `00024` files are intentionally unused while the active target stays at 24 frames
+- local browser check at `/drumagery/` passed with all five loop keys active and no console warnings/errors
 
 Run through Vite:
 

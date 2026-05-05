@@ -155,7 +155,7 @@ Added a temporary `Big grid` mode for iPad event testing. It enlarges the playab
 
 Touch input is simplified for the event: touch no longer controls global FX directly. Touch taps/holds now route burst, burst-hold, and paired screensaver-start/release events through `InputRouter`. Keyboard and MIDI drum pads also emit burst hold/release state so the same visual path can be tested without iPad hardware.
 
-Expanded active sequence infrastructure from four major slots to five named loop slots: Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather. Each slot now has 32-frame ping-pong playback scaffolding while empty frame lists still render safe procedural placeholders.
+Expanded active sequence infrastructure from four major slots to five named loop slots: Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather. Each slot now points at its uploaded 24-frame PNG sequence, using frames `00000` through `00023`; exported `00024` files are intentionally left unused while the active target stays at 24 frames. Empty frame lists still render safe procedural placeholders if a later slot is temporarily unwired. The single-file animated WebP experiment was reverted because Pixi/WebGL did not produce reliable visible motion from those files.
 
 Expanded `ScreensaverNodeLayer` from two placeholder node types to lightweight vector scaffolds for grid ocean, clouds, sandstorm, rain, wind, starfield, mystify, static, and pulse. These remain procedural and avoid new dependencies, image assets, and heavy shaders.
 
@@ -167,7 +167,7 @@ npm.cmd run build
 
 Result: pass.
 
-Latest review: 2026-05-05, no new version snapshot created.
+Latest review: 2026-05-05. The uploaded PNG-sequence checkpoint is documented in `versions/v1.3/VERSION.md`.
 
 ## Run Note
 
@@ -187,4 +187,4 @@ Direct `index.html` loading is not supported for this TypeScript/Vite app.
 
 ## Not Yet Frozen
 
-No v1 source snapshot has been created yet. Freeze v1 only after the actual MiniLab mappings are confirmed and behavior is stable.
+The current v1 checkpoint is `versions/v1.3`. Freeze a fuller source snapshot only after the actual MiniLab mappings and target-device behavior are confirmed stable.

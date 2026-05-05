@@ -778,7 +778,8 @@ Implemented:
 - Keyboard and MIDI drum pads now also emit burst hold/release events for desktop testing.
 - Held burst rendering now has a 400ms release ease; `Glitch` stretches horizontally while held.
 - Expanded loop infrastructure to five named slots: Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather.
-- Added 32-frame ping-pong playback scaffolding for image-sequence loops while keeping empty frame lists safe.
+- Added 24-frame ping-pong playback scaffolding for image-sequence loops while keeping empty frame lists safe.
+- Reverted the single-file animated WebP experiment after Pixi/WebGL failed to produce reliable visible animation. The active path is 24 PNG frames per loop slot.
 - Expanded procedural screensaver scaffolds to grid ocean, clouds, sandstorm, rain, wind, starfield, mystify, static, and pulse.
 
 Validation:
@@ -793,4 +794,33 @@ Remaining risk:
 - Needs real iPad Safari testing for touch ergonomics, browser fullscreen behavior, and event-room performance feel.
 
 Scope note:
-- No new source snapshot was created. v1 remains active.
+- This earlier event-readiness pass was superseded by the v1.3 uploaded PNG sequence checkpoint below.
+
+## v1.3 Uploaded PNG Sequence Checkpoint
+
+Date: 2026-05-05
+
+Build:
+
+```powershell
+npm.cmd run build
+npm.cmd run build:pages
+```
+
+Result: pass.
+
+Implemented:
+- Wired uploaded PNG frame sequences for Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather.
+- Each slot uses frames `00000` through `00023`, keeping the active playback target at 24 frames.
+- Left exported `00024` files unused for now so the manifest stays aligned with the requested 24-frame limit.
+- Kept the single-file WebP exports as reference assets only; active playback uses PNG frame paths.
+- Confirmed `docs/sequences` contains the copied Pages assets after `npm.cmd run build:pages`.
+
+Browser check:
+- Opened `http://localhost:5173/drumagery/`.
+- Triggered loop keys `1` through `5`.
+- Debug state showed all five named loops active.
+- Console warnings/errors: 0.
+
+Remaining risk:
+- Needs target iPad Safari and projector testing for real performance feel, load time, and touch ergonomics.

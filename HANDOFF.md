@@ -2,7 +2,7 @@
 
 ## Current Track
 
-The project has moved from saved v0 into active v1 performance-control development. The current v1 event-readiness pass keeps the XP-adjacent desktop/browser shell and Performance Edge Dock, simplifies iPad touch to burst-pad holds, adds a temporary `Big grid` mode, expands image-sequence slots to five 32-frame ping-pong placeholders, and broadens lightweight procedural screensaver accents. No new source snapshot has been created after v0.
+The project has moved from saved v0 into active v1 performance-control development. The current checkpoint is v1.3: an event-readiness pass that keeps the XP-adjacent desktop/browser shell and Performance Edge Dock, simplifies iPad touch to burst-pad holds, adds a temporary `Big grid` mode, wires five uploaded 24-frame PNG sequence loop slots with procedural fallbacks, and broadens lightweight procedural screensaver accents.
 
 ## GitHub Pages Deployment
 
@@ -79,7 +79,7 @@ First v1 development goal: make MIDI mapping easy to calibrate for the Arturia M
 
 Current v1 build goal: turn the prototype into a functional interactive-concert visual instrument with raw analog visuals, readable controls/data, iPad-safe touch fallback, and image-sequence infrastructure for major-key toggles.
 
-Current v1.1 state:
+Current v1.3 state:
 - `src/input/midiMap.ts` owns provisional MIDI assumptions.
 - Debug panel title is `Visual Instrument V1`.
 - MIDI calibration panel shows recent raw messages.
@@ -94,7 +94,7 @@ Current v1.1 state:
 - FX defaults, min/max ranges, slider steps, and smoothing values are centralized in `src/state/fxConfig.ts`.
 - Visual response tuning is centralized in `src/visuals/visualConfig.ts`.
 - Five major-key loop sequence slots are centralized in `src/visuals/imageSequenceManifest.ts`.
-- `src/visuals/ImageSequenceLoopLayer.ts` renders image-sequence slots as temporal grids and safely falls back to procedural placeholders while frame lists are empty.
+- `src/visuals/ImageSequenceLoopLayer.ts` renders image-sequence slots as temporal grids from PNG frame lists or safe procedural placeholders.
 - MIDI note routing is explicit: white-key notes toggle sequence loops, black-key notes hold/release procedural Screensaver Nodes, and drum-pad notes trigger pooled procedural/vector bursts with hold/release state.
 - `src/visuals/ScreensaverNodeLayer.ts` owns lightweight procedural nodes for grid ocean, clouds, sandstorm, rain, wind, starfield, mystify, static, and pulse.
 - `src/ui/PerformanceEdgeDock.ts` owns the fullscreen-stage bottom-corner GRID/TV/PLAY/FX overlay and dispatches through `InputRouter`.
@@ -124,7 +124,9 @@ Latest event-readiness pass:
 - Added `activeBurstHolds` to state. Touch, keyboard, and MIDI drum-pad input now route hold start/release events through `InputRouter`.
 - Updated held burst rendering so `Glitch` stretches horizontally while the other burst pads use matching impact/hold/release envelopes.
 - Expanded loop slots to five named categories: Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather.
-- Added 32-frame ping-pong playback scaffolding for image-sequence loops while keeping empty manifests asset-free and procedural.
+- Added 24-frame ping-pong playback scaffolding for image-sequence loops while keeping empty manifests asset-free and procedural.
+- Reverted the experimental single-file animated WebP path. The active asset path is now 24 PNG frames per loop slot.
+- Wired uploaded PNG sequences for Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather. Each slot uses frames `00000` through `00023`; exported `00024` files are intentionally left unused while the active target stays at 24 frames.
 - Expanded procedural screensaver node scaffolds to the requested lightweight categories without adding shaders or dependencies.
 - Clarified the MIDI note role split in `src/input/midiMap.ts`: major sequence notes vs minor vector burst notes.
 - Updated the debug panel headings to `Major image loops` and `Minor vector bursts`.
@@ -157,9 +159,15 @@ v1.1 light update:
 - Removed the separate root next-chat prompt artifact. Continuation notes now live in the project docs.
 - Keep this as a small update within active v1, not a new major version.
 
+v1.3 checkpoint:
+- Added `versions/v1.3/VERSION.md` as the checkpoint note for the uploaded PNG-sequence pass.
+- Built five active major-key PNG loops from `public/sequences`: Vaporwave, Chrome Tide, Signal Garden, Glass Desert, and Neon Weather.
+- Kept playback at 24 frames per slot by using frames `00000` through `00023`; exported `00024` files remain unused.
+- Verified local browser playback at `http://localhost:5173/drumagery/` by triggering keys `1` through `5` with no console warnings or errors.
+
 Next practical step:
-- Evaluate temporal grids, black-key screensaver holds, drum-pad bursts, and the Edge Dock in-browser before adding the next system.
-- Add real static frame paths to `src/visuals/imageSequenceManifest.ts` once the first major-key sequence assets exist, then tune per-slot FPS, scale, and anchor.
+- Evaluate temporal grids, black-key screensaver holds, drum-pad bursts, and the Edge Dock on the target iPad/browser before adding the next system.
+- Tune per-slot FPS, scale, and anchor after testing the five uploaded loops in the room.
 - Tune the XP/browser-window shell after seeing it in the room: decide whether it should read more like a standalone desktop app, a fake web browser, or a projector-safe control surface.
 - Continue keeping black-key screensavers and drum-pad burst visuals in the procedural layer.
 - Use the controller as a performance surface, not a musical-note system.
