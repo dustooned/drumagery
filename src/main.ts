@@ -120,7 +120,8 @@ mobileGridToggleElement.addEventListener("click", () => {
 
 const setFullscreenButtonState = (): void => {
   const isFullscreen = document.fullscreenElement === stageElement;
-  stageElement.classList.toggle("is-stage-fullscreen", isFullscreen);
+  const isMobileGridMode = appElement.classList.contains("is-mobile-grid-mode");
+  stageElement.classList.toggle("is-stage-fullscreen", isFullscreen || isMobileGridMode);
   fullscreenToggleElement.textContent = isFullscreen ? "Exit fullscreen" : "Fullscreen";
   fullscreenToggleElement.setAttribute("aria-pressed", String(isFullscreen));
   fullscreenExitElement.setAttribute("aria-hidden", String(!isFullscreen));
@@ -134,18 +135,24 @@ fullscreenToggleElement.addEventListener("click", () => {
   }
 
   if (stageElement.requestFullscreen) {
-    void stageElement.requestFullscreen();
-  }
-});
-
-fullscreenExitElement.addEventListener("click", () => {
-  if (appElement.classList.contains("is-mobile-grid-mode")) {
-    setMobileGridMode(false);
+    void stageElement.requestFullscreen().catch(() => {
+      setMobileGridMode(true);
+    });
     return;
   }
 
+  setMobileGridMode(true);
+});
+
+fullscreenExitElement.addEventListener("click", () => {
   if (document.fullscreenElement === stageElement) {
     void document.exitFullscreen();
+    return;
+  }
+
+  if (appElement.classList.contains("is-mobile-grid-mode")) {
+    setMobileGridMode(false);
+    return;
   }
 });
 
