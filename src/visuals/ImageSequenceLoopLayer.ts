@@ -1,8 +1,8 @@
-import { Container, Graphics, Sprite, Texture } from "pixi.js";
+import { BLEND_MODES, Container, Graphics, Sprite, Texture } from "pixi.js";
 import { INTERNAL_HEIGHT, INTERNAL_WIDTH } from "../constants";
 import type { GlobalFXState, LoopState } from "../state/types";
 import { hslToHex } from "../utils/math";
-import type { ImageSequenceSlot, TemporalMode } from "./imageSequenceManifest";
+import type { ImageSequenceSlot, SequenceBlendMode, TemporalMode } from "./imageSequenceManifest";
 
 export class ImageSequenceLoopLayer {
   readonly container = new Container();
@@ -16,6 +16,7 @@ export class ImageSequenceLoopLayer {
     private readonly loop: LoopState,
     private readonly slot: ImageSequenceSlot
   ) {
+    this.placeholder.blendMode = getPixiBlendMode(this.slot.blendMode);
     this.container.addChild(this.placeholder);
     this.createFrameSprites();
   }
@@ -79,6 +80,7 @@ export class ImageSequenceLoopLayer {
       const texture = this.frameTextures[frameIndex] ?? Texture.EMPTY;
 
       sprite.texture = texture;
+      sprite.blendMode = getPixiBlendMode(this.slot.blendMode);
       sprite.anchor.set(this.slot.anchorX, this.slot.anchorY);
       sprite.x = col * tileWidth + tileWidth * 0.5 + jitter.x;
       sprite.y = row * tileHeight + tileHeight * 0.5 + jitter.y;
@@ -167,6 +169,13 @@ export class ImageSequenceLoopLayer {
       this.placeholder.endFill();
     }
   }
+}
+
+function getPixiBlendMode(mode: SequenceBlendMode): BLEND_MODES {
+  if (mode === "add") return BLEND_MODES.ADD;
+  if (mode === "multiply") return BLEND_MODES.MULTIPLY;
+  if (mode === "screen") return BLEND_MODES.SCREEN;
+  return BLEND_MODES.NORMAL;
 }
 
 function getGridSizeFromDensity(density: number, isMobile: boolean): number {

@@ -22,6 +22,8 @@ const resetStateElement = document.querySelector<HTMLButtonElement>("#reset-stat
 const mobileGridToggleElement = document.querySelector<HTMLButtonElement>("#mobile-grid-toggle");
 const fullscreenToggleElement = document.querySelector<HTMLButtonElement>("#fullscreen-toggle");
 const fullscreenExitElement = document.querySelector<HTMLButtonElement>("#fullscreen-exit");
+const startMenuToggleElement = document.querySelector<HTMLButtonElement>("#start-menu-toggle");
+const startPopoverElement = document.querySelector<HTMLElement>("#start-popover");
 const desktopWallpaperUrl = `${import.meta.env.BASE_URL}wallpapers/xp-desktop/xp-desktop.png`;
 
 if (
@@ -36,12 +38,20 @@ if (
   !resetStateElement ||
   !mobileGridToggleElement ||
   !fullscreenToggleElement ||
-  !fullscreenExitElement
+  !fullscreenExitElement ||
+  !startMenuToggleElement ||
+  !startPopoverElement
 ) {
   throw new Error("Missing required app, stage, debug-panel, or action control element.");
 }
 
 document.documentElement.style.setProperty("--desktop-wallpaper-url", `url("${desktopWallpaperUrl}")`);
+
+startMenuToggleElement.addEventListener("click", () => {
+  const isOpen = startMenuToggleElement.getAttribute("aria-expanded") === "true";
+  startMenuToggleElement.setAttribute("aria-expanded", String(!isOpen));
+  startPopoverElement.hidden = isOpen;
+});
 
 const app = new Application({
   width: INTERNAL_WIDTH,

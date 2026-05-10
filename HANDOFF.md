@@ -170,6 +170,8 @@ v1.3 checkpoint:
 - Removed canvas touch loop toggles; touch now drives burst/screensaver behavior only.
 - Mapped Arturia MiniLab MkII channel 1 pitch-bend messages (`command 224`) directly to `verticalRoll`.
 - Boosted screensaver brightness and kept thicker vector strokes for stronger stage presence.
+- Added per-slot image-sequence blend modes: Vaporwave and Signal Garden use `screen`, Chrome Tide and Neon Weather use `add`, and Glass Desert uses `multiply`.
+- Added a subtle XP-style desktop taskbar with a Start popover and a start-button sprite drop path at `public/taskbar/start-button/start-button.png`.
 
 Next practical step:
 - Evaluate temporal grids, black-key screensaver holds, drum-pad bursts, and the Edge Dock on the target iPad/browser before adding the next system.

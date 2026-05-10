@@ -1,6 +1,7 @@
 export type ImageSequenceSlotId = "vaporwave" | "chrome-tide" | "signal-garden" | "glass-desert" | "neon-weather";
 export type TemporalMode = "uniform" | "cascade" | "wave" | "randomized";
 export type SequencePlaybackMode = "loop" | "ping-pong";
+export type SequenceBlendMode = "normal" | "add" | "multiply" | "screen";
 
 const assetPath = (path: string): string => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 const createFramePaths = (folder: string, prefix: string, extension = "png", count = 24, startIndex = 0): string[] =>
@@ -19,6 +20,7 @@ export interface ImageSequenceSlot {
   baseScale: number;
   hueOffset: number;
   temporalMode: TemporalMode;
+  blendMode: SequenceBlendMode;
 }
 
 export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
@@ -34,7 +36,8 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     anchorY: 0.5,
     baseScale: 1,
     hueOffset: 0.02,
-    temporalMode: "uniform"
+    temporalMode: "uniform",
+    blendMode: "screen"
   },
   {
     id: "chrome-tide",
@@ -48,7 +51,8 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     anchorY: 0.5,
     baseScale: 0.92,
     hueOffset: 0.18,
-    temporalMode: "cascade"
+    temporalMode: "cascade",
+    blendMode: "add"
   },
   {
     id: "signal-garden",
@@ -62,7 +66,8 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     anchorY: 0.5,
     baseScale: 1.08,
     hueOffset: 0.34,
-    temporalMode: "wave"
+    temporalMode: "wave",
+    blendMode: "screen"
   },
   {
     id: "glass-desert",
@@ -76,7 +81,8 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     anchorY: 0.5,
     baseScale: 1,
     hueOffset: 0.52,
-    temporalMode: "randomized"
+    temporalMode: "randomized",
+    blendMode: "multiply"
   },
   {
     id: "neon-weather",
@@ -90,7 +96,8 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     anchorY: 0.5,
     baseScale: 0.96,
     hueOffset: 0.68,
-    temporalMode: "wave"
+    temporalMode: "wave",
+    blendMode: "add"
   }
 ];
 

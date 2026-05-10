@@ -205,6 +205,13 @@ Each slot owns its loop ID, display name, frame list, playback FPS, anchor, scal
 
 The current v1 layer can render major-key loops as temporal grids. `density` selects 1x1, 2x2, 4x4, 6x6, or 8x8 layouts, `speed` advances frames, `chaos` offsets tile timing, and `distortion` adds simple tile spread/jitter. Mobile/touch-sized screens cap the grid at 6x6. Each major slot owns a `temporalMode`: uniform, cascade, wave, or deterministic randomized.
 
+Each major slot also owns a display blend mode:
+- Vaporwave: `screen`
+- Chrome Tide: `add`
+- Signal Garden: `screen`
+- Glass Desert: `multiply`
+- Neon Weather: `add`
+
 Black-key screensavers and drum-pad bursts stay separate from the uploaded image-sequence system.
 
 ## Desktop Wallpaper
@@ -224,6 +231,18 @@ public/wallpapers/xp-desktop/xp-desktop.png
 ```
 
 The performance dock may use emoji/icon display labels. These are visual-only labels; input routing still depends on stable `data-*` attributes and state control IDs.
+
+## Desktop Taskbar
+
+The XP-style footbar uses a lightweight built-in Start button placeholder and an info popover for the current version, app name, contact, and dustooned.com link.
+
+Custom start-button sprite drop path:
+
+```text
+public/taskbar/start-button/start-button.png
+```
+
+Recommended source size is `224 x 72`, displayed around `112 x 36` CSS pixels. A `112 x 36` 1x source also works.
 
 ## Screensaver Nodes
 

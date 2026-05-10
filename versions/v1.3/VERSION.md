@@ -27,6 +27,8 @@ Mark the uploaded PNG image-sequence pass as a stable event-readiness checkpoint
 - Canvas touch input no longer toggles image loops; it is reserved for burst/screensaver behavior.
 - Arturia MiniLab MkII channel 1 pitch-bend messages (`command 224`) control `verticalRoll` directly.
 - Screensaver node vectors are thicker and brighter for stronger stage visibility.
+- Major image-sequence slots now carry explicit blend modes matched to their titles.
+- A subtle XP-style desktop taskbar provides a Start popover with version/app/contact information and a link to `https://www.dustooned.com/`.
 
 ## Validation
 

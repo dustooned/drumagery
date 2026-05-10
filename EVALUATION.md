@@ -846,6 +846,8 @@ Implemented:
 - Increased screensaver node brightness while retaining the 3x vector stroke pass.
 - Wired `public/wallpapers/xp-desktop/xp-desktop.png` as the XP-style app desktop background.
 - Added emoji/icon labels to the fullscreen Performance Edge Dock without changing routing IDs.
+- Added per-slot image-sequence blend modes to make each sequence title feel more specific.
+- Added a subtle desktop taskbar with Start popover for version/app/contact information and the dustooned.com link.
 
 Browser check:
 - Opened `http://localhost:5173/drumagery/`.
