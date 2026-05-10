@@ -917,3 +917,107 @@ Change:
 Validation:
 - `npm.cmd run build`: pass.
 - `npm.cmd run build:pages`: pass.
+
+## v1.3.5 Reactive Variety Pass
+
+Date: 2026-05-10
+
+Change:
+- Expanded each Reactive burst profile from a narrow fixed effect cluster into a blended TV-effect palette.
+- Added secondary drivers from XY position, center/edge placement, diagonal crossing, pressure, and slow hold drift.
+- Kept manual mode and manual `globalFX` baseline unchanged.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.
+
+## v1.3.5 Two-Finger Reactive Blend
+
+Date: 2026-05-10
+
+Change:
+- Added per-touch burst hold identities so multiple fingers can remain active independently, even in the same burst zone.
+- Added a two-finger Reactive blend layer that calculates the center between simultaneous holds and mixes a slightly stronger shared force from feedback, phosphor trail, chroma shift, sync bands, bloom, and noise.
+- Kept the blend temporary and render-composed, so manual `globalFX` settings are still not overwritten.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.
+
+## v1.3.5 Axis-Based Reactive Mixer
+
+Date: 2026-05-10
+
+Change:
+- Reworked Reactive profiles into burst-zone mixer palettes.
+- Y axis now drives TV effectors per burst zone.
+- X axis now drives support/visual effectors per burst zone.
+- Diagonal/cross-axis movement adds smaller bridge effects.
+- Multi-touch blend remains layered above the per-hold mixers.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.
+
+## v1.3.5 Reactive Palette and Motion Impulse
+
+Date: 2026-05-10
+
+Change:
+- Added more explicit Reactive coverage for chroma, hue shift, bloom, sync bands, sync tear, and density.
+- Reduced vertical-roll weighting so Y movement does not dominate the Reactive feel.
+- Added per-touch movement energy from pointer speed. Fast motion creates a high-intensity impulse that eases down over roughly `520ms`.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.
+
+## v1.3.5 Flash / Glitch Separation
+
+Date: 2026-05-10
+
+Change:
+- Rebalanced Flash Reactive profile toward bloom, contrast, hue, density, and short persistence.
+- Rebalanced Glitch Reactive profile toward chroma shift, sync tear, sync bands, noise, distortion, and lighter pixel/density support.
+- Reduced vertical-roll contribution inside Glitch so it does not read as a simple up/down roll.
+- Added magenta/cyan split scan slices to the Glitch burst hit so it reads differently from the Flash white-out hit.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.
+
+## v1.3.5 Reactive Impact Cue Retune
+
+Date: 2026-05-10
+
+Change:
+- Removed vertical roll from all Reactive profiles and impact cues.
+- Added a short sync-tear/chroma/sync-band/bloom impact cue on hold start that eases out over roughly `360ms`.
+- Increased movement-impulse contribution for chroma shift, sync bands, and sync tear in multi-touch blends.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.
+
+## v1.3.6 Reactive Burst-Effector Retune
+
+Date: 2026-05-10
+
+Build:
+
+```powershell
+npm.cmd run build
+npm.cmd run build:pages
+```
+
+Result: pass.
+
+Implemented:
+- Bumped project version and visible app label to `v1.3.6`.
+- Removed vertical roll from Reactive mode entirely.
+- Retuned hold-start impact cues around sync tear, chroma shift, sync bands, and bloom.
+- Separated Flash from Glitch so Flash reads as brightness/hue/density and Glitch reads as chroma/sync/noise/distortion.
+- Kept manual FX as the baseline and Reactive mode opt-in.
+
+Remaining risk:
+- Needs target iPad/projector playtest for whether the retuned burst identities read clearly in live use.

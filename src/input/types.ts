@@ -21,6 +21,7 @@ export type InputEvent =
       type: "burst-hold-start";
       source: InputSource;
       burstId: number;
+      holdKey?: string;
       velocity: number;
       pressure: number;
       x: number;
@@ -30,7 +31,9 @@ export type InputEvent =
       type: "burst-hold-move";
       source: InputSource;
       burstId: number;
+      holdKey?: string;
       pressure: number;
+      movement: number;
       x: number;
       y: number;
     }
@@ -38,6 +41,7 @@ export type InputEvent =
       type: "burst-hold-release";
       source: InputSource;
       burstId: number;
+      holdKey?: string;
     }
   | {
       type: "screensaver-start";

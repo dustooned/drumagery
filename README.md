@@ -10,9 +10,9 @@ https://github.com/dustooned/drumagery
 
 ## Current Status
 
-Current development track: v1.3.5 reactive burst-mode checkpoint with MIDI calibration, iPad-safe touch burst controls, retro desktop UI, and lightweight procedural visual effectors.
+Current development track: v1.3.6 reactive burst-effector retune with MIDI calibration, iPad-safe touch burst controls, retro desktop UI, and lightweight procedural visual effectors.
 
-Stable checkpoints: `versions/v0`, `versions/v1.3`, `versions/v1.3.5`
+Stable checkpoints: `versions/v0`, `versions/v1.3`, `versions/v1.3.5`, `versions/v1.3.6`
 
 The saved v0 baseline is working as a browser visual instrument with:
 - PixiJS renderer at 1280x720 internal resolution.

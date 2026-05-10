@@ -45,6 +45,22 @@ Validation:
 
 Next likely work: target-device testing on iPad Safari and projector output, especially Reactive mode strength, button placement in Big grid/fullscreen, and dock readability.
 
+## v1.3.6
+
+Path:
+
+```text
+versions/v1.3.6
+```
+
+Reactive burst-effector retune checkpoint. Reactive mode remains opt-in and manual FX remain the baseline. This pass removes vertical roll from Reactive mode, separates Flash and Glitch more clearly, broadens the burst-zone effect palettes, adds per-touch movement-speed impulse energy, and keeps two-finger center blending.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.
+
+Next likely work: target-device testing on iPad Safari and projector output, especially whether Flash and Glitch now read as distinct live burst tools.
+
 ## v1
 
 Path:
@@ -53,7 +69,7 @@ Path:
 versions/v1
 ```
 
-In-progress performance-control iteration. The current stable note above this is `versions/v1.3.5`.
+In-progress performance-control iteration. The current stable note above this is `versions/v1.3.6`.
 
 Current v1 includes:
 - MIDI calibration UI and grouped learned CC slots.

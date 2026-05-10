@@ -190,6 +190,20 @@ export class BurstPool {
       graphic.lineTo(x + wobble, y + offsetY + 8);
       graphic.lineTo(x + radius * 0.7, y + offsetY - 4);
     }
+
+    const split = 10 + fx.chromaShift * 36 + burst.velocity * 18;
+    graphic.lineStyle(2 + fx.syncTear * 4 + overdrive * 5, 0xff4fd8, alpha * 0.62);
+    for (let i = 0; i < slices; i += 2) {
+      const offsetY = (i - 5) * 18 + Math.sin(progress * 18 + i) * 8;
+      graphic.moveTo(x - radius * 0.58 - split, y + offsetY);
+      graphic.lineTo(x + radius * 0.58 - split, y + offsetY - 6);
+    }
+    graphic.lineStyle(2 + fx.syncTear * 4 + overdrive * 5, 0x41f7ff, alpha * 0.56);
+    for (let i = 1; i < slices; i += 2) {
+      const offsetY = (i - 5) * 18 + Math.cos(progress * 20 + i) * 8;
+      graphic.moveTo(x - radius * 0.52 + split, y + offsetY + 5);
+      graphic.lineTo(x + radius * 0.52 + split, y + offsetY);
+    }
   }
 }
 

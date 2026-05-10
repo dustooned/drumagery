@@ -64,7 +64,7 @@ export class StateEngine {
     }
 
     if (event.type === "burst-hold-release") {
-      this.releaseBurstHold(event.burstId);
+      this.releaseBurstHold(event);
       changed = true;
     }
 
@@ -150,15 +150,18 @@ export class StateEngine {
   private startBurstHold(event: Extract<InputEvent, { type: "burst-hold-start" }>): void {
     const hold: BurstHoldState = {
       id: event.burstId,
+      holdKey: getBurstHoldKey(event),
       name: BURST_NAMES[event.burstId] ?? `Burst ${event.burstId + 1}`,
       startedAt: performance.now(),
       releasedAt: null,
       velocity: clamp01(event.velocity),
       pressure: clamp01(event.pressure),
+      movementEnergy: 0,
+      movementAt: performance.now(),
       x: clamp01(event.x),
       y: clamp01(event.y)
     };
-    const existingIndex = this.state.activeBurstHolds.findIndex((item) => item.id === hold.id);
+    const existingIndex = this.state.activeBurstHolds.findIndex((item) => item.holdKey === hold.holdKey);
 
     if (existingIndex >= 0) {
       this.state.activeBurstHolds[existingIndex] = hold;
@@ -169,16 +172,21 @@ export class StateEngine {
   }
 
   private moveBurstHold(event: Extract<InputEvent, { type: "burst-hold-move" }>): void {
-    const hold = this.state.activeBurstHolds.find((item) => item.id === event.burstId && item.releasedAt === null);
+    const holdKey = getBurstHoldKey(event);
+    const hold = this.state.activeBurstHolds.find((item) => item.holdKey === holdKey && item.releasedAt === null);
     if (!hold) return;
 
+    hold.id = event.burstId;
     hold.pressure = clamp01(event.pressure);
+    hold.movementEnergy = clamp01(event.movement);
+    hold.movementAt = performance.now();
     hold.x = clamp01(event.x);
     hold.y = clamp01(event.y);
   }
 
-  private releaseBurstHold(burstId: number): void {
-    const hold = this.state.activeBurstHolds.find((item) => item.id === burstId);
+  private releaseBurstHold(event: Extract<InputEvent, { type: "burst-hold-release" }>): void {
+    const holdKey = getBurstHoldKey(event);
+    const hold = this.state.activeBurstHolds.find((item) => item.holdKey === holdKey);
     if (!hold || hold.releasedAt !== null) return;
 
     hold.releasedAt = performance.now();
@@ -236,4 +244,8 @@ function cloneState(state: InstrumentState): InstrumentState {
     globalFX: { ...state.globalFX },
     reactiveModeEnabled: state.reactiveModeEnabled
   };
+}
+
+function getBurstHoldKey(event: { source: string; burstId: number; holdKey?: string }): string {
+  return event.holdKey ?? `${event.source}:${event.burstId}`;
 }

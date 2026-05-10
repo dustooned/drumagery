@@ -206,47 +206,96 @@ function getOverdrive(fx: GlobalFXState): number {
 }
 
 type BurstHoldFxProfile = {
-  controls: Array<{
-    control: GlobalFXControl;
-    start: number;
-    x: number;
-    y: number;
-    pressure: number;
-  }>;
+  tvAxis: AxisEffector[];
+  supportAxis: AxisEffector[];
+  crossAxis: AxisEffector[];
+};
+
+type AxisEffector = {
+  control: GlobalFXControl;
+  low: number;
+  high: number;
+  base: number;
+  pressure: number;
+  movement: number;
+  drift: number;
 };
 
 const BURST_HOLD_FX_PROFILES: BurstHoldFxProfile[] = [
   {
-    controls: [
-      { control: "syncTear", start: 0.18, x: 0.95, y: 0.18, pressure: 0.8 },
-      { control: "verticalRoll", start: 0.05, x: 0.08, y: 0.9, pressure: 0.4 },
-      { control: "distortion", start: 0.08, x: 0.45, y: 0.25, pressure: 0.85 }
+    tvAxis: [
+      { control: "bloom", low: 0.18, high: 0.42, base: 0.08, pressure: 0.2, movement: 0.16, drift: 0.1 },
+      { control: "contrast", low: 0.1, high: 0.32, base: 0.04, pressure: 0.12, movement: 0.08, drift: 0.08 },
+      { control: "syncBands", low: 0.02, high: 0.12, base: 0.01, pressure: 0.04, movement: 0.1, drift: 0.06 }
+    ],
+    supportAxis: [
+      { control: "hue", low: 0.03, high: 0.22, base: 0.02, pressure: 0.04, movement: 0.12, drift: 0.12 },
+      { control: "density", low: 0.06, high: 0.18, base: 0.01, pressure: 0.04, movement: 0.12, drift: 0.06 },
+      { control: "phosphorTrail", low: 0.18, high: 0.06, base: 0.02, pressure: 0.06, movement: 0.08, drift: 0.12 }
+    ],
+    crossAxis: [
+      { control: "feedback", low: 0.04, high: 0.12, base: 0.01, pressure: 0.04, movement: 0.08, drift: 0.08 }
     ]
   },
   {
-    controls: [
-      { control: "chromaShift", start: 0.16, x: 0.9, y: 0.16, pressure: 0.95 },
-      { control: "syncBands", start: 0.08, x: 0.12, y: 0.85, pressure: 0.45 },
-      { control: "contrast", start: 0.05, x: 0.2, y: 0.35, pressure: 0.7 }
+    tvAxis: [
+      { control: "chromaShift", low: 0.12, high: 0.48, base: 0.08, pressure: 0.22, movement: 0.22, drift: 0.16 },
+      { control: "syncBands", low: 0.28, high: 0.1, base: 0.04, pressure: 0.08, movement: 0.2, drift: 0.22 },
+      { control: "noise", low: 0.04, high: 0.22, base: 0.02, pressure: 0.14, movement: 0.2, drift: 0.14 },
+      { control: "syncTear", low: 0.02, high: 0.18, base: 0.01, pressure: 0.08, movement: 0.18, drift: 0.1 }
+    ],
+    supportAxis: [
+      { control: "bloom", low: 0.3, high: 0.1, base: 0.03, pressure: 0.14, movement: 0.08, drift: 0.12 },
+      { control: "contrast", low: 0.08, high: 0.38, base: 0.04, pressure: 0.18, movement: 0.08, drift: 0.08 },
+      { control: "feedback", low: 0.12, high: 0.22, base: 0.02, pressure: 0.08, movement: 0.12, drift: 0.14 },
+      { control: "density", low: 0.04, high: 0.22, base: 0.01, pressure: 0.06, movement: 0.18, drift: 0.08 }
+    ],
+    crossAxis: [
+      { control: "phosphorTrail", low: 0.12, high: 0.18, base: 0.02, pressure: 0.08, movement: 0.08, drift: 0.16 }
     ]
   },
   {
-    controls: [
-      { control: "noise", start: 0.14, x: 0.75, y: 0.22, pressure: 0.95 },
-      { control: "bloom", start: 0.08, x: 0.15, y: 0.75, pressure: 0.65 },
-      { control: "pixelate", start: 0.05, x: 0.35, y: 0.45, pressure: 0.6 }
+    tvAxis: [
+      { control: "noise", low: 0.16, high: 0.48, base: 0.06, pressure: 0.24, movement: 0.18, drift: 0.22 },
+      { control: "syncTear", low: 0.24, high: 0.08, base: 0.02, pressure: 0.12, movement: 0.22, drift: 0.14 },
+      { control: "syncBands", low: 0.03, high: 0.18, base: 0.01, pressure: 0.06, movement: 0.16, drift: 0.12 }
+    ],
+    supportAxis: [
+      { control: "bloom", low: 0.34, high: 0.08, base: 0.04, pressure: 0.18, movement: 0.08, drift: 0.14 },
+      { control: "pixelate", low: 0.04, high: 0.3, base: 0.02, pressure: 0.1, movement: 0.1, drift: 0.08 },
+      { control: "feedback", low: 0.24, high: 0.16, base: 0.02, pressure: 0.08, movement: 0.14, drift: 0.18 },
+      { control: "hue", low: 0.1, high: 0.02, base: 0.01, pressure: 0.04, movement: 0.14, drift: 0.12 }
+    ],
+    crossAxis: [
+      { control: "chromaShift", low: 0.04, high: 0.18, base: 0.02, pressure: 0.1, movement: 0.08, drift: 0.12 }
     ]
   },
   {
-    controls: [
-      { control: "pixelate", start: 0.12, x: 0.9, y: 0.25, pressure: 0.85 },
-      { control: "phosphorTrail", start: 0.1, x: 0.2, y: 0.9, pressure: 0.55 },
-      { control: "feedback", start: 0.06, x: 0.28, y: 0.72, pressure: 0.7 }
+    tvAxis: [
+      { control: "chromaShift", low: 0.24, high: 0.56, base: 0.08, pressure: 0.2, movement: 0.3, drift: 0.18 },
+      { control: "syncTear", low: 0.08, high: 0.42, base: 0.04, pressure: 0.12, movement: 0.28, drift: 0.14 },
+      { control: "syncBands", low: 0.1, high: 0.34, base: 0.04, pressure: 0.08, movement: 0.26, drift: 0.18 },
+      { control: "noise", low: 0.06, high: 0.24, base: 0.02, pressure: 0.12, movement: 0.24, drift: 0.14 },
+      { control: "density", low: 0.06, high: 0.18, base: 0.01, pressure: 0.04, movement: 0.12, drift: 0.08 }
+    ],
+    supportAxis: [
+      { control: "distortion", low: 0.12, high: 0.36, base: 0.04, pressure: 0.18, movement: 0.22, drift: 0.12 },
+      { control: "pixelate", low: 0.04, high: 0.2, base: 0.01, pressure: 0.06, movement: 0.12, drift: 0.06 },
+      { control: "density", low: 0.2, high: 0.08, base: 0.02, pressure: 0.04, movement: 0.18, drift: 0.08 },
+      { control: "feedback", low: 0.08, high: 0.2, base: 0.02, pressure: 0.08, movement: 0.12, drift: 0.1 }
+    ],
+    crossAxis: [
+      { control: "chromaShift", low: 0.08, high: 0.28, base: 0.02, pressure: 0.12, movement: 0.18, drift: 0.12 },
+      { control: "syncTear", low: 0.04, high: 0.22, base: 0.01, pressure: 0.08, movement: 0.18, drift: 0.1 }
     ]
   }
 ];
 const BURST_HOLD_FX_STRENGTH = 0.34;
 const BURST_HOLD_GROWTH_RATE = 0.9;
+const BURST_HOLD_DRIFT_RATE = 0.82;
+const MOVEMENT_IMPULSE_DECAY_MS = 520;
+const MULTI_TOUCH_BLEND_STRENGTH = 0.44;
+const IMPACT_CUE_MS = 360;
 
 function composeBurstHoldFX(baseFX: GlobalFXState, holds: BurstHoldState[]): GlobalFXState {
   const fx = { ...baseFX };
@@ -263,15 +312,100 @@ function composeBurstHoldFX(baseFX: GlobalFXState, holds: BurstHoldState[]): Glo
 
     const pressure = Math.max(hold.pressure, hold.velocity * 0.72);
     const amount = grow * releaseFade;
+    const positionMovementDrive = Math.min(1, Math.hypot(hold.x - 0.5, hold.y - 0.5) * 1.55);
+    const movementImpulse = getMovementImpulse(hold, now);
+    const movementDrive = Math.min(1, positionMovementDrive * 0.45 + movementImpulse);
+    const diagonalDrive = 1 - Math.min(1, Math.abs(hold.x - hold.y) * 2.2);
+    const driftDrive = 0.5 + Math.sin(ageSeconds * BURST_HOLD_DRIFT_RATE + hold.id * 1.73) * 0.5;
 
-    for (const item of profile.controls) {
-      const axisDrive = item.x * hold.x + item.y * (1 - hold.y) + item.pressure * pressure;
-      const overlay = (item.start + axisDrive) * amount * BURST_HOLD_FX_STRENGTH;
-      fx[item.control] = normalizeFXControl(item.control, Math.max(fx[item.control], baseFX[item.control] + overlay));
-    }
+    applyAxisEffectors(fx, baseFX, profile.tvAxis, 1 - hold.y, amount, pressure, movementDrive, driftDrive);
+    applyAxisEffectors(fx, baseFX, profile.supportAxis, hold.x, amount, pressure, movementDrive, driftDrive);
+    applyAxisEffectors(fx, baseFX, profile.crossAxis, diagonalDrive, amount * 0.75, pressure, movementDrive, driftDrive);
+    applyImpactCueFX(fx, baseFX, hold, now, releaseFade);
   }
 
+  applyMultiTouchBlendFX(fx, baseFX, holds, now);
+
   return fx;
+}
+
+function applyImpactCueFX(fx: GlobalFXState, baseFX: GlobalFXState, hold: BurstHoldState, now: number, releaseFade: number): void {
+  const impactAge = now - hold.startedAt;
+  if (impactAge > IMPACT_CUE_MS) return;
+
+  const impact = 1 - Math.pow(Math.min(1, Math.max(0, impactAge / IMPACT_CUE_MS)), 3);
+  const force = impact * releaseFade * (0.72 + hold.velocity * 0.34 + hold.pressure * 0.18) * BURST_HOLD_FX_STRENGTH;
+
+  addOverlayFX(fx, baseFX, "syncTear", force * 0.2);
+  addOverlayFX(fx, baseFX, "chromaShift", force * 0.16);
+  addOverlayFX(fx, baseFX, "syncBands", force * 0.14);
+  addOverlayFX(fx, baseFX, "bloom", force * 0.12);
+}
+
+function applyAxisEffectors(
+  fx: GlobalFXState,
+  baseFX: GlobalFXState,
+  effectors: AxisEffector[],
+  axisValue: number,
+  amount: number,
+  pressure: number,
+  movementDrive: number,
+  driftDrive: number
+): void {
+  const axis = Math.min(1, Math.max(0, axisValue));
+
+  for (const item of effectors) {
+    const axisMix = item.low * (1 - axis) + item.high * axis;
+    const overlay =
+      (item.base + axisMix + item.pressure * pressure + item.movement * movementDrive + item.drift * driftDrive) *
+      amount *
+      BURST_HOLD_FX_STRENGTH;
+    addOverlayFX(fx, baseFX, item.control, overlay);
+  }
+}
+
+function applyMultiTouchBlendFX(fx: GlobalFXState, baseFX: GlobalFXState, holds: BurstHoldState[], now: number): void {
+  const activeHolds = holds.filter((hold) => hold.releasedAt === null);
+  if (activeHolds.length < 2) return;
+
+  for (let index = 0; index < activeHolds.length - 1; index += 1) {
+    const first = activeHolds[index];
+    const second = activeHolds[index + 1];
+    const centerX = (first.x + second.x) * 0.5;
+    const centerY = (first.y + second.y) * 0.5;
+    const separation = Math.min(1, Math.hypot(first.x - second.x, first.y - second.y));
+    const pressure = Math.min(1, (first.pressure + second.pressure + first.velocity + second.velocity) * 0.25);
+    const movementImpulse = Math.max(getMovementImpulse(first, now), getMovementImpulse(second, now));
+    const ageSeconds = Math.max(0, (now - Math.max(first.startedAt, second.startedAt)) / 1000);
+    const grow = 1 - Math.exp(-ageSeconds * 1.15);
+    const centerDrive = 1 - Math.min(1, Math.max(Math.abs(centerX - 0.5), Math.abs(centerY - 0.5)) * 2);
+    const crossingDrive = 1 - Math.min(1, Math.abs(centerX - centerY) * 2);
+    const driftDrive = 0.5 + Math.sin(ageSeconds * 1.05 + (first.id + second.id) * 0.91) * 0.5;
+    const pairDrive = grow * (0.72 + pressure * 0.42 + movementImpulse * 0.35 + (1 - separation) * 0.22) * MULTI_TOUCH_BLEND_STRENGTH;
+    const pairHue = ((first.id + second.id) % 4) / 4;
+
+    addOverlayFX(fx, baseFX, "feedback", pairDrive * (0.1 + centerDrive * 0.28 + driftDrive * 0.1));
+    addOverlayFX(fx, baseFX, "phosphorTrail", pairDrive * (0.08 + centerDrive * 0.3 + pressure * 0.12));
+    addOverlayFX(fx, baseFX, "chromaShift", pairDrive * (0.1 + crossingDrive * 0.26 + pairHue * 0.08 + movementImpulse * 0.18));
+    addOverlayFX(fx, baseFX, "syncBands", pairDrive * (0.06 + separation * 0.2 + driftDrive * 0.08 + movementImpulse * 0.2));
+    addOverlayFX(fx, baseFX, "syncTear", pairDrive * (0.04 + movementImpulse * 0.24 + separation * 0.08));
+    addOverlayFX(fx, baseFX, "hue", pairDrive * (0.03 + crossingDrive * 0.08 + movementImpulse * 0.08));
+    addOverlayFX(fx, baseFX, "density", pairDrive * (0.03 + movementImpulse * 0.16 + (1 - centerDrive) * 0.08));
+    addOverlayFX(fx, baseFX, "bloom", pairDrive * (0.05 + pressure * 0.22 + centerDrive * 0.12));
+    addOverlayFX(fx, baseFX, "noise", pairDrive * (0.04 + separation * 0.12 + (1 - centerDrive) * 0.12));
+  }
+}
+
+function addOverlayFX(fx: GlobalFXState, baseFX: GlobalFXState, control: GlobalFXControl, amount: number): void {
+  fx[control] = normalizeFXControl(control, Math.max(fx[control], baseFX[control] + amount));
+}
+
+function getMovementImpulse(hold: BurstHoldState, now: number): number {
+  const age = Math.max(0, now - hold.movementAt);
+  if (age >= MOVEMENT_IMPULSE_DECAY_MS) return 0;
+
+  const ease = 1 - Math.pow(age / MOVEMENT_IMPULSE_DECAY_MS, 3);
+  return Math.min(1, hold.movementEnergy * ease);
 }
 
 function getBurstHoldReleaseFade(hold: BurstHoldState, now: number): number {

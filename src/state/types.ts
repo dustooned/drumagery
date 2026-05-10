@@ -18,11 +18,14 @@ export interface BurstEvent {
 
 export interface BurstHoldState {
   id: number;
+  holdKey: string;
   name: string;
   startedAt: number;
   releasedAt: number | null;
   velocity: number;
   pressure: number;
+  movementEnergy: number;
+  movementAt: number;
   x: number;
   y: number;
 }

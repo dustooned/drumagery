@@ -2,7 +2,7 @@
 
 ## Current Track
 
-The project has moved from saved v0 into active v1 performance-control development. The current checkpoint is v1.3.5: a reactive burst-mode polish pass that keeps the XP-adjacent desktop/browser shell and Performance Edge Dock, preserves manual FX as the default baseline, adds an opt-in Reactive mode for held/slid burst TV effects, keeps `Big grid` mode, and retains the v1.3 uploaded 24-frame PNG sequence loop slots with procedural fallbacks.
+The project has moved from saved v0 into active v1 performance-control development. The current checkpoint is v1.3.6: a reactive burst-effector retune that keeps the XP-adjacent desktop/browser shell and Performance Edge Dock, preserves manual FX as the default baseline, removes vertical roll from Reactive mode, adds movement-speed impact energy, separates Flash from Glitch behavior, keeps `Big grid` mode, and retains the v1.3 uploaded 24-frame PNG sequence loop slots with procedural fallbacks.
 
 ## GitHub Pages Deployment
 
@@ -79,7 +79,7 @@ First v1 development goal: make MIDI mapping easy to calibrate for the Arturia M
 
 Current v1 build goal: turn the prototype into a functional interactive-concert visual instrument with raw analog visuals, readable controls/data, iPad-safe touch fallback, and image-sequence infrastructure for major-key toggles.
 
-Current v1.3.5 state:
+Current v1.3.6 state:
 - `src/input/midiMap.ts` owns provisional MIDI assumptions.
 - Debug panel title is `Visual Instrument V1`.
 - MIDI calibration panel shows recent raw messages.
