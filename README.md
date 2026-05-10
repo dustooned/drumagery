@@ -10,9 +10,9 @@ https://github.com/dustooned/drumagery
 
 ## Current Status
 
-Current development track: v1.3 PNG-sequence event-readiness checkpoint with MIDI calibration, simplified touch burst controls, retro desktop UI, and lightweight procedural visual effectors.
+Current development track: v1.3.5 reactive burst-mode checkpoint with MIDI calibration, iPad-safe touch burst controls, retro desktop UI, and lightweight procedural visual effectors.
 
-Stable checkpoints: `versions/v0`, `versions/v1.3`
+Stable checkpoints: `versions/v0`, `versions/v1.3`, `versions/v1.3.5`
 
 The saved v0 baseline is working as a browser visual instrument with:
 - PixiJS renderer at 1280x720 internal resolution.
@@ -43,9 +43,10 @@ The active v1 working tree adds a clearer MIDI calibration panel:
 - a temporary `Big grid` mobile mode that enlarges the iPad performance surface while keeping `Exit` and the performance `Menu` available
 - simplified touch behavior: touch no longer steers global FX directly; touch taps/holds trigger routed burst holds and paired vector accents
 - a fullscreen-only Performance Edge Dock with GRID, TV, PLAY, and FX panels that dispatch through the existing input/state path
+- opt-in Reactive mode that lets held/slid burst gestures temporarily layer TV-style global effects over the user's manual FX baseline, then fade back on release
 
 Next build direction:
-- Test `Big grid` mode and burst holds on the target iPad before the event.
+- Test `Big grid` mode, Reactive mode, and burst holds on the target iPad before the event.
 - Tune the Performance Edge Dock layout after using it on the target touch device.
 - Tune the five uploaded 24-frame PNG sequence loops for FPS, scale, anchor, and room/projector feel.
 - Keep black-key screensavers and drum-pad bursts procedural and vector-driven.

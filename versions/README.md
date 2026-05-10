@@ -29,6 +29,22 @@ Validation:
 
 Next likely work: test and tune the five sequence loops on target iPad Safari/projector output, especially FPS, scale, anchor, load time, and touch ergonomics.
 
+## v1.3.5
+
+Path:
+
+```text
+versions/v1.3.5
+```
+
+Reactive burst-mode checkpoint for the active v1 performance instrument. Manual FX remain the default baseline. Reactive mode is off by default and can be enabled from the bottom stage actions, the debug panel, or the fullscreen/Big-grid corner sprite control. When enabled, held/slid burst gestures temporarily layer burst-specific TV effects over the user's current manual FX values and fade back on release.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.
+
+Next likely work: target-device testing on iPad Safari and projector output, especially Reactive mode strength, button placement in Big grid/fullscreen, and dock readability.
+
 ## v1
 
 Path:
@@ -37,7 +53,7 @@ Path:
 versions/v1
 ```
 
-In-progress performance-control iteration. The current stable note above this is `versions/v1.3`.
+In-progress performance-control iteration. The current stable note above this is `versions/v1.3.5`.
 
 Current v1 includes:
 - MIDI calibration UI and grouped learned CC slots.

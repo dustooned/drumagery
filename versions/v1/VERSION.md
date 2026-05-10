@@ -167,7 +167,7 @@ npm.cmd run build
 
 Result: pass.
 
-Latest review: 2026-05-05. The uploaded PNG-sequence checkpoint is documented in `versions/v1.3/VERSION.md`.
+Latest review: 2026-05-10. The current reactive burst-mode checkpoint is documented in `versions/v1.3.5/VERSION.md`; the uploaded PNG-sequence checkpoint remains documented in `versions/v1.3/VERSION.md`.
 
 ## Run Note
 
@@ -187,4 +187,4 @@ Direct `index.html` loading is not supported for this TypeScript/Vite app.
 
 ## Not Yet Frozen
 
-The current v1 checkpoint is `versions/v1.3`. Freeze a fuller source snapshot only after the actual MiniLab mappings and target-device behavior are confirmed stable.
+The current v1 checkpoint is `versions/v1.3.5`. Freeze a fuller source snapshot only after the actual MiniLab mappings and target-device behavior are confirmed stable.

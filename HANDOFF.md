@@ -2,7 +2,7 @@
 
 ## Current Track
 
-The project has moved from saved v0 into active v1 performance-control development. The current checkpoint is v1.3: an event-readiness pass that keeps the XP-adjacent desktop/browser shell and Performance Edge Dock, simplifies iPad touch to burst-pad holds, adds a temporary `Big grid` mode, wires five uploaded 24-frame PNG sequence loop slots with procedural fallbacks, and broadens lightweight procedural screensaver accents.
+The project has moved from saved v0 into active v1 performance-control development. The current checkpoint is v1.3.5: a reactive burst-mode polish pass that keeps the XP-adjacent desktop/browser shell and Performance Edge Dock, preserves manual FX as the default baseline, adds an opt-in Reactive mode for held/slid burst TV effects, keeps `Big grid` mode, and retains the v1.3 uploaded 24-frame PNG sequence loop slots with procedural fallbacks.
 
 ## GitHub Pages Deployment
 
@@ -79,7 +79,7 @@ First v1 development goal: make MIDI mapping easy to calibrate for the Arturia M
 
 Current v1 build goal: turn the prototype into a functional interactive-concert visual instrument with raw analog visuals, readable controls/data, iPad-safe touch fallback, and image-sequence infrastructure for major-key toggles.
 
-Current v1.3 state:
+Current v1.3.5 state:
 - `src/input/midiMap.ts` owns provisional MIDI assumptions.
 - Debug panel title is `Visual Instrument V1`.
 - MIDI calibration panel shows recent raw messages.
@@ -103,6 +103,7 @@ Current v1.3 state:
 - FX max input ranges are expanded to 3x the original max values. Most controls are now `0..3`; `speed` is now `0.2..6`.
 - Values above `1` now create visible overdrive in the procedural visuals and whole-stage filters.
 - Touch is intentionally simplified for the event: stage taps/holds trigger burst holds and paired screensaver accents; touch no longer directly steers `hue`, `intensity`, `distortion`, or `scale`.
+- Reactive mode is opt-in and off by default. When enabled, held/slid burst gestures temporarily add burst-specific TV effects over the user's manual `globalFX` baseline, then fade back on release. Manual settings remain steady until the user changes them or presses Reset.
 - The app has a retro desktop/browser-window shell around the Pixi canvas, styled in a Windows XP-adjacent direction without adding dependencies.
 - The stage and debug panel now use a non-overlapping layout, with MIDI/action buttons below the visual window.
 - `chromaShift` adds a whole-stage RGB split/glitch color offset through `src/visuals/ChromaSplitFilter.ts`.

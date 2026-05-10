@@ -882,3 +882,27 @@ Implemented:
 
 Remaining risk:
 - Needs visual click-test in the in-app browser or target browser after reopening the session.
+
+## v1.3.5 Reactive Burst Mode Checkpoint
+
+Date: 2026-05-10
+
+Build:
+
+```powershell
+npm.cmd run build
+npm.cmd run build:pages
+```
+
+Result: pass.
+
+Implemented:
+- Added `reactiveModeEnabled` to state, defaulting to manual/off.
+- Routed Reactive mode toggles through `InputRouter` and `StateEngine`.
+- Added bottom action-row, debug-panel, and fullscreen/Big-grid corner sprite controls for Reactive mode.
+- Kept manual `globalFX` as the baseline and composed temporary held-burst TV overlays only inside `VisualEngine`.
+- Reduced held-burst overlay strength to roughly one third and slowed its growth to about half speed.
+- Updated visible version labels and docs to `v1.3.5`.
+
+Remaining risk:
+- Needs target iPad/projector playtest for Reactive mode strength, Big grid button placement, and live readability.
