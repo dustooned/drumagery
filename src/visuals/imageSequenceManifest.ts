@@ -82,7 +82,7 @@ export const IMAGE_SEQUENCE_SLOTS: ImageSequenceSlot[] = [
     baseScale: 1,
     hueOffset: 0.52,
     temporalMode: "randomized",
-    blendMode: "multiply"
+    blendMode: "screen"
   },
   {
     id: "neon-weather",

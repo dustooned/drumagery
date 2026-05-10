@@ -171,7 +171,7 @@ v1.3 checkpoint:
 - Removed canvas touch loop toggles; touch now drives burst/screensaver behavior only.
 - Mapped Arturia MiniLab MkII channel 1 pitch-bend messages (`command 224`) directly to `verticalRoll`.
 - Boosted screensaver brightness and kept thicker vector strokes for stronger stage presence.
-- Added per-slot image-sequence blend modes: Vaporwave and Signal Garden use `screen`, Chrome Tide and Neon Weather use `add`, and Glass Desert uses `multiply`.
+- Added per-slot image-sequence blend modes: Vaporwave, Signal Garden, and Glass Desert use `screen`; Chrome Tide and Neon Weather use `add`.
 - Added a subtle XP-style desktop taskbar with a Start popover and a start-button sprite drop path at `public/taskbar/start-button/start-button.png`.
 - Updated the taskbar Start popover to fade in/out over `800ms ease`, auto-close after 5 seconds, and close when Start is clicked again.
 - Added a taskbar hide/restore control for the default desktop/debug layout, with the hide sprite drop path at `public/taskbar/hide-button/hide-button.png`.

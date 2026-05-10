@@ -906,3 +906,14 @@ Implemented:
 
 Remaining risk:
 - Needs target iPad/projector playtest for Reactive mode strength, Big grid button placement, and live readability.
+
+## v1.3.5 Glass Desert Blend Fix
+
+Date: 2026-05-10
+
+Change:
+- Switched Glass Desert image-sequence blend mode from `multiply` to `screen` because multiply could make the slot render black against dark source frames/backgrounds.
+
+Validation:
+- `npm.cmd run build`: pass.
+- `npm.cmd run build:pages`: pass.

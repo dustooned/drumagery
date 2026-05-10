@@ -28,6 +28,7 @@ Mark the uploaded PNG image-sequence pass as a stable event-readiness checkpoint
 - Arturia MiniLab MkII channel 1 pitch-bend messages (`command 224`) control `verticalRoll` directly.
 - Screensaver node vectors are thicker and brighter for stronger stage visibility.
 - Major image-sequence slots now carry explicit blend modes matched to their titles.
+- Glass Desert was later moved off `multiply` to `screen` because multiply could black out the stage against dark frames/backgrounds.
 - A subtle XP-style desktop taskbar provides a Start popover with version/app/contact information and a link to `https://www.dustooned.com/`.
 - The Start popover fades in/out over `800ms ease`, auto-closes after 5 seconds, and closes when Start is clicked again.
 - The taskbar includes a hide/restore control for the default desktop/debug layout and is hidden in Big grid/fullscreen modes.

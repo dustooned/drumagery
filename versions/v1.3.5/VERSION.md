@@ -20,6 +20,7 @@ Mark the reactive burst-mode and deployment-label pass as a stable checkpoint in
 - `VisualEngine` only composes temporary burst TV overlays when Reactive mode is enabled.
 - Burst TV overlays are tuned down to roughly one-third strength and build about twice as slowly.
 - Releasing a held burst fades the temporary TV overlay back to the user's manual FX baseline.
+- Glass Desert now uses `screen` blend mode instead of `multiply` to avoid blacking out the stage.
 - Reset remains the way to clear user-set manual FX.
 - GitHub Pages output in `docs/` is refreshed through `npm.cmd run build:pages`.
 

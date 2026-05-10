@@ -210,7 +210,7 @@ Each major slot also owns a display blend mode:
 - Vaporwave: `screen`
 - Chrome Tide: `add`
 - Signal Garden: `screen`
-- Glass Desert: `multiply`
+- Glass Desert: `screen`
 - Neon Weather: `add`
 
 Black-key screensavers and drum-pad bursts stay separate from the uploaded image-sequence system.
