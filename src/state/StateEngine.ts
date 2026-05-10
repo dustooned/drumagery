@@ -10,7 +10,8 @@ const DEFAULT_STATE: InstrumentState = {
   burstQueue: [],
   activeBurstHolds: [],
   activeScreensaverNodes: [],
-  globalFX: createDefaultGlobalFX()
+  globalFX: createDefaultGlobalFX(),
+  reactiveModeEnabled: false
 };
 
 const SCREENSAVER_NODE_TYPES: ScreensaverNodeType[] = [
@@ -57,6 +58,11 @@ export class StateEngine {
       changed = true;
     }
 
+    if (event.type === "burst-hold-move") {
+      this.moveBurstHold(event);
+      changed = true;
+    }
+
     if (event.type === "burst-hold-release") {
       this.releaseBurstHold(event.burstId);
       changed = true;
@@ -74,6 +80,11 @@ export class StateEngine {
 
     if (event.type === "global-fx") {
       this.state.globalFX[event.control] = normalizeFXControl(event.control, event.value);
+      changed = true;
+    }
+
+    if (event.type === "reactive-mode") {
+      this.state.reactiveModeEnabled = event.enabled;
       changed = true;
     }
 
@@ -143,6 +154,7 @@ export class StateEngine {
       startedAt: performance.now(),
       releasedAt: null,
       velocity: clamp01(event.velocity),
+      pressure: clamp01(event.pressure),
       x: clamp01(event.x),
       y: clamp01(event.y)
     };
@@ -154,6 +166,15 @@ export class StateEngine {
     }
 
     this.state.activeBurstHolds.push(hold);
+  }
+
+  private moveBurstHold(event: Extract<InputEvent, { type: "burst-hold-move" }>): void {
+    const hold = this.state.activeBurstHolds.find((item) => item.id === event.burstId && item.releasedAt === null);
+    if (!hold) return;
+
+    hold.pressure = clamp01(event.pressure);
+    hold.x = clamp01(event.x);
+    hold.y = clamp01(event.y);
   }
 
   private releaseBurstHold(burstId: number): void {
@@ -212,6 +233,7 @@ function cloneState(state: InstrumentState): InstrumentState {
     burstQueue: state.burstQueue.map((burst) => ({ ...burst })),
     activeBurstHolds: state.activeBurstHolds.map((hold) => ({ ...hold })),
     activeScreensaverNodes: state.activeScreensaverNodes.map((node) => ({ ...node })),
-    globalFX: { ...state.globalFX }
+    globalFX: { ...state.globalFX },
+    reactiveModeEnabled: state.reactiveModeEnabled
   };
 }

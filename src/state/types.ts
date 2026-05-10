@@ -22,6 +22,7 @@ export interface BurstHoldState {
   startedAt: number;
   releasedAt: number | null;
   velocity: number;
+  pressure: number;
   x: number;
   y: number;
 }
@@ -79,6 +80,7 @@ export interface InstrumentState {
   activeBurstHolds: BurstHoldState[];
   activeScreensaverNodes: ScreensaverNodeState[];
   globalFX: GlobalFXState;
+  reactiveModeEnabled: boolean;
 }
 
 export type StateListener = (state: InstrumentState) => void;

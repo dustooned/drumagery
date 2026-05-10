@@ -29,6 +29,9 @@ Mark the uploaded PNG image-sequence pass as a stable event-readiness checkpoint
 - Screensaver node vectors are thicker and brighter for stronger stage visibility.
 - Major image-sequence slots now carry explicit blend modes matched to their titles.
 - A subtle XP-style desktop taskbar provides a Start popover with version/app/contact information and a link to `https://www.dustooned.com/`.
+- The Start popover fades in/out over `800ms ease`, auto-closes after 5 seconds, and closes when Start is clicked again.
+- The taskbar includes a hide/restore control for the default desktop/debug layout and is hidden in Big grid/fullscreen modes.
+- Taskbar sprite drop paths are `public/taskbar/start-button/start-button.png` and `public/taskbar/hide-button/hide-button.png`.
 
 ## Validation
 
@@ -56,3 +59,4 @@ GitHub Pages uses `main / docs`, so `npm.cmd run build:pages` must be run before
 - Tune per-slot FPS, scale, anchor, and temporal modes after seeing the loops in the room.
 - Watch load time and memory now that PNG sequences are active assets.
 - Keep MIDI optional and preserve keyboard/touch/debug fallbacks.
+- Click-test the taskbar Start popover and hide/restore behavior in the target browser.

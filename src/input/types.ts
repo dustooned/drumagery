@@ -22,6 +22,15 @@ export type InputEvent =
       source: InputSource;
       burstId: number;
       velocity: number;
+      pressure: number;
+      x: number;
+      y: number;
+    }
+  | {
+      type: "burst-hold-move";
+      source: InputSource;
+      burstId: number;
+      pressure: number;
       x: number;
       y: number;
     }
@@ -48,6 +57,11 @@ export type InputEvent =
       source: InputSource;
       control: GlobalFXControl;
       value: number;
+    }
+  | {
+      type: "reactive-mode";
+      source: InputSource;
+      enabled: boolean;
     }
   | {
       type: "reset";

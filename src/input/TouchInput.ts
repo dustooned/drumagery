@@ -31,6 +31,7 @@ export class TouchInput {
     event.preventDefault();
     this.target.setPointerCapture(event.pointerId);
     const { x, y } = this.getNormalizedPosition(event);
+    const pressure = getTouchPressure(event);
     const burstId = Math.min(Math.floor(x * BURST_COUNT), BURST_COUNT - 1);
     this.activePointers.set(event.pointerId, {
       x,
@@ -43,7 +44,7 @@ export class TouchInput {
       type: "burst",
       source: "touch",
       burstId,
-      velocity: 0.75 + Math.min(event.pressure || 0, 0.25),
+      velocity: 0.75 + Math.min(pressure, 0.25),
       x,
       y
     });
@@ -51,7 +52,8 @@ export class TouchInput {
       type: "burst-hold-start",
       source: "touch",
       burstId,
-      velocity: 0.75 + Math.min(event.pressure || 0, 0.25),
+      velocity: 0.75 + Math.min(pressure, 0.25),
+      pressure,
       x,
       y
     });
@@ -59,7 +61,7 @@ export class TouchInput {
       type: "screensaver-start",
       source: "touch",
       nodeId: burstId,
-      velocity: 0.78 + Math.min(event.pressure || 0, 0.22),
+      velocity: 0.78 + Math.min(pressure, 0.22),
       x,
       y
     });
@@ -73,6 +75,17 @@ export class TouchInput {
     const { x, y } = this.getNormalizedPosition(event);
     point.x = x;
     point.y = y;
+
+    if (point.burstId !== null) {
+      this.router.dispatch({
+        type: "burst-hold-move",
+        source: "touch",
+        burstId: point.burstId,
+        pressure: getTouchPressure(event),
+        x,
+        y
+      });
+    }
   };
 
   private readonly handlePointerEnd = (event: PointerEvent): void => {
@@ -96,4 +109,12 @@ export class TouchInput {
       y: Math.min(1, Math.max(0, (event.clientY - rect.top) / rect.height))
     };
   }
+}
+
+function getTouchPressure(event: PointerEvent): number {
+  if (event.pressure > 0) {
+    return Math.min(1, Math.max(0, event.pressure));
+  }
+
+  return event.pointerType === "mouse" ? 0.55 : 0.7;
 }

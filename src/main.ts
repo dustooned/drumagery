@@ -22,9 +22,14 @@ const resetStateElement = document.querySelector<HTMLButtonElement>("#reset-stat
 const mobileGridToggleElement = document.querySelector<HTMLButtonElement>("#mobile-grid-toggle");
 const fullscreenToggleElement = document.querySelector<HTMLButtonElement>("#fullscreen-toggle");
 const fullscreenExitElement = document.querySelector<HTMLButtonElement>("#fullscreen-exit");
+const reactiveModeToggleElement = document.querySelector<HTMLButtonElement>("#reactive-mode-toggle");
+const reactiveModeActionElement = document.querySelector<HTMLButtonElement>("#reactive-mode-action");
 const startMenuToggleElement = document.querySelector<HTMLButtonElement>("#start-menu-toggle");
 const startPopoverElement = document.querySelector<HTMLElement>("#start-popover");
+const taskbarHideToggleElement = document.querySelector<HTMLButtonElement>("#taskbar-hide-toggle");
+const taskbarRestoreToggleElement = document.querySelector<HTMLButtonElement>("#taskbar-restore-toggle");
 const desktopWallpaperUrl = `${import.meta.env.BASE_URL}wallpapers/xp-desktop/xp-desktop.png`;
+let startPopoverTimeout = 0;
 
 if (
   !stageElement ||
@@ -39,18 +44,55 @@ if (
   !mobileGridToggleElement ||
   !fullscreenToggleElement ||
   !fullscreenExitElement ||
+  !reactiveModeToggleElement ||
+  !reactiveModeActionElement ||
   !startMenuToggleElement ||
-  !startPopoverElement
+  !startPopoverElement ||
+  !taskbarHideToggleElement ||
+  !taskbarRestoreToggleElement
 ) {
   throw new Error("Missing required app, stage, debug-panel, or action control element.");
 }
 
 document.documentElement.style.setProperty("--desktop-wallpaper-url", `url("${desktopWallpaperUrl}")`);
+const reactiveModeButton = reactiveModeToggleElement;
+const reactiveModeActionButton = reactiveModeActionElement;
+
+const closeStartPopover = (): void => {
+  window.clearTimeout(startPopoverTimeout);
+  startPopoverTimeout = 0;
+  startMenuToggleElement.setAttribute("aria-expanded", "false");
+  startPopoverElement.classList.remove("is-open");
+  startPopoverElement.setAttribute("aria-hidden", "true");
+};
+
+const openStartPopover = (): void => {
+  startMenuToggleElement.setAttribute("aria-expanded", "true");
+  startPopoverElement.classList.add("is-open");
+  startPopoverElement.setAttribute("aria-hidden", "false");
+  window.clearTimeout(startPopoverTimeout);
+  startPopoverTimeout = window.setTimeout(closeStartPopover, 5000);
+};
 
 startMenuToggleElement.addEventListener("click", () => {
   const isOpen = startMenuToggleElement.getAttribute("aria-expanded") === "true";
-  startMenuToggleElement.setAttribute("aria-expanded", String(!isOpen));
-  startPopoverElement.hidden = isOpen;
+  if (isOpen) {
+    closeStartPopover();
+    return;
+  }
+
+  openStartPopover();
+});
+
+taskbarHideToggleElement.addEventListener("click", () => {
+  closeStartPopover();
+  appElement.classList.add("is-taskbar-hidden");
+  taskbarRestoreToggleElement.hidden = false;
+});
+
+taskbarRestoreToggleElement.addEventListener("click", () => {
+  appElement.classList.remove("is-taskbar-hidden");
+  taskbarRestoreToggleElement.hidden = true;
 });
 
 const app = new Application({
@@ -122,6 +164,7 @@ resetStateElement.addEventListener("click", () => {
 const setMobileGridMode = (enabled: boolean): void => {
   appElement.classList.toggle("is-mobile-grid-mode", enabled);
   stageElement.classList.toggle("is-stage-fullscreen", enabled);
+  if (enabled) closeStartPopover();
   mobileGridToggleElement.textContent = enabled ? "Small grid" : "Big grid";
   mobileGridToggleElement.setAttribute("aria-pressed", String(enabled));
   window.requestAnimationFrame(resizeVisualStage);
@@ -134,6 +177,8 @@ mobileGridToggleElement.addEventListener("click", () => {
 const setFullscreenButtonState = (): void => {
   const isFullscreen = document.fullscreenElement === stageElement;
   const isMobileGridMode = appElement.classList.contains("is-mobile-grid-mode");
+  appElement.classList.toggle("is-stage-fullscreen-active", isFullscreen);
+  if (isFullscreen) closeStartPopover();
   stageElement.classList.toggle("is-stage-fullscreen", isFullscreen || isMobileGridMode);
   fullscreenToggleElement.textContent = isFullscreen ? "Exit fullscreen" : "Fullscreen";
   fullscreenToggleElement.setAttribute("aria-pressed", String(isFullscreen));
@@ -169,6 +214,16 @@ fullscreenExitElement.addEventListener("click", () => {
   }
 });
 
+reactiveModeButton.addEventListener("click", () => {
+  const state = stateEngine.getState();
+  inputRouter.dispatch({ type: "reactive-mode", source: "debug", enabled: !state.reactiveModeEnabled });
+});
+
+reactiveModeActionButton.addEventListener("click", () => {
+  const state = stateEngine.getState();
+  inputRouter.dispatch({ type: "reactive-mode", source: "debug", enabled: !state.reactiveModeEnabled });
+});
+
 document.addEventListener("fullscreenchange", setFullscreenButtonState);
 window.addEventListener("resize", resizeVisualStage);
 setFullscreenButtonState();
@@ -182,6 +237,7 @@ stateEngine.subscribe((state) => {
   visualEngine.syncState(state);
   debugPanel.render(state);
   performanceEdgeDock.render(state);
+  updateReactiveModeToggle(state.reactiveModeEnabled);
 });
 
 app.ticker.add((deltaFrames) => {
@@ -194,4 +250,14 @@ keyboardInput.start();
 touchInput.start();
 debugPanel.render(stateEngine.getState());
 performanceEdgeDock.render(stateEngine.getState());
+updateReactiveModeToggle(stateEngine.getState().reactiveModeEnabled);
 resizeVisualStage();
+
+function updateReactiveModeToggle(enabled: boolean): void {
+  reactiveModeButton.classList.toggle("is-reactive", enabled);
+  reactiveModeButton.setAttribute("aria-pressed", String(enabled));
+  reactiveModeButton.setAttribute("aria-label", enabled ? "Disable Reactive mode" : "Enable Reactive mode");
+  reactiveModeActionButton.classList.toggle("is-active", enabled);
+  reactiveModeActionButton.textContent = enabled ? "Reactive on" : "Reactive off";
+  reactiveModeActionButton.setAttribute("aria-pressed", String(enabled));
+}

@@ -51,6 +51,7 @@ body {
   bottom: 0;
   display: flex;
   align-items: center;
+  gap: 8px;
   min-height: 38px;
   padding: 3px 8px;
   border-top: 1px solid #78a8e8;
@@ -73,13 +74,50 @@ body {
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
 }
 
+.taskbar-hide-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 72px;
+  min-height: 30px;
+  padding: 0 9px;
+  background: rgba(236, 233, 216, 0.94);
+}
+
+.taskbar-hide-sprite-placeholder,
+.taskbar-restore-sprite-placeholder {
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(8, 60, 156, 0.55);
+  background:
+    linear-gradient(180deg, #ffffff 0 30%, #78a8e8 0 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.taskbar-restore-button {
+  position: fixed;
+  z-index: 6;
+  left: 8px;
+  bottom: 8px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  background: rgba(236, 233, 216, 0.94);
+}
+
+.taskbar-restore-button[hidden] {
+  display: none;
+}
+
 .start-sprite-placeholder {
   width: 22px;
   height: 22px;
   border: 1px solid rgba(255, 255, 255, 0.78);
-  background:
-    linear-gradient(90deg, #f04d38 0 50%, #27a6ff 0 100%),
-    linear-gradient(180deg, #ffdf4d 0 50%, #35bd55 0 100%);
+  background: conic-gradient(#27a6ff 0 25%, #35bd55 0 50%, #ffdf4d 0 75%, #f04d38 0 100%);
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.16);
 }
 
@@ -96,6 +134,21 @@ body {
   color: #111;
   font-size: 12px;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition:
+    opacity 800ms ease,
+    transform 800ms ease,
+    visibility 800ms ease;
+  visibility: hidden;
+}
+
+.start-popover.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  visibility: visible;
 }
 
 .start-popover::after {
@@ -343,6 +396,87 @@ body {
   gap: 6px;
 }
 
+.reactive-mode-toggle {
+  position: absolute;
+  z-index: 7;
+  left: max(10px, env(safe-area-inset-left));
+  bottom: max(10px, env(safe-area-inset-bottom));
+  display: none;
+  align-items: center;
+  gap: 7px;
+  min-width: 112px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 2px outset #ffffff;
+  background: rgba(236, 233, 216, 0.78);
+  color: #111;
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.42;
+  transition:
+    opacity 420ms ease,
+    background-color 420ms ease,
+    box-shadow 420ms ease;
+}
+
+#reactive-mode-action.is-active {
+  border-style: inset;
+  background: #dbeeff;
+}
+
+.reactive-mode-toggle.is-reactive {
+  background: rgba(236, 233, 216, 0.96);
+  opacity: 1;
+  box-shadow:
+    0 0 0 1px rgba(45, 140, 255, 0.45),
+    0 0 18px rgba(45, 140, 255, 0.34);
+}
+
+.reactive-mode-toggle span {
+  margin: 0;
+}
+
+.reactive-array-sprite {
+  display: grid;
+  grid-template-columns: repeat(3, 4px);
+  grid-template-rows: repeat(3, 4px);
+  gap: 2px;
+  width: 16px;
+  height: 16px;
+}
+
+.reactive-array-sprite::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  background: #5f6f7e;
+  box-shadow:
+    6px 0 #5f6f7e,
+    12px 0 #5f6f7e,
+    0 6px #5f6f7e,
+    6px 6px #2d8cff,
+    12px 6px #5f6f7e,
+    0 12px #5f6f7e,
+    6px 12px #5f6f7e,
+    12px 12px #5f6f7e;
+  transition:
+    background-color 420ms ease,
+    box-shadow 420ms ease;
+}
+
+.reactive-mode-toggle.is-reactive .reactive-array-sprite::before {
+  background: #2d8cff;
+  box-shadow:
+    6px 0 #77e6ff,
+    12px 0 #2d8cff,
+    0 6px #77e6ff,
+    6px 6px #ffffff,
+    12px 6px #77e6ff,
+    0 12px #2d8cff,
+    6px 12px #77e6ff,
+    12px 12px #2d8cff;
+}
+
 #debug-panel {
   position: relative;
   z-index: 2;
@@ -376,6 +510,14 @@ body {
 
 .is-debug-hidden #stage {
   width: min(100%, calc((100dvh - 160px) * 16 / 9));
+}
+
+.is-taskbar-hidden #desktop-taskbar,
+.is-mobile-grid-mode #desktop-taskbar,
+.is-stage-fullscreen-active #desktop-taskbar,
+.is-mobile-grid-mode .taskbar-restore-button,
+.is-stage-fullscreen-active .taskbar-restore-button {
+  display: none;
 }
 
 .debug-header {
@@ -421,6 +563,16 @@ body {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
+}
+
+.debug-mode-toggle {
+  width: 100%;
+  text-align: left;
+}
+
+.debug-mode-toggle.is-active {
+  border-style: inset;
+  background: #dbeeff;
 }
 
 .debug-readout {
@@ -659,6 +811,16 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
 }
 
+#stage:fullscreen .reactive-mode-toggle,
+#stage.is-stage-fullscreen .reactive-mode-toggle,
+.is-mobile-grid-mode .reactive-mode-toggle {
+  display: inline-flex;
+  z-index: 12;
+  left: max(10px, env(safe-area-inset-left));
+  bottom: max(10px, env(safe-area-inset-bottom));
+  min-width: 44px;
+}
+
 #stage:fullscreen .performance-edge-dock,
 #stage.is-stage-fullscreen .performance-edge-dock,
 .is-mobile-grid-mode .performance-edge-dock {
@@ -743,16 +905,13 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .is-mobile-grid-mode #stage-actions #mobile-grid-toggle,
-  .is-mobile-grid-mode #stage-actions #fullscreen-toggle {
-    display: block;
-    min-width: 72px;
-    min-height: 38px;
-    background: rgba(236, 233, 216, 0.92);
-  }
-
-  .is-mobile-grid-mode #desktop-taskbar {
-    display: none;
-  }
+.is-mobile-grid-mode #stage-actions #fullscreen-toggle,
+.is-mobile-grid-mode #stage-actions #reactive-mode-action {
+  display: block;
+  min-width: 72px;
+  min-height: 38px;
+  background: rgba(236, 233, 216, 0.92);
+}
 
 @media (max-width: 720px), (max-height: 520px) {
   #debug-toggle {

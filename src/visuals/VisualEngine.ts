@@ -1,7 +1,7 @@
 import { Container, Graphics, Rectangle } from "pixi.js";
 import { INTERNAL_HEIGHT, INTERNAL_WIDTH } from "../constants";
-import { createDefaultGlobalFX, FX_CONTROLS } from "../state/fxConfig";
-import type { BurstEvent, GlobalFXState, InstrumentState } from "../state/types";
+import { createDefaultGlobalFX, FX_CONTROLS, normalizeFXControl } from "../state/fxConfig";
+import type { BurstEvent, BurstHoldState, GlobalFXControl, GlobalFXState, InstrumentState } from "../state/types";
 import { hslToHex, lerp } from "../utils/math";
 import { BurstPool } from "./BurstPool";
 import { ChromaSplitFilter } from "./ChromaSplitFilter";
@@ -107,8 +107,11 @@ export class VisualEngine {
   private updateSmoothedFX(deltaSeconds: number): void {
     if (!this.state) return;
 
+    const targetFX = this.state.reactiveModeEnabled
+      ? composeBurstHoldFX(this.state.globalFX, this.state.activeBurstHolds)
+      : this.state.globalFX;
     for (const config of FX_CONTROLS) {
-      const target = this.state.globalFX[config.control];
+      const target = targetFX[config.control];
       const current = this.smoothedFX[config.control];
       const amount = 1 - Math.exp(-config.smoothing * deltaSeconds);
       this.smoothedFX[config.control] = lerp(current, target, amount);
@@ -200,4 +203,82 @@ function getOverdrive(fx: GlobalFXState): number {
       fx.burstPower - 1
     ) / 2
   );
+}
+
+type BurstHoldFxProfile = {
+  controls: Array<{
+    control: GlobalFXControl;
+    start: number;
+    x: number;
+    y: number;
+    pressure: number;
+  }>;
+};
+
+const BURST_HOLD_FX_PROFILES: BurstHoldFxProfile[] = [
+  {
+    controls: [
+      { control: "syncTear", start: 0.18, x: 0.95, y: 0.18, pressure: 0.8 },
+      { control: "verticalRoll", start: 0.05, x: 0.08, y: 0.9, pressure: 0.4 },
+      { control: "distortion", start: 0.08, x: 0.45, y: 0.25, pressure: 0.85 }
+    ]
+  },
+  {
+    controls: [
+      { control: "chromaShift", start: 0.16, x: 0.9, y: 0.16, pressure: 0.95 },
+      { control: "syncBands", start: 0.08, x: 0.12, y: 0.85, pressure: 0.45 },
+      { control: "contrast", start: 0.05, x: 0.2, y: 0.35, pressure: 0.7 }
+    ]
+  },
+  {
+    controls: [
+      { control: "noise", start: 0.14, x: 0.75, y: 0.22, pressure: 0.95 },
+      { control: "bloom", start: 0.08, x: 0.15, y: 0.75, pressure: 0.65 },
+      { control: "pixelate", start: 0.05, x: 0.35, y: 0.45, pressure: 0.6 }
+    ]
+  },
+  {
+    controls: [
+      { control: "pixelate", start: 0.12, x: 0.9, y: 0.25, pressure: 0.85 },
+      { control: "phosphorTrail", start: 0.1, x: 0.2, y: 0.9, pressure: 0.55 },
+      { control: "feedback", start: 0.06, x: 0.28, y: 0.72, pressure: 0.7 }
+    ]
+  }
+];
+const BURST_HOLD_FX_STRENGTH = 0.34;
+const BURST_HOLD_GROWTH_RATE = 0.9;
+
+function composeBurstHoldFX(baseFX: GlobalFXState, holds: BurstHoldState[]): GlobalFXState {
+  const fx = { ...baseFX };
+  const now = performance.now();
+
+  for (const hold of holds) {
+    const profile = BURST_HOLD_FX_PROFILES[hold.id % BURST_HOLD_FX_PROFILES.length];
+    if (!profile) continue;
+
+    const ageSeconds = Math.max(0, (now - hold.startedAt) / 1000);
+    const grow = 1 - Math.exp(-ageSeconds * BURST_HOLD_GROWTH_RATE);
+    const releaseFade = getBurstHoldReleaseFade(hold, now);
+    if (releaseFade <= 0) continue;
+
+    const pressure = Math.max(hold.pressure, hold.velocity * 0.72);
+    const amount = grow * releaseFade;
+
+    for (const item of profile.controls) {
+      const axisDrive = item.x * hold.x + item.y * (1 - hold.y) + item.pressure * pressure;
+      const overlay = (item.start + axisDrive) * amount * BURST_HOLD_FX_STRENGTH;
+      fx[item.control] = normalizeFXControl(item.control, Math.max(fx[item.control], baseFX[item.control] + overlay));
+    }
+  }
+
+  return fx;
+}
+
+function getBurstHoldReleaseFade(hold: BurstHoldState, now: number): number {
+  if (hold.releasedAt === null) return 1;
+
+  const releaseAge = now - hold.releasedAt;
+  if (releaseAge >= 420) return 0;
+
+  return 1 - Math.pow(Math.min(1, Math.max(0, releaseAge / 420)), 3);
 }

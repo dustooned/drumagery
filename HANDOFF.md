@@ -172,6 +172,9 @@ v1.3 checkpoint:
 - Boosted screensaver brightness and kept thicker vector strokes for stronger stage presence.
 - Added per-slot image-sequence blend modes: Vaporwave and Signal Garden use `screen`, Chrome Tide and Neon Weather use `add`, and Glass Desert uses `multiply`.
 - Added a subtle XP-style desktop taskbar with a Start popover and a start-button sprite drop path at `public/taskbar/start-button/start-button.png`.
+- Updated the taskbar Start popover to fade in/out over `800ms ease`, auto-close after 5 seconds, and close when Start is clicked again.
+- Added a taskbar hide/restore control for the default desktop/debug layout, with the hide sprite drop path at `public/taskbar/hide-button/hide-button.png`.
+- Taskbar is intentionally hidden in Big grid and fullscreen modes so it does not interfere with performance output.
 
 Next practical step:
 - Evaluate temporal grids, black-key screensaver holds, drum-pad bursts, and the Edge Dock on the target iPad/browser before adding the next system.
@@ -200,6 +203,12 @@ GitHub Pages/dev-path preview may also be opened at:
 
 ```text
 http://localhost:5173/drumagery/
+```
+
+## Next Chat Starter
+
+```text
+Continue in E:\2026\Dev\Experiment\UTH. Current local work after commit a6f687f adds XP taskbar refinements but is not committed yet: Start popover fades 800ms, auto-closes after 5s, taskbar hide/restore button, taskbar hidden in Big grid/fullscreen, and sprite folders under public/taskbar/start-button and public/taskbar/hide-button. Run npm.cmd run build before more edits. Main next work is target iPad/projector testing and MiniLab mapping lock.
 ```
 
 ## Constraints To Preserve

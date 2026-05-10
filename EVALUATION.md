@@ -858,3 +858,27 @@ Browser check:
 Remaining risk:
 - Needs real MiniLab calibration to confirm the physical knob/slider order matches the intended learned order.
 - Needs target iPad/projector testing for wallpaper readability and dock label legibility.
+
+## v1.3 Taskbar Behavior Update
+
+Date: 2026-05-09
+
+Build:
+
+```powershell
+npm.cmd run build
+```
+
+Result: pass.
+
+Implemented:
+- Start popover now fades in/out with `800ms ease`.
+- Start popover auto-closes after 5 seconds.
+- Clicking Start again closes the popover.
+- Taskbar hide button is available in the default desktop/debug layout.
+- Taskbar restore button appears when the taskbar is manually hidden.
+- Big grid and fullscreen modes hide the taskbar and restore button.
+- Added `public/taskbar/hide-button/hide-button.png` as the hide/restore sprite target.
+
+Remaining risk:
+- Needs visual click-test in the in-app browser or target browser after reopening the session.

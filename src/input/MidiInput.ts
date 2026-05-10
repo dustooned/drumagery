@@ -178,6 +178,7 @@ export class MidiInput {
         source: "midi",
         burstId: padIndex,
         velocity,
+        pressure: velocity,
         x: 0.5,
         y: 0.5
       });

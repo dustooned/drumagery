@@ -10,6 +10,10 @@
       <section id="stage-area" aria-label="Visual instrument workspace">
         <div id="stage" aria-label="Visual instrument stage">
           <button id="fullscreen-exit" type="button" aria-label="Exit fullscreen">Exit</button>
+          <button id="reactive-mode-toggle" class="reactive-mode-toggle" type="button" aria-pressed="false" aria-label="Enable Reactive mode">
+            <span class="reactive-array-sprite" aria-hidden="true"></span>
+            <span>Reactive</span>
+          </button>
           <nav id="performance-edge-dock" aria-label="Performance edge dock"></nav>
         </div>
         <div id="stage-actions" aria-label="Stage actions">
@@ -17,6 +21,7 @@
           <button id="midi-learn-reset" type="button">Clear MIDI Learn</button>
           <button id="kill-loops" type="button">Kill Loops</button>
           <button id="reset-state" type="button">Reset</button>
+          <button id="reactive-mode-action" type="button" aria-pressed="false">Reactive off</button>
           <button id="mobile-grid-toggle" type="button" aria-pressed="false">Big grid</button>
           <button id="fullscreen-toggle" type="button" aria-pressed="false">Fullscreen</button>
         </div>
@@ -30,7 +35,11 @@
           <span class="start-sprite-placeholder" aria-hidden="true"></span>
           <span>Start</span>
         </button>
-        <div id="start-popover" class="start-popover" hidden>
+        <button id="taskbar-hide-toggle" class="taskbar-hide-button" type="button" aria-label="Hide desktop taskbar">
+          <span class="taskbar-hide-sprite-placeholder" aria-hidden="true"></span>
+          <span>Hide</span>
+        </button>
+        <div id="start-popover" class="start-popover" aria-hidden="true">
           <strong>Drumagery</strong>
           <span>v1.3 visual instrument prototype</span>
           <span>Created with &lt;3 by T'</span>
@@ -38,6 +47,9 @@
           <a href="https://www.dustooned.com/" target="_blank" rel="noreferrer">dustooned.com</a>
         </div>
       </footer>
+      <button id="taskbar-restore-toggle" class="taskbar-restore-button" type="button" aria-label="Show desktop taskbar" hidden>
+        <span class="taskbar-restore-sprite-placeholder" aria-hidden="true"></span>
+      </button>
     </main>
     <script type="module" src="/src/main.ts"></script>
   </body>

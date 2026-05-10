@@ -244,6 +244,16 @@ public/taskbar/start-button/start-button.png
 
 Recommended source size is `224 x 72`, displayed around `112 x 36` CSS pixels. A `112 x 36` 1x source also works.
 
+Custom taskbar hide/restore sprite drop path:
+
+```text
+public/taskbar/hide-button/hide-button.png
+```
+
+Recommended source size is `64 x 64`.
+
+The Start speech bubble fades in/out over `800ms ease`, auto-closes after 5 seconds, and also closes when Start is clicked again. The taskbar is shown only in the default desktop/debug layout; Big grid and fullscreen hide it.
+
 ## Screensaver Nodes
 
 Black-key note holds wake lightweight procedural Screensaver Nodes through state. Held nodes get a sine-like alpha/scale pulse, and releasing the note eases the node out. Drum pads do not own screensaver activation; they remain short burst hits only. The scaffold lives in:

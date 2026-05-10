@@ -31,6 +31,12 @@ export class DebugPanel {
       return;
     }
 
+    if (event.type === "reactive-mode") {
+      this.lastInput = `${event.source}: reactive ${event.enabled ? "on" : "off"}`;
+      this.throttleRender = false;
+      return;
+    }
+
     if (event.type === "loop-toggle") {
       this.lastInput = `${event.source}: loop ${event.loopId + 1}`;
       this.throttleRender = false;
@@ -149,6 +155,19 @@ export class DebugPanel {
             (name, index) => `<button type="button" data-burst="${index}"><span>Q${index + 1}</span>${name}</button>`
           ).join("")}
         </div>
+      </section>
+
+      <section class="debug-section">
+        <h2 class="debug-subtitle">Interaction mode</h2>
+        <button
+          class="debug-mode-toggle ${state.reactiveModeEnabled ? "is-active" : ""}"
+          type="button"
+          data-reactive-mode
+          aria-pressed="${state.reactiveModeEnabled}"
+        >
+          <span>${state.reactiveModeEnabled ? "ON" : "OFF"}</span>
+          Reactive burst TV effects
+        </button>
       </section>
 
       <section class="debug-section">
@@ -296,6 +315,16 @@ export class DebugPanel {
   private readonly handleClick = (event: MouseEvent): void => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
+    const reactiveTarget = target.closest<HTMLElement>("[data-reactive-mode]");
+    if (reactiveTarget) {
+      this.router.dispatch({
+        type: "reactive-mode",
+        source: "debug",
+        enabled: !(this.currentState?.reactiveModeEnabled ?? false)
+      });
+      return;
+    }
+
     const controlTarget = target.closest<HTMLElement>("[data-loop], [data-burst]");
     if (!controlTarget) return;
 

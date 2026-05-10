@@ -46,6 +46,7 @@ export class KeyboardInput {
         source: "keyboard",
         burstId,
         velocity: 0.85,
+        pressure: 0.65,
         x: 0.5,
         y: 0.5
       });
